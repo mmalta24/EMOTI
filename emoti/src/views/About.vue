@@ -1,5 +1,19 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+   <div id="background">
+    
   </div>
 </template>
+
+<script>
+
+</script>
+
+<style>
+  #background {
+  width: 100%;
+  height: 100vh;
+  background: url("../assets/Grupo 6.svg");
+  background-size: 1525px auto;
+}
+</style>
+

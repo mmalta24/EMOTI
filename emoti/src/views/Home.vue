@@ -5,7 +5,7 @@
         <img src="../assets/logo2.svg" width="400px" alt="" />
         
         <div class="mt-3 text-center">
-          <h5 style="font-size: 25px">
+          <h5 style="font-size: 25px;font-family: EAmbit SemiBold">
             Olá queres brincar e aprender ao mesmo tempo ?
           </h5>
           <p style="font-size: 20px">
@@ -15,8 +15,8 @@
         </div>
         
         <div class="w-75 d-flex flex-row justify-content-around pt-2">
-          <b-button @click="whatDo = 'login'" size="lg" style="width: 40%;background-color: #e87461;border: #e87461;font-weight: 600;" v-b-modal.modal-center>Entrar</b-button>
-          <b-button @click="whatDo = 'register'" size="lg" style="width: 40%;background-color: #fdfdf3;border: 1px solid #e87461;color: #e87461;font-weight: 600;" v-b-modal.modal-center>Registar</b-button>
+          <b-button @click="whatDo = 'login'" size="lg" style="width: 40%;background-color: #e87461;border: #e87461;font-family: EAmbit SemiBold;" v-b-modal.modal-center>Entrar</b-button>
+          <b-button @click="whatDo = 'register'" size="lg" style="width: 40%;background-color: #fdfdf3;border: 1px solid #e87461;color: #e87461;font-family: EAmbit SemiBold;" v-b-modal.modal-center>Registar</b-button>
         </div>
 
       </div>
@@ -26,8 +26,8 @@
       </div>
 
       <b-modal id="modal-center" centered hide-footer header-border-variant="0" header-class="color" body-class="color">
-        <div v-if="whatDo == 'login'" style="font-family: Ambit;color:#e87461" class="text-center">
-           <h3 class="mt-2 mb-4">Autenticar</h3>
+        <div v-if="whatDo == 'login'" style="font-family: EAmbit Regular;color:#e87461" class="text-center">
+           <h3 class="mt-2 mb-4" :style="{ fontFamily:'EAmbit SemiBold'}">Autenticar</h3>
 
           <b-form action="">
 
@@ -35,14 +35,14 @@
               <b-input-group-prepend is-text>
                 <span class="material-icons-round">badge</span>
               </b-input-group-prepend>
-              <b-form-input v-model="text" placeholder="Username" style="background-color: #fdfdf3" required></b-form-input>
+              <b-form-input v-model="formLogin.username" placeholder="Username" style="background-color: #fdfdf3" required></b-form-input>
             </b-input-group>
 
             <b-input-group class="mb-4">
               <b-input-group-prepend is-text>
                 <span class="material-icons-round">lock</span>
               </b-input-group-prepend>
-              <b-form-input type="password" v-model="text" placeholder="Password" style="background-color: #fdfdf3" required></b-form-input>
+              <b-form-input type="password" v-model="formLogin.password" placeholder="Password" style="background-color: #fdfdf3" required></b-form-input>
             </b-input-group>
 
             <div class="d-flex flex-row justify-content-end">
@@ -52,50 +52,50 @@
           </b-form>
         </div>
 
-        <div v-else style="font-family: Ambit; color: #e87461" class="text-center">
-          <h3 class="mt-3 mb-4">Registar</h3>
+        <div v-else style="font-family: EAmbit Regular; color: #e87461" class="text-center">
+          <h3 class="mt-3 mb-4" :style="{ fontFamily:'EAmbit SemiBold'}">Registar</h3>
 
           <b-form action="">
             <b-input-group class="mb-4">
               <b-input-group-prepend is-text>
                 <span class="material-icons-round">badge</span>
               </b-input-group-prepend>
-              <b-form-input v-model="text" placeholder="Username" style="background-color: #fdfdf3" required></b-form-input>
+              <b-form-input v-model="formRegister.username" placeholder="Username" style="background-color: #fdfdf3" required></b-form-input>
             </b-input-group>
 
             <b-input-group class="mb-4">
               <b-input-group-prepend is-text>
                 <span class="material-icons-round">lock</span>
               </b-input-group-prepend>
-              <b-form-input type="password" v-model="text" placeholder="Password" style="background-color: #fdfdf3" required></b-form-input>
+              <b-form-input type="password" v-model="formRegister.password" placeholder="Password" style="background-color: #fdfdf3" required></b-form-input>
             </b-input-group>
 
             <b-input-group class="mb-4">
               <b-input-group-prepend is-text>
                 <span class="material-icons-round">lock</span>
               </b-input-group-prepend>
-              <b-form-input type="password" v-model="text" placeholder="Confirmar Password" style="background-color: #fdfdf3" required></b-form-input>
+              <b-form-input type="password" v-model="c_password" placeholder="Confirmar Password" style="background-color: #fdfdf3" required></b-form-input>
             </b-input-group>
 
             <b-input-group class="mb-4">
               <b-input-group-prepend is-text>
                 <span class="material-icons-round">person</span>
               </b-input-group-prepend>
-              <b-form-input v-model="text" placeholder="Nome" style="background-color: #fdfdf3" required></b-form-input>
+              <b-form-input v-model="formRegister.name" placeholder="Nome" style="background-color: #fdfdf3" required></b-form-input>
             </b-input-group>
 
             <b-input-group class="mb-4">
               <b-input-group-prepend is-text>
                 <span class="material-icons-round">send</span>
               </b-input-group-prepend>
-              <b-form-input type="email" v-model="text" placeholder="Email" style="background-color: #fdfdf3" required></b-form-input>
+              <b-form-input type="email" v-model="formRegister.email" placeholder="Email" style="background-color: #fdfdf3" required></b-form-input>
             </b-input-group>
 
             <b-input-group class="mb-5">
               <b-input-group-prepend is-text>
                 <span class="material-icons-round">person_search</span>
               </b-input-group-prepend>
-              <b-form-select v-model="selected" required style="background-color: #fdfdf3">
+              <b-form-select v-model="formRegister.typeUser" required style="background-color: #fdfdf3">
                 <b-form-select-option :value="null" disabled>Quem sou eu ?</b-form-select-option>
                 <b-form-select-option v-for="(option, index) in options" :key="index" :value="option">{{ option }}</b-form-select-option>
               </b-form-select>
@@ -118,7 +118,17 @@ export default {
     return {
       whatDo: "",
       options: ["Criança", "Tutor", "Professor"],
-      selected: null,
+      formRegister:{
+        username:"",
+        password:"",
+        name:"",
+        email:"",
+        typeUser:null
+      },
+      formLogin:{
+        username:"",
+        password:""
+      }
     };
   },
 };
