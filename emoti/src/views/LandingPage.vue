@@ -1,5 +1,5 @@
 <template>
-  <div id="background" class="d-flex align-items-center">
+  <div id="backgroundW" class="d-flex align-items-center">
     <b-container class="col-12 d-flex flex-row justify-content-between pl-5 pr-2">
       <div class="col-4 d-flex flex-column align-items-center justify-content-around pt-2">
         <img src="../assets/logo2.svg" width="400px" alt="" />
@@ -172,10 +172,10 @@ export default {
 </script>
 
 <style>
-#background {
+#backgroundW {
   width: 100vw;
   height: 100vh;
-  background: url("../assets/wallpaper1.svg");
+  background: url(../assets/wallpaper1.svg);
   background-size: 1540px auto;
 }
 .color{
