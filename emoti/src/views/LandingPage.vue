@@ -2,7 +2,7 @@
   <div id="background" class="d-flex align-items-center">
     <b-container class="col-12 d-flex flex-row justify-content-between pl-5 pr-2">
       <div class="col-4 d-flex flex-column align-items-center justify-content-around pt-2">
-        <img src="../assets/logo2.svg" width="400px" alt="" style="font-family:BalooEmoti" />
+        <img src="../assets/logo2.svg" width="400px" alt="" />
         
         <div class="mt-3 text-center">
           <h5 style="font-size: 25px;font-family: EAmbit SemiBold">
@@ -29,7 +29,7 @@
         <div v-if="whatDo == 'login'" style="font-family: EAmbit Regular;color:#e87461" class="text-center">
            <h3 class="mt-2 mb-4" :style="{ fontFamily:'EAmbit SemiBold'}">Autenticar</h3>
 
-          <b-form action="">
+          <b-form action="" @submit.prevent="login">
 
             <b-input-group class="mb-4">
               <b-input-group-prepend is-text>
@@ -55,7 +55,7 @@
         <div v-else style="font-family: EAmbit Regular; color: #e87461" class="text-center">
           <h3 class="mt-3 mb-4" :style="{ fontFamily:'EAmbit SemiBold'}">Registar</h3>
 
-          <b-form action="">
+          <b-form action="" @submit.prevent="register">
             <b-input-group class="mb-4">
               <b-input-group-prepend is-text>
                 <span class="material-icons-round">badge</span>
@@ -100,7 +100,6 @@
                 <b-form-select-option v-for="(option, index) in options" :key="index" :value="option">{{ option }}</b-form-select-option>
               </b-form-select>
             </b-input-group>
-
             <div class="d-flex flex-row justify-content-end">
               <b-button type="submit" style="background-color: #e87461; color: #fdfdf3; border: none" class="mb-2 w-25">Registar</b-button>
             </div>
@@ -133,9 +132,11 @@ export default {
       }
     };
   },
+
   computed: {
     ...mapGetters(["isUser","isUsernameAvailable"]),
   },
+
   methods: {
     login() {
       if (this.isUser(this.formLogin.username, this.formLogin.password)) {
@@ -145,6 +146,7 @@ export default {
         alert("username ou password incorretos! por favor tente novamente.");
       }
     },
+
     register() {
       if (this.isUsernameAvailable(this.formRegister.username)) {
         if (this.formRegister.password === this.c_password) {
@@ -158,9 +160,14 @@ export default {
         alert("Este nome já existe! Por favor escolha outro.");
       }
     },
+
     ...mapMutations(["SET_LOGGED_USER","SET_NEW_USER"]),
   },
+
 };
+
+
+
 
 </script>
 
