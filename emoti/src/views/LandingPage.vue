@@ -2,7 +2,7 @@
   <div id="background" class="d-flex align-items-center">
     <b-container class="col-12 d-flex flex-row justify-content-between pl-5 pr-2">
       <div class="col-4 d-flex flex-column align-items-center justify-content-around pt-2">
-        <img src="../assets/logo2.svg" width="400px" alt="" />
+        <img src="../assets/logo2.svg" width="400px" alt="" style="font-family:BalooEmoti" />
         
         <div class="mt-3 text-center">
           <h5 style="font-size: 25px;font-family: EAmbit SemiBold">

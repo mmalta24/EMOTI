@@ -69,6 +69,11 @@ export default {
   src: local("EAmbit SemiBold"),
    url(./font/Ambit-SemiBold.ttf) format("truetype");
 }
+@font-face{
+   font-family: "BalooEmoti";
+  src: local("BalooEmoti"),
+   url(./font/static/BalooBhaijaan2-ExtraBold.ttf) format("truetype");
+}
 
 #app {
   font-family: EAmbit Regular;
