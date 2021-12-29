@@ -100,7 +100,6 @@
                 <b-form-select-option v-for="(option, index) in options" :key="index" :value="option">{{ option }}</b-form-select-option>
               </b-form-select>
             </b-input-group>
-
             <div class="d-flex flex-row justify-content-end">
               <b-button type="submit" style="background-color: #e87461; color: #fdfdf3; border: none" class="mb-2 w-25">Registar</b-button>
             </div>
