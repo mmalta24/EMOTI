@@ -113,11 +113,13 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
       whatDo: "",
       options: ["Criança", "Tutor", "Professor"],
+      c_password:"",
       formRegister:{
         username:"",
         password:"",
@@ -131,7 +133,35 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapGetters(["isUser","isUsernameAvailable"]),
+  },
+  methods: {
+    login() {
+      if (this.isUser(this.formLogin.username, this.formLogin.password)) {
+        this.SET_LOGGED_USER(this.formLogin.username);
+        this.$router.push({ name: "About" });
+      } else {
+        alert("username ou password incorretos! por favor tente novamente.");
+      }
+    },
+    register() {
+      if (this.isUsernameAvailable(this.formRegister.username)) {
+        if (this.formRegister.password === this.c_password) {
+          this.SET_NEW_USER(this.formRegister);
+          this.SET_LOGGED_USER(this.formRegister.username);
+          this.$router.push({ name: "About" });
+        } else {
+          alert("A palavra-passe é diferente da confirmação! Por favor tenta outra vez.");
+        }  
+      } else {
+        alert("Este nome já existe! Por favor escolha outro.");
+      }
+    },
+    ...mapMutations(["SET_LOGGED_USER","SET_NEW_USER"]),
+  },
 };
+
 </script>
 
 <style>
