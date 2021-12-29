@@ -16,4 +16,3 @@
   background-size: 1525px auto;
 }
 </style>
-
