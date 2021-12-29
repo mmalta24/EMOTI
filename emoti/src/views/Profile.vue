@@ -1,6 +1,6 @@
 <template>
    <div id="background">
-    
+    <h1>profile</h1>
   </div>
 </template>
 
@@ -16,4 +16,3 @@
   background-size: 1525px auto;
 }
 </style>
-
