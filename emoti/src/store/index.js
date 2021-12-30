@@ -33,7 +33,7 @@ export default new Vuex.Store({
   mutations: {
     SET_LOGGED_USER(state, variable) {
       state.loggedUser = state.users.find((user) => user.username === variable);
-      localStorage.loggedUser = JSON.stringify(state.loggedUser);
+      sessionStorage.loggedUser = JSON.stringify(state.loggedUser);
     },
 
     SET_NEW_USER(state, variable) {
@@ -43,7 +43,7 @@ export default new Vuex.Store({
 
     SET_LOGOUT(state) {
       state.loggedUser = null;
-      localStorage.removeItem("loggedUser");
+      sessionStorage.removeItem("loggedUser");
     },
 
   },

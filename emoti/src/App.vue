@@ -30,7 +30,7 @@
           <b-icon icon="tools" aria-hidden="true"></b-icon> Gerir Website
           </b-dropdown-item-button>
           <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item href="#" size="sm" class="mb-2" variant="danger" ><b-icon icon="door-closed-fill" aria-hidden="true"></b-icon> Terminar Sessão</b-dropdown-item>
+          <b-dropdown-item href="#" size="sm" class="mb-2" variant="danger" @click="logout()"><b-icon icon="door-closed-fill" aria-hidden="true"></b-icon> Terminar Sessão</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
   </b-navbar>
@@ -47,6 +47,7 @@
   </div>
 </template>
 <script>
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {
@@ -55,7 +56,15 @@ export default {
       listOne:false
     };
   },
-};
+
+  methods: {
+    ...mapMutations(["SET_LOGOUT"]),
+    logout() {
+      this.SET_LOGOUT();
+      this.$router.push({ name: "LandingPage" });
+    }
+  },
+}
 </script>
 
 <style>
