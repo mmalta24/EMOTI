@@ -141,7 +141,7 @@ export default {
     login() {
       if (this.isUser(this.formLogin.username, this.formLogin.password)) {
         this.SET_LOGGED_USER(this.formLogin.username);
-        this.$router.push({ name: "About" });
+        this.$router.push({ name: "Home" });
       } else {
         alert("username ou password incorretos! por favor tente novamente.");
       }
@@ -152,7 +152,7 @@ export default {
         if (this.formRegister.password === this.c_password) {
           this.SET_NEW_USER(this.formRegister);
           this.SET_LOGGED_USER(this.formRegister.username);
-          this.$router.push({ name: "About" });
+          this.$router.push({ name: "Home" });
         } else {
           alert("A palavra-passe é diferente da confirmação! Por favor tenta outra vez.");
         }  

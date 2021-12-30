@@ -11,7 +11,7 @@ export default new Vuex.Store({
           {
             username: "admin",
             password: "admin",
-            type: "admin",
+            typeUser: "Admin",
           },
         ],
     loggedUser: null,
