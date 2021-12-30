@@ -5,7 +5,7 @@
       <router-link to="/about">About</router-link>
     </div>-->
     <div @mouseleave="listOne=false">
-     <b-navbar style="background-color:#FDFDED;box-shadow:0px 3px #00000003" class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between" fixed v-if="trueorfalse == false">
+     <b-navbar style="background-color:#FDFDED;box-shadow:0px 3px #00000003" class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between" fixed v-if="trueorfalse == true">
         <b-navbar-nav href="#"  class="d-flex align-items-center col-md-3 mb-2 mb-md-0" >
           <img src="./assets/Logo_Emoti.png" width="200" alt="">
         </b-navbar-nav>
