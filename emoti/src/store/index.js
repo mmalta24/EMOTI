@@ -1,6 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
+import router from '../router/index';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -44,6 +46,7 @@ export default new Vuex.Store({
     SET_LOGOUT(state) {
       state.loggedUser = null;
       sessionStorage.removeItem("loggedUser");
+      router.push({ name: 'LandingPage' });
     },
 
     SET_LOGGED_USER(state, variable) {

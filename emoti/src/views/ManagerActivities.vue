@@ -1,46 +1,49 @@
 <template>
-   <div id="backgroundActivitiesP">
+   <div id="backgroundManagerUser">
      <b-container class="col-11 pt-4">
-         <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Atividades Personalizadas</h2>
+         <div class="col-12" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}"><h2>Gerir</h2></div>
 
-         <div class="row col-12 pt-3">
-
-             <div class="col-9 mt-4">
-               <b-form inline>
+         <div class="col-12 mt-4">
+              <b-form inline>
                   <label class="mr-sm-2" for="filterTitle">Título: </label>
-                  <b-form-select id="filterTitle" class="mb-2 mr-sm-5 mb-sm-0 col-3" :style="{'background-color':'#fdfdf3'}"></b-form-select>
+                  <b-form-input id="filterTitle" class="mb-2 mr-sm-5 mb-sm-0 col-3" :style="{'background-color':'#fdfdf3'}"></b-form-input>
 
-                  <label class="mr-sm-2" for="filterLevel">Grau de Dificuldade: </label>
-                  <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-3"  :style="{'background-color':'#fdfdf3'}"></b-form-select>
-               </b-form>
-             </div>
+                  <label class="mr-sm-2" for="filterLevel">Tipo: </label>
+                  <b-form-select id="filterLevel" class="mb-2 mr-sm-5 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}"></b-form-select>
 
-             <div class="col-3 mt-4 d-flex flex-row justify-content-end">
-                <b-button :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}"  v-b-modal.modal-myactivities @click="modalDo='addgame'">Adicionar</b-button>
-             </div>
+                   <label class="mr-sm-2" for="filterLevel">Dificuldade: </label>
+                  <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}"></b-form-select>
+             </b-form>
+         </div>
 
-             <div class="col-12 mt-5">
-                <table class="col-12 text-center">
+         <div class="col-12 d-flex flex-row justify-content-end mt-5">
+             <b-button :style="{color:'#fdfdf3','background-color':'#BFBFBF',border:'none'}" class="mr-3" v-b-modal.modalManagerActivity @click="modalActivityDo='manageremotion'">Gerir Emoções</b-button>
+             <b-button :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" v-b-modal.modalManagerActivity @click="modalActivityDo='addactivity'">Adicionar</b-button>
+         </div>
+
+         <div class="col-12 mt-3">
+              <table class="col-12 text-center">
                   <tr :style="{'background-color':'#e87461',color:'#fbfbf3'}">
                       <th class="p-1">Título</th>
                       <th>Grau de Dificuldade</th>
-                      <th>Imagem (Capa)</th>
+                      <th>Imagem (Capa do Quiz)</th>
+                      <th>Categoria</th>
                       <th>Ações</th>
                   </tr>
                   <tr :style="{'border-bottom':'2px solid #707070'}" >
                       <td class="p-4">Qual é o meu nome?</td>
                       <td>Fácil</td>
-                      <td>https://www.imagem.com/123</td>
-                      <td><b-button style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1" @click="modalDo='viewgame'"  v-b-modal.modal-myactivities><b-icon icon="eye-fill" ></b-icon></b-button><b-button style="border:none" class=" ml-2 mr-1" @click="modalDo='editgame'"  v-b-modal.modal-myactivities><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                      <td>www.home.com/123</td>
+                      <td>Reconhecimento</td>
+                      <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerActivity @click="modalActivityDo='editactivity'"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
                   </tr>
-                </table>
-             </div>
-          
+             </table>
          </div>
+     </b-container>
 
-          <b-modal id="modal-myactivities" size="lg" centered hide-footer header-border-variant="0" header-class="color" body-class="color" scrollable>
-            <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalDo=='addgame'">
-              <h4 :style="{color:'#e87461'}">Adicionar Atividade Personalizada</h4>
+      <b-modal size="lg" id="modalManagerActivity" centered hide-footer header-border-variant="0" header-class="color" body-class="color">
+          <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='addactivity'">
+              <h4 :style="{color:'#e87461'}">Adicionar Atividade</h4>
 
               <b-form>
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
@@ -48,6 +51,10 @@
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Dificuldade:" label-for="input-sm" class="mt-4 mb-4">
+                    <b-form-select id="input-sm" required></b-form-select>
+                 </b-form-group>
+
+                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Categoria:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-select id="input-sm" required></b-form-select>
                  </b-form-group>
 
@@ -70,11 +77,13 @@
             
               </b-form>
               <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
-              </div>
 
-            <!--Editar Atividade-->
-            <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalDo=='editgame'">
-              <h4 :style="{color:'#e87461'}">Editar Atividade Personalizada</h4>
+          </div>
+
+          <!--Editar Atividade-->
+
+          <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='editactivity'">
+              <h4 :style="{color:'#e87461'}">Editar Atividade</h4>
 
               <b-form>
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
@@ -82,6 +91,10 @@
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Dificuldade:" label-for="input-sm" class="mt-4 mb-4">
+                    <b-form-select id="input-sm" required></b-form-select>
+                 </b-form-group>
+
+                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Categoria:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-select id="input-sm" required></b-form-select>
                  </b-form-group>
 
@@ -103,51 +116,55 @@
                  </b-form-group>
             
               </b-form>
-              <div class=" d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Editar</b-button></div>
-            </div>
+              <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Editar</b-button></div>
 
-            <!--Visibilidade da Atividade-->
-            <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalDo=='viewgame'">
-               <h4 :style="{color:'#e87461'}">Visibilidade</h4>
+          </div>
 
-               <b-form>
-                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required disabled></b-form-input>
-                 </b-form-group>
+          <!--Gerir Emoções-->
+              <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='manageremotion'">
+                  <h4 :style="{color:'#e87461'}">Emoções</h4>
 
-                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Atribuir a:" label-for="input-sm" class="mt-4 mb-4">
-                    <div class="row">
-                       <b-form-select id="input-sm" class="col-5 ml-3" required></b-form-select>
-                       <b-form-select id="input-sm" class="col-5 ml-2" placeholder="Emoção" required></b-form-select>
-                       <b-button class="col-1 ml-2"><b-icon icon="plus-circle-fill"></b-icon></b-button>
-                    </div>
-                 </b-form-group>
+                  <b-form>
+                    <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Nome:" label-for="input-sm" class="mt-4 mb-4">
+                        <b-form-input id="input-sm" required></b-form-input>
+                    </b-form-group>
 
-               </b-form>
+                      <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
+                  </b-form>
 
-               <div class=" d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Definir</b-button></div>
-            </div>
+                  <hr>
 
-          </b-modal>
+                  <table class="col-12 text-center">
+                    <tr :style="{'background-color':'#e87461',color:'#fbfbf3'}">
+                      <th class="p-1">Nome</th>
+                      <th>Ação</th>
+                    </tr>
+                    <tr :style="{'border-bottom':'2px solid #707070'}" >
+                      <td class="p-4">Qual é o meu nome?</td>
+                      <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                    </tr>
+                  </table>
 
 
-     </b-container>
+
+              </div>
+    </b-modal> 
   </div>
 </template>
 
 <script>
 
 export default {
-   data() {
-      return {
-         modalDo: ''
-      }
-   },
+  data() {
+    return {
+      modalActivityDo: ''
+    }
+  },
 };
 </script>
 
 <style>
-  #backgroundActivitiesP {
+  #backgroundManagerUser {
   width: 100%;
   min-height: 100vh;
   background: url("../assets/Grupo 6.svg");
