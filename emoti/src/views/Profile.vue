@@ -39,23 +39,22 @@
              <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="whatModalDo=='changekey'">
                <h4 :style="{color:'#e87461'}">Alterar Password</h4>
 
-               <b-form>
+               <b-form @submit.prevent="changePassword()">
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Password Atual:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="password" id="input-sm" required></b-form-input>
+                    <b-form-input type="password" id="input-sm" v-model="passForm.oldPass" required></b-form-input>
                  </b-form-group>
 
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Nova Password:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="password" id="input-sm" required></b-form-input>
+                    <b-form-input type="password" id="input-sm" v-model="passForm.newPass" required></b-form-input>
                  </b-form-group>
 
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Conf. Nova Password:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="password" id="input-sm" required></b-form-input>
+                    <b-form-input type="password" id="input-sm" v-model="passForm.confPass" required></b-form-input>
                  </b-form-group>
-               </b-form>
-
-               <div class="d-flex flex-row justify-content-end">
+                 <div class="d-flex flex-row justify-content-end">
                   <b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Alterar</b-button>
-               </div>
+                  </div>
+               </b-form>
              </div>
 
              <!--Associar Criança-->
@@ -170,6 +169,11 @@ export default {
   data() {
     return {
       whatModalDo:"",
+      passForm:{
+        oldPass:"",
+        newPass:"",
+        confPass:""
+      },
       /*
       getLoggedUser: {
         username:"",
@@ -188,7 +192,21 @@ export default {
   },
 
   methods: {
-    ...mapMutations([]),
+    ...mapMutations(["SET_NEW_PASSWORD"]),
+
+    changePassword(){
+      if (this.passForm.oldPass != this.getLoggedUser.password) {
+        alert("A password atual não correponde á inserida! Tente novamente.")
+      } else {
+        if (this.passForm.newPass != this.passForm.confPass) {
+          alert("A password que pretende colocar não corresponde a confirmação! Tente novamente.")
+        } else {
+          this.SET_NEW_PASSWORD(this.passForm.newPass);
+          alert("Password alterada com sucesso!")
+        }
+      }
+    }
+
   },
   
 }
