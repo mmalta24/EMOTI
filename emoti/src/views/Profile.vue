@@ -39,7 +39,7 @@
              <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="whatModalDo=='changekey'">
                <h4 :style="{color:'#e87461'}">Alterar Password</h4>
 
-               <b-form @submit.prevent="changePassword()">
+               <b-form @submit="changePassword()">
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Password Atual:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input type="password" id="input-sm" v-model="passForm.oldPass" required></b-form-input>
                  </b-form-group>
