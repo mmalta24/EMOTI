@@ -20,14 +20,7 @@ export default new Vuex.Store({
         ? JSON.parse(localStorage.activities)
         : [
             {
-              title: "Qual é o meu nome?",
-              level: "Fácil",
-              question: [],
-              caseIMG:'https://github.com/mmalta24/images/blob/main/Imagem%202.png?raw=true',
-              description:'',
-              category:'Quiz'
-            },
-            {
+              id:0,
               title: "Qual é o meu nome?",
               level: "Fácil",
               question: [],
@@ -52,7 +45,9 @@ export default new Vuex.Store({
 
     getLoggedUser: (state) => state.loggedUser,
 
-    getActivities: (state)=>state.activities
+    getActivities: (state)=>state.activities,
+
+    getActivity:(state)=>(id)=>state.activities.find((activitiy)=>activitiy.id==id)
 
   },
 

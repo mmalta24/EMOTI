@@ -40,7 +40,7 @@ const routes = [
     },
   },
   {
-    path:"/activities/:activityName",
+    path:"/activities/:id",
     name: "Activity",
     component: Activity,
     meta: {
