@@ -10,19 +10,19 @@
           <div class="col-5">
             <b-form>
               <b-form-group label="Nome:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled></b-form-input>
+                <b-form-input id="nested-street" v-model="getLoggedUser.name" disabled></b-form-input>
               </b-form-group>
               <b-form-group label="Username:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getLoggedUser.username"></b-form-input>
               </b-form-group>
               <b-form-group label="Password:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getLoggedUser.password"></b-form-input>
               </b-form-group>
                <b-form-group label="Email:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getLoggedUser.email"></b-form-input>
               </b-form-group>
               <b-form-group label="Tipo de Utilizador:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-select v-model="selected" disabled></b-form-select>
+                <b-form-input id="nested-street" disabled v-model="getLoggedUser.typeUser"></b-form-input>
               </b-form-group>
               
             </b-form>
@@ -105,7 +105,7 @@
            </b-modal>
 
            <!--Parte vivível para os pais-->
-          <div class="row col-12 mt-5">
+          <div class="row col-12 mt-5" v-if="getLoggedUser.typeUser == 'Tutor'">
              <div class="col-6"><h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Dados da Criança</h2></div>
              <div class="col-6 d-flex flex-row justify-content-end"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Associar criança</b-button></div>
 
@@ -115,26 +115,22 @@
              <div class="col-5 mt-5">
               <b-form>
               <b-form-group label="Nome:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled></b-form-input>
+                <b-form-input id="nested-street" v-model="getLoggedUser.name" disabled></b-form-input>
               </b-form-group>
-              
               <b-form-group label="Username:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getLoggedUser.username"></b-form-input>
               </b-form-group>
-              
               <b-form-group label="Password:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled></b-form-input>
-             
+                <b-form-input id="nested-street" disabled v-model="getLoggedUser.password"></b-form-input>
               </b-form-group>
                <b-form-group label="Email:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getLoggedUser.email"></b-form-input>
+              </b-form-group>
+              <b-form-group label="Tipo de Utilizador:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
+                <b-form-input id="nested-street" disabled v-model="getLoggedUser.typeUser"></b-form-input>
               </b-form-group>
               
-              <b-form-group label="Tipo de Utilizador:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-select v-model="selected" disabled></b-form-select>
-              </b-form-group>
-
-              </b-form>
+            </b-form>
             </div>
             <div class="col-5"></div>
 
@@ -169,12 +165,32 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      whatModalDo:""
+      whatModalDo:"",
+      /*
+      getLoggedUser: {
+        username:"",
+        password:"",
+        name:"",
+        email:"",
+        typeUser: ["Criança", "Tutor", "Professor","Admin"]
+      }
+      */
+      
     };
   },
+
+  computed: {
+    ...mapGetters(["getLoggedUser"]),
+  },
+
+  methods: {
+    ...mapMutations([]),
+  },
+  
 }
 </script>
 

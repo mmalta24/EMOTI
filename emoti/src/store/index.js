@@ -16,7 +16,7 @@ export default new Vuex.Store({
             typeUser: "Admin",
           },
         ],
-      loggedUser: sessionStorage.loggedUser ? JSON.parse(sessionStorage.loggedUser) : null
+    loggedUser: sessionStorage.loggedUser ? JSON.parse(sessionStorage.loggedUser) : null,
   },
   
   getters: {
@@ -48,6 +48,8 @@ export default new Vuex.Store({
       sessionStorage.removeItem("loggedUser");
       router.push({ name: 'LandingPage' });
     },
+
+    
 
 
   },
