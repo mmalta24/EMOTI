@@ -13,10 +13,32 @@ export default new Vuex.Store({
           {
             username: "admin",
             password: "admin",
-            typeUser: "Admin",
+            typeUser: "Administrador",
           },
         ],
+    activities: localStorage.activities
+        ? JSON.parse(localStorage.activities)
+        : [
+            {
+              title: "Qual é o meu nome?",
+              level: "Fácil",
+              question: [],
+              caseIMG:'https://github.com/mmalta24/images/blob/main/Imagem%202.png?raw=true',
+              description:'',
+              category:'Quiz'
+            },
+            {
+              title: "Qual é o meu nome?",
+              level: "Fácil",
+              question: [],
+              caseIMG:'https://github.com/mmalta24/images/blob/main/Imagem%202.png?raw=true',
+              description:'',
+              category:'Quiz'
+            },
+            
+          ],
       loggedUser: sessionStorage.loggedUser ? JSON.parse(sessionStorage.loggedUser) : null,
+      
   },
   
   getters: {
@@ -29,6 +51,8 @@ export default new Vuex.Store({
       state.users.every((user) => user.username !== username),
 
     getLoggedUser: (state) => state.loggedUser,
+
+    getActivities: (state)=>state.activities
 
   },
 
@@ -48,8 +72,6 @@ export default new Vuex.Store({
       sessionStorage.removeItem("loggedUser");
       router.push({ name: 'LandingPage' });
     },
-
-    
 
 
   },
