@@ -14,7 +14,7 @@ export default new Vuex.Store({
             typeUser: "Admin",
           },
         ],
-    loggedUser: null,
+      loggedUser: sessionStorage.loggedUser ? JSON.parse(sessionStorage.loggedUser) : null
   },
   
   getters: {
@@ -45,6 +45,12 @@ export default new Vuex.Store({
       state.loggedUser = null;
       sessionStorage.removeItem("loggedUser");
     },
+
+    SET_LOGGED_USER(state, variable) {
+      state.loggedUser = state.users.find((user) => user.username === variable);
+      sessionStorage.loggedUser = JSON.stringify(state.loggedUser);
+    },
+
 
   },
 
