@@ -1,22 +1,27 @@
 <template>
   <div id="app">
-    <!--<div id="nav" v-if="trueorfalse == false">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>-->
-    <div @mouseleave="listOne=false">
-     <b-navbar style="background-color:#FDFDED;box-shadow:0px 3px #00000003" class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between" fixed v-if="trueorfalse == true">
+   
+     <b-navbar style="background-color:#FDFDED;box-shadow:0px 3px #00000003" class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between" fixed v-if="$store.getters.getLoggedUser">
         <b-navbar-nav href="#"  class="d-flex align-items-center col-md-3 mb-2 mb-md-0" >
           <img src="./assets/Logo_Emoti.png" width="200" alt="">
         </b-navbar-nav>
 
         <b-navbar-nav class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0" :style="{fontFamily:'EAmbit SemiBold'}">
           <b-nav-item class="ml-3 mr-3" ><router-link to="/home" class="d-flex flex-column align-items-center"  :style="{color:'#bfbfbf','text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">home</span>Home</router-link></b-nav-item>
-          <b-nav-item class="ml-3 mr-3" @click="listOne=true"><div  class="d-flex flex-column align-items-center" :style="{color:'#bfbfbf','text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">videogame_asset</span>Atividades</div>
-          </b-nav-item>
-          <b-nav-item class="ml-3 mr-3" ><router-link to="/profile" class="d-flex flex-column align-items-center" :style="{color:'#bfbfbf','text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">person</span>Perfil</router-link></b-nav-item>
-          <b-nav-item class="ml-3 mr-3"><router-link to="/myactivities" class="d-flex flex-column align-items-center" :style="{color:'#bfbfbf','text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">palette</span>Atividades P.</router-link></b-nav-item>
-          <b-nav-item class="ml-3 mr-3"><router-link to="/class" class="d-flex flex-column align-items-center" :style="{color:'#bfbfbf','text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">assignment</span>Turmas</router-link></b-nav-item>
+          <b-dropdown class="ml-3 mr-3" variant="link" toggle-class="text-decoration-none"  no-caret>
+            <template #button-content style="outline:none">
+                <div class="d-flex flex-column" :style="{color:'#bfbfbf','text-decoration':'none',}">
+                <span class="material-icons-round" style="font-size:30px">videogame_asset</span>Atividades
+                </div>
+            </template>
+            <b-dropdown-item><router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Quizzes</router-link></b-dropdown-item>
+            <b-dropdown-item><router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Reconhecimento</router-link></b-dropdown-item>
+            <b-dropdown-item><router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Atividades Personalizadas (Tutor)</router-link></b-dropdown-item>
+            <b-dropdown-item><router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Atividades Personalizadas (Professor)</router-link></b-dropdown-item>
+          </b-dropdown>
+          <b-nav-item class="ml-3 mr-3" ><router-link to="/profile" class="d-flex flex-column align-items-center" :style="{color:'#bfbfbf','text-decoration':'none'}" id="changeColorNav"><span class="material-icons-round" style="font-size:30px">person</span>Perfil</router-link></b-nav-item>
+          <b-nav-item class="ml-3 mr-3"><router-link to="/myactivities" class="d-flex flex-column align-items-center" :style="{color:'#bfbfbf','text-decoration':'none'}" v-if="$store.getters.getLoggedUser.typeUser=='Professor' || $store.getters.getLoggedUser.typeUser=='Tutor'"><span class="material-icons-round" style="font-size:30px">palette</span>Atividades P.</router-link></b-nav-item>
+          <b-nav-item class="ml-3 mr-3"><router-link to="/class" class="d-flex flex-column align-items-center" :style="{color:'#bfbfbf','text-decoration':'none'}"  v-if="$store.getters.getLoggedUser.typeUser=='Professor'"><span class="material-icons-round" style="font-size:30px">assignment</span>Turmas</router-link></b-nav-item>
         </b-navbar-nav> 
 
         <!--Right aligned nav items-->
@@ -27,44 +32,35 @@
             <b-avatar style="background-color:#BFBFBF;color:#FDFDED"></b-avatar>
           </template>
           <b-dropdown-item-button variant="secondary">
-          <b-icon icon="tools" aria-hidden="true"></b-icon> Gerir Website
+          <router-link to="/manageruser" :style="{color:'#bfbfbf','text-decoration':'none'}"><b-icon icon="tools" aria-hidden="true"></b-icon> Gerir Website</router-link>
           </b-dropdown-item-button>
           <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item href="#" size="sm" class="mb-2" variant="danger" @click="logout()"><b-icon icon="door-closed-fill" aria-hidden="true"></b-icon> Terminar Sessão</b-dropdown-item>
+          <b-dropdown-item href="#" size="sm" class="mb-2" variant="danger" @click="$store.commit('SET_LOGOUT')"><b-icon icon="door-closed-fill" aria-hidden="true"></b-icon> Terminar Sessão</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
   </b-navbar>
-  <div style="z-index:2;position:absolute;background-color:white;width:100%;height:8%;" class="d-flex flex-row justify-content-center align-items-center"  v-if="listOne">
-        <div :style="{fontFamily:'EAmbit SemiBold'}">
-          <router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Quizzes</router-link>
-          <router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Reconhecimento</router-link>
-          <router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Atividades Personalizadas (Tutor)</router-link>
-          <router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Atividades Personalizadas (Professor)</router-link>
-        </div>
-      </div>
+  
+  <router-view />
+
+  <!--Footer-->
+  <div :style="{width:'100%','min-height':'35vh','background-color':'#FDFDED'}" class="d-flex flex-column align-items-center" v-if="$store.getters.getLoggedUser">
+    <img src="./assets/Logo_Emoti.png" width="200" alt="" class="mt-4 mb-3">
+    <p :style="{fontFamily:'EAmbit SemiBold',color:'#bfbfbf'}">Every day, a new adventure!</p>
+    <div class="d-flex flex-row justify-content-around col-2 mt-2">
+      <b-link href="#" :style="{fontSize:'30px',color:'#bfbfbf'}"><b-icon icon="twitter"></b-icon></b-link>
+      <b-link href="#" :style="{fontSize:'30px',color:'#bfbfbf'}"><b-icon icon="facebook"></b-icon></b-link>
+      <b-link href="#" :style="{fontSize:'30px',color:'#bfbfbf'}"><b-icon icon="instagram"></b-icon></b-link>
+      <b-link href="#" :style="{fontSize:'30px',color:'#bfbfbf'}"><b-icon icon="youtube"></b-icon></b-link>
+      <b-link href="#" :style="{fontSize:'30px',color:'#bfbfbf'}"><b-icon icon="linkedin"></b-icon></b-link>
+    </div>
+    <p class="mt-4" :style="{fontFamily:'EAmbit SemiBold',color:'#bfbfbf'}">&copy; Copyright EMOTI. All rights reserved</p>
   </div>
-    <router-view />
+
   </div>
 </template>
-<script>
-import { mapMutations } from "vuex";
-export default {
-  data() {
-    return {
-      trueorfalse: true,
-      isHovered:false,
-      listOne:false
-    };
-  },
 
-  methods: {
-    ...mapMutations(["SET_LOGOUT"]),
-    logout() {
-      this.SET_LOGOUT();
-      this.$router.push({ name: "LandingPage" });
-    }
-  },
-}
+<script>
+
 </script>
 
 <style>
@@ -88,6 +84,11 @@ export default {
   font-family: EAmbit Regular;
   user-select: none;
 }
+
+#changeColorNav :hove{
+  color:red
+}
+
 
 
 </style>
