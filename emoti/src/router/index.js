@@ -19,6 +19,9 @@ const routes = [
     path: "/",
     name: "LandingPage",
     component: LandingPage,
+    meta: {
+      notRequiresAuth:true,
+    }
   },
   {
     path: "/home",
@@ -74,6 +77,7 @@ const routes = [
     component:ManagerUser,
     meta: {
       requiresAuth: true,
+      requiresBeAdmin:true,
     },
   },
   {
@@ -82,6 +86,7 @@ const routes = [
     component:ManagerActivities,
     meta: {
       requiresAuth: true,
+      requiresBeAdmin:true,
     },
   }
 
@@ -100,4 +105,22 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.notRequiresAuth && store.getters.getLoggedUser) {
+    next({ name: "Home" });
+  } else {
+    next();
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresBeAdmin && store.getters.getLoggedUser.type!='Administrador') {
+    next({ name: "Home" });
+  } else {
+    next();
+  }
+});
+
+
 export default router;
