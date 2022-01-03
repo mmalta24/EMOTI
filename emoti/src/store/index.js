@@ -49,11 +49,6 @@ export default new Vuex.Store({
       router.push({ name: 'LandingPage' });
     },
 
-    SET_LOGGED_USER(state, variable) {
-      state.loggedUser = state.users.find((user) => user.username === variable);
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser);
-    },
-
 
   },
 
