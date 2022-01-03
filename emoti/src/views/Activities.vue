@@ -2,7 +2,7 @@
    <div id="backgroundActivities">
      <b-container class="col-11 pt-4">
      <div class="col-12 d-flex flex-row justify-content-between">
-       <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Quiz</h2>
+       <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Catálogo</h2>
        <b-button  :style="{height:'100%','background-color':'#e87461',border:'none',color:'#fbfbf3'}" v-b-toggle.sidebar-right><b-icon icon="filter"></b-icon> Filtrar</b-button>
      </div>
 
@@ -14,10 +14,10 @@
           <label for="text-password" class="mt-3">Dificuldade: </label>
           <b-form-select v-model="selected" :options="options" size="sm" class="mb-3"></b-form-select>
 
-          <label for="text-password" class="mt-3">Sugerido pelo tutor: </label>
+          <label for="text-password" class="mt-3">Categoria: </label>
           <b-form-select v-model="selected" :options="options" size="sm" class="mb-3"></b-form-select>
 
-          <label for="text-password" class="mt-3">Sugerido pelo pai: </label>
+          <label for="text-password" class="mt-3">Sugerido por: </label>
           <b-form-select v-model="selected" :options="options" size="sm" class="mb-3"></b-form-select>
 
           <label for="text-password" class="mt-3">Número de perguntas: </label>
@@ -32,94 +32,16 @@
     </b-sidebar>
 
       <b-card-group style="border: 2px solid red" class="d-flex flex-row flex-wrap justify-content-between col-12" columns>
-        <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column" class="mb-2 mr-2">
-        <img src="../assets/Imagem 2.png" alt="" style="width:17rem">
+        <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column" class="mb-2 mr-2"  v-for="(activity, index) in getActivities" :key="index">
+        <img v-bind:src="activity.caseIMG" alt="" style="width:17rem">
         <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
-          <b-card-sub-title class="mb-2"><span style="color:#e87461">Quiz</span></b-card-sub-title>
+          <b-card-sub-title class="mb-2"><span style="color:#e87461">{{activity.category}}</span></b-card-sub-title>
           <div>
             <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
           </div>
         </div>
-           <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">Qual é o meu nome?</b-card-title>
+           <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">{{activity.title}}</b-card-title>
         </b-card>
-
-        <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column " class="mb-2 mr-2">
-        <img src="../assets/Imagem 2.png" alt="" style="width:17rem">
-        <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
-          <b-card-sub-title class="mb-2"><span style="color:#e87461">Quiz</span></b-card-sub-title>
-          <div>
-            <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
-          </div>
-        </div>
-           <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">Qual é o meu nome?</b-card-title>
-        </b-card>
-
-        <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column " class="mb-2 mr-2">
-        <img src="../assets/Imagem 2.png" alt="" style="width:17rem">
-        <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
-          <b-card-sub-title class="mb-2"><span style="color:#e87461">Quiz</span></b-card-sub-title>
-          <div>
-            <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
-          </div>
-        </div>
-           <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">Qual é o meu nome?</b-card-title>
-        </b-card>
-
-        <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column " class="mb-2 mr-2">
-        <img src="../assets/Imagem 2.png" alt="" style="width:17rem">
-        <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
-          <b-card-sub-title class="mb-2"><span style="color:#e87461">Quiz</span></b-card-sub-title>
-          <div>
-            <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
-          </div>
-        </div>
-           <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">Qual é o meu nome?</b-card-title>
-        </b-card>
-
-        <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column " class="mb-2 mr-2">
-        <img src="../assets/Imagem 2.png" alt="" style="width:17rem">
-        <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
-          <b-card-sub-title class="mb-2"><span style="color:#e87461">Quiz</span></b-card-sub-title>
-          <div>
-            <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
-          </div>
-        </div>
-           <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">Qual é o meu nome?</b-card-title>
-        </b-card>
-
-        <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column " class="mb-2 mr-2">
-        <img src="../assets/Imagem 2.png" alt="" style="width:17rem">
-        <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
-          <b-card-sub-title class="mb-2"><span style="color:#e87461">Quiz</span></b-card-sub-title>
-          <div>
-            <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
-          </div>
-        </div>
-           <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">Qual é o meu nome?</b-card-title>
-        </b-card>
-          <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column " class="mb-2 mr-2">
-        <img src="../assets/Imagem 2.png" alt="" style="width:17rem">
-        <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
-          <b-card-sub-title class="mb-2"><span style="color:#e87461">Quiz</span></b-card-sub-title>
-          <div>
-            <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
-          </div>
-        </div>
-           <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">Qual é o meu nome?</b-card-title>
-        </b-card>
-          <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column " class="mb-2 mr-2">
-        <img src="../assets/Imagem 2.png" alt="" style="width:17rem">
-        <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
-          <b-card-sub-title class="mb-2"><span style="color:#e87461">Quiz</span></b-card-sub-title>
-          <div>
-            <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
-          </div>
-        </div>
-           <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">Qual é o meu nome?</b-card-title>
-        </b-card>
-
-
-
         
         </b-card-group>
 
@@ -132,7 +54,15 @@
 </template>
 
 <script>
+import { mapGetters} from "vuex";
 
+export default {
+
+computed: {
+    ...mapGetters(["getActivities"]),
+  },
+  
+};
 </script>
 
 <style>

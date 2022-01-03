@@ -8,17 +8,7 @@
 
         <b-navbar-nav class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0" :style="{fontFamily:'EAmbit SemiBold'}">
           <b-nav-item class="ml-3 mr-3" ><router-link to="/home" class="d-flex flex-column align-items-center"  :style="{color:'#bfbfbf','text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">home</span>Home</router-link></b-nav-item>
-          <b-dropdown class="ml-3 mr-3" variant="link" toggle-class="text-decoration-none"  no-caret>
-            <template #button-content style="outline:none">
-                <div class="d-flex flex-column" :style="{color:'#bfbfbf','text-decoration':'none',}">
-                <span class="material-icons-round" style="font-size:30px">videogame_asset</span>Atividades
-                </div>
-            </template>
-            <b-dropdown-item><router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Quizzes</router-link></b-dropdown-item>
-            <b-dropdown-item><router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Reconhecimento</router-link></b-dropdown-item>
-            <b-dropdown-item><router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Atividades Personalizadas (Tutor)</router-link></b-dropdown-item>
-            <b-dropdown-item><router-link to="/activities" class="ml-4 mr-4" :style="{color:'#bfbfbf','text-decoration':'none'}" >Atividades Personalizadas (Professor)</router-link></b-dropdown-item>
-          </b-dropdown>
+          <b-nav-item class="ml-3 mr-3" ><router-link to="/activities" class="d-flex flex-column align-items-center"  :style="{color:'#bfbfbf','text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">videogame_asset</span>Atividades</router-link></b-nav-item>
           <b-nav-item class="ml-3 mr-3" ><router-link to="/profile" class="d-flex flex-column align-items-center" :style="{color:'#bfbfbf','text-decoration':'none'}" id="changeColorNav"><span class="material-icons-round" style="font-size:30px">person</span>Perfil</router-link></b-nav-item>
           <b-nav-item class="ml-3 mr-3"><router-link to="/myactivities" class="d-flex flex-column align-items-center" :style="{color:'#bfbfbf','text-decoration':'none'}" v-if="$store.getters.getLoggedUser.typeUser=='Professor' || $store.getters.getLoggedUser.typeUser=='Tutor'"><span class="material-icons-round" style="font-size:30px">palette</span>Atividades P.</router-link></b-nav-item>
           <b-nav-item class="ml-3 mr-3"><router-link to="/class" class="d-flex flex-column align-items-center" :style="{color:'#bfbfbf','text-decoration':'none'}"  v-if="$store.getters.getLoggedUser.typeUser=='Professor'"><span class="material-icons-round" style="font-size:30px">assignment</span>Turmas</router-link></b-nav-item>
@@ -32,9 +22,9 @@
             <b-avatar style="background-color:#BFBFBF;color:#FDFDED"></b-avatar>
           </template>
           <b-dropdown-item-button variant="secondary">
-          <router-link to="/manageruser" :style="{color:'#bfbfbf','text-decoration':'none'}"><b-icon icon="tools" aria-hidden="true"></b-icon> Gerir Website</router-link>
-          </b-dropdown-item-button>
-          <b-dropdown-divider></b-dropdown-divider>
+          <router-link to="/manageruser" :style="{color:'#bfbfbf','text-decoration':'none'}" v-if="$store.getters.getLoggedUser.typeUser=='Administrador'"><b-icon icon="tools" aria-hidden="true" ></b-icon> Gerir Website</router-link>
+          </b-dropdown-item-button >
+          <b-dropdown-divider v-if="$store.getters.getLoggedUser.typeUser=='Administrador'"></b-dropdown-divider>
           <b-dropdown-item href="#" size="sm" class="mb-2" variant="danger" @click="$store.commit('SET_LOGOUT')"><b-icon icon="door-closed-fill" aria-hidden="true"></b-icon> Terminar Sessão</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
