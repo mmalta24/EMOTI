@@ -68,7 +68,13 @@ export default new Vuex.Store({
       router.push({ name: 'LandingPage' });
     },
 
-
+    SET_NEW_PASSWORD(state, variable){
+      state.loggedUser.password = variable
+      sessionStorage.loggedUser = JSON.stringify(state.loggedUser);
+      state.users.find((user) => user.username === state.loggedUser.username).password = variable;
+      localStorage.users = JSON.stringify(state.users)
+    },
+    
   },
 
   modules: {},
