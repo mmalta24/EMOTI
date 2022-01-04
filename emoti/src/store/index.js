@@ -9,12 +9,39 @@ export default new Vuex.Store({
   state: {
     users: localStorage.users
       ? JSON.parse(localStorage.users)
-      : [
+      : [ //Admin
           {
             username: "admin",
             password: "admin",
+            email:'',
             typeUser: "Administrador",
+            name:''
           },
+          /* All propreties 
+          {
+            username: "user123",
+            password: "user123",
+            email:'',
+            typeUser: "Criança",
+            name:'',
+            tutor:null,
+            child:null,
+            activitiesSugest:[{
+              sugestFor:'Tutor',
+              activities:[]
+            },
+            {
+              sugestFor:'Professor',
+              activities:[]
+            }],
+            badgesId:[],
+            history:[],
+            points:null,
+            block:false,
+            imageProfile:''
+          },
+          */
+
         ],
     activities: localStorage.activities
         ? JSON.parse(localStorage.activities)
@@ -30,6 +57,18 @@ export default new Vuex.Store({
             },
             
           ],
+      class: localStorage.class
+        ? JSON.parse(localStorage.class)
+        : [
+            {
+              id:0,
+              name: "",
+              teacher: "",
+              students: [{nameStudent:'',aproved:false}],
+            },
+              
+          ],
+     
       loggedUser: sessionStorage.loggedUser ? JSON.parse(sessionStorage.loggedUser) : null,
       
   },
