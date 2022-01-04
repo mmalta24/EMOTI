@@ -31,7 +31,8 @@
                       <td>João Soares Pereira de Amorim</td>
                       <td>123456</td>
                       <td>Criança</td>
-                      <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerUser @click="modalUserDo='edituser'"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                      <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerUser @click="modalUserDo='edituser'"><b-icon icon="pencil-fill"></b-icon></b-button>
+                      <b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeUser(getLoggedUser.username)"><b-icon icon="trash-fill"></b-icon></b-button></td>
                   </tr>
              </table>
          </div>
@@ -149,14 +150,45 @@
 
 <script>
 
+import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      modalUserDo: ''
+      modalUserDo: '',
+      userAction: '',
+      /*
+      getLoggedUser: {
+        username:"",
+        password:"",
+        name:"",
+        email:"",
+        typeUser: ["Criança", "Tutor", "Professor","Admin"]
+      }
+      */
+      
+    };
+  },
+
+  computed: {
+    ...mapGetters(["getLoggedUser"]),
+  },
+
+  methods: {
+    ...mapMutations(["SET_REMOVE_USER"]),
+
+    removeUser(){
+      if (confirm("Pretende mesmo remover este utilizador do sistema?")) {
+        this.SET_REMOVE_USER(this.userAction);
+        alert("Utilizador removido!")
+      }
     }
   },
-};
+  
+}
+
 </script>
+
+
 
 <style>
   #backgroundManagerUser {

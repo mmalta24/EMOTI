@@ -74,6 +74,11 @@ export default new Vuex.Store({
       state.users.find((user) => user.username === state.loggedUser.username).password = variable;
       localStorage.users = JSON.stringify(state.users)
     },
+
+    SET_REMOVE_USER(state, variable){
+      localStorage.removeItem(state.users.find((user) => user.username === variable));
+      localStorage.users = JSON.stringify(state.users)
+    }
     
   },
 
