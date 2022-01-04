@@ -115,7 +115,7 @@ router.beforeEach((to, from, next) => {
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresBeAdmin && store.getters.getLoggedUser.type!='Administrador') {
+  if (to.meta.requiresBeAdmin && store.getters.getLoggedUser.typeUser!='Administrador') {
     next({ name: "Home" });
   } else {
     next();

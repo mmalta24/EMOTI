@@ -45,7 +45,8 @@ export default new Vuex.Store({
 
     getLoggedUser: (state) => state.loggedUser,
 
-    getActivities: (state)=>state.activities,
+    getFilteredActivities: (state)=>(formFilter)=> state.activities.filter(activity=>(activity.level==formFilter.level || formFilter.level=='') &&
+    (activity.category==formFilter.category || formFilter.category=='')),
 
     getActivity:(state)=>(id)=>state.activities.find((activitiy)=>activitiy.id==id)
 

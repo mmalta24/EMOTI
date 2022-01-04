@@ -11,28 +11,36 @@
         <h4 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}" class="mt-3 mb-3 text-center">Filtrar</h4>
 
         <b-form>
-          <label for="text-password" class="mt-3">Dificuldade: </label>
-          <b-form-select v-model="selected" :options="options" size="sm" class="mb-3"></b-form-select>
+          <label for="" class="mt-3">Dificuldade: </label>
+          <b-form-select v-model="formFilter.level"  size="sm" class="mb-3">
+              <b-form-select-option :value="null" disabled>Selecione uma opção</b-form-select-option>
+              <b-form-select-option :value="level"  v-for="(level, index) in levels" :key="index">{{level}}</b-form-select-option>
+          </b-form-select>
 
-          <label for="text-password" class="mt-3">Categoria: </label>
-          <b-form-select v-model="selected" :options="options" size="sm" class="mb-3"></b-form-select>
+          <label for="" class="mt-3">Categoria: </label>
+          <b-form-select v-model="formFilter.category"  size="sm" class="mb-3">
+             <b-form-select-option :value="null" disabled>Selecione uma opção</b-form-select-option>
+             <b-form-select-option :value="category"  v-for="(category, index) in categories" :key="index">{{category}}</b-form-select-option>
+          </b-form-select>
 
-          <label for="text-password" class="mt-3">Sugerido por: </label>
-          <b-form-select v-model="selected" :options="options" size="sm" class="mb-3"></b-form-select>
+          <label for="" class="mt-3">Sugerido por: </label>
+          <b-form-select v-model="formFilter.sugestFrom" size="sm" class="mb-3" disabled>
+             <b-form-select-option :value="null" disabled>Selecione uma opção</b-form-select-option>
+              <b-form-select-option :value="sugest"  v-for="(sugest, index) in sugestions" :key="index">{{sugest}}</b-form-select-option>
+          </b-form-select>
 
-          <label for="text-password" class="mt-3">Número de perguntas: </label>
-          <b-form-select v-model="selected" :options="options" size="sm" class="mb-3"></b-form-select>
+          <label for="" class="mt-3">Número de perguntas: </label>
+          <b-form-select v-model="formFilter.nQuestions"  size="sm" class="mb-3" disabled></b-form-select>
 
-          <div class="mt-4 d-flex flex-row justify-content-around">
-            <b-button :style="{'background-color':'#fbfbf3',color:'#e87461',border:'1px solid #e87461',width:'40%'}" >Repor</b-button>
-            <b-button :style="{'background-color':'#e87461',color:'#fbfbf3',border:'1px solid #e87461', width:'40%'}" >Aplicar</b-button>
+          <div class="mt-4 d-flex flex-row justify-content-center">
+            <b-button :style="{'background-color':'#fbfbf3',color:'#e87461',border:'1px solid #e87461',width:'40%'}" class="col-12" @click="resetForm()" >Repor</b-button>
           </div>
         </b-form>
       </div>
     </b-sidebar>
 
       <b-card-group style="border: 2px solid red" class="row col-12" columns>
-        <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column" class="mb-2 mr-2"  v-for="(activity, index) in getActivities" :key="index">
+        <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column" class="mb-2 mr-2"  v-for="(activity, index) in getFilteredActivities(this.formFilter)" :key="index">
         <img v-bind:src="activity.caseIMG" alt="" style="width:17rem">
         <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
           <b-card-sub-title class="mb-2"><span style="color:#e87461">{{activity.category}}</span></b-card-sub-title>
@@ -58,11 +66,35 @@
 import { mapGetters} from "vuex";
 
 export default {
+  data() {
+    return {
+      formFilter: {
+        level:'',
+        category:'',
+        sugestFrom:'',
+        nQuestions:'',
+      },
+      levels:['Fácil','Médio','Díficil'],
+      categories:['Quiz','Reconhecimento','Atividades Personalizadas (Tutor)','Atividades Personalizadas (Professor)'],
+      sugestions:['Tutor','Professor','Ambos'],
+    }
+  },
+methods: {
+  resetForm() {
+    this.formFilter.level=this.formFilter.category=this.formFilter.sugestFrom=this.formFilter.nQuestions=''
+  }
+},
 
 computed: {
-    ...mapGetters(["getActivities"]),
+    ...mapGetters(["getFilteredActivities"]),
+
+
   },
-  
+watch: {
+  formFilter() {
+  }
+},
+
 };
 </script>
 
