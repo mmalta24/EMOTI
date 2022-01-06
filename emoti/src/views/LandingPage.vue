@@ -119,6 +119,7 @@ export default {
       whatDo: "",
       options: ["Criança", "Tutor", "Professor"],
       c_password:"",
+      form:{},
       formRegister:{
         username:"",
         password:"",
@@ -150,9 +151,54 @@ export default {
     register() {
       if (this.isUsernameAvailable(this.formRegister.username)) {
         if (this.formRegister.password === this.c_password) {
-          this.SET_NEW_USER(this.formRegister);
-          this.SET_LOGGED_USER(this.formRegister.username);
-          this.$router.push({ name: "Home" });
+          if (this.formRegister.typeUser == "Tutor") {
+            this.form = {
+              username: this.formRegister.username,
+              password: this.formRegister.password,
+              name: this.formRegister.name,
+              email: this.formRegister.email,
+              typeUser: this.formRegister.typeUser
+            }
+            this.SET_NEW_USER(this.form);
+            this.SET_LOGGED_USER(this.formRegister.username);
+            this.$router.push({ name: "Home" });
+          } else if(this.formRegister.typeUser == "Professor"){
+            this.form = {
+              username: this.formRegister.username,
+              password: this.formRegister.password,
+              name: this.formRegister.name,
+              email: this.formRegister.email,
+              typeUser: this.formRegister.typeUser
+            }
+            this.SET_NEW_USER(this.form);
+            this.SET_LOGGED_USER(this.formRegister.username);
+            this.$router.push({ name: "Home" });
+          }else{   //Criança
+            this.form = {
+              username: this.formRegister.username,
+              password: this.formRegister.password,
+              name: this.formRegister.name,
+              email: this.formRegister.email,
+              imageProfile:'',
+              typeUser: this.formRegister.typeUser,
+              tutor:null,
+              activitiesSugest:[{
+                sugestFor:'Tutor',
+                activities:[]
+              },
+              {
+                sugestFor:'Professor',
+                activities:[]
+              }],
+              badgesId:[],
+              history:[],
+              points:0,
+              blocked:false,
+            }
+            this.SET_NEW_USER(this.form);
+            this.SET_LOGGED_USER(this.formRegister.username);
+            this.$router.push({ name: "Home" });
+          }
         } else {
           alert("A palavra-passe é diferente da confirmação! Por favor tenta outra vez.");
         }  
@@ -166,8 +212,9 @@ export default {
 
 };
 
+/*
 
-
+*/
 
 </script>
 
