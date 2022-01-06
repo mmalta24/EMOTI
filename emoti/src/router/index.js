@@ -100,27 +100,20 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !store.getters.getLoggedUser) {
-    next({ name: "LandingPage" });
-  } else {
+    next({ name: "LandingPage" });}
+  else if (to.meta.notRequiresAuth && store.getters.getLoggedUser) {
+      next({ name: "Home" });
+    }
+  else if (to.meta.requiresBeAdmin && store.getters.getLoggedUser.typeUser!='Administrador') {
+      next({ name: "Home" });
+    } 
+  else {
     next();
   }
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.notRequiresAuth && store.getters.getLoggedUser) {
-    next({ name: "Home" });
-  } else {
-    next();
-  }
-});
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresBeAdmin && store.getters.getLoggedUser.typeUser!='Administrador') {
-    next({ name: "Home" });
-  } else {
-    next();
-  }
-});
+
 
 
 export default router;
