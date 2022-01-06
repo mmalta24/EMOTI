@@ -157,7 +157,11 @@ export default {
               password: this.formRegister.password,
               name: this.formRegister.name,
               email: this.formRegister.email,
-              typeUser: this.formRegister.typeUser
+              typeUser: this.formRegister.typeUser,
+              imageProfile:'',
+              child: '',
+              blocked: false,
+
             }
             this.SET_NEW_USER(this.form);
             this.SET_LOGGED_USER(this.formRegister.username);
@@ -168,7 +172,8 @@ export default {
               password: this.formRegister.password,
               name: this.formRegister.name,
               email: this.formRegister.email,
-              typeUser: this.formRegister.typeUser
+              typeUser: this.formRegister.typeUser,
+              blocked: false,
             }
             this.SET_NEW_USER(this.form);
             this.SET_LOGGED_USER(this.formRegister.username);
@@ -189,7 +194,7 @@ export default {
               {
                 sugestFor:'Professor',
                 activities:[]
-              }],
+              }], 
               badgesId:[],
               history:[],
               points:0,
