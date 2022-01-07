@@ -115,17 +115,18 @@
      
         </div>
 
-        <!--Adicionar estudante-->
+        <!--Adicionar turma-->
         <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalClassDo=='addclass'">
            <h4 :style="{color:'#e87461'}">Adicionar Turma</h4>
 
-           <b-form>
+           <b-form @submit="addClass()">
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Nome:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required ></b-form-input>
+                    <b-form-input id="input-sm" v-model="className" required ></b-form-input>
              </b-form-group>
-           </b-form>
 
-           <div class="d-flex flex-row justify-content-end"><b-button type="submit" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
+             <div class="d-flex flex-row justify-content-end"><b-button type="submit" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
+          
+           </b-form>
         </div>
       </b-modal>
   </div>
@@ -133,13 +134,47 @@
 
 <script>
 
+
+
+import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      modalClassDo: ''
-    }
+      modalClassDo: '',
+      classForm:{},
+      className: '',
+      
+    };
   },
-};
+
+  computed: {
+    ...mapGetters(["getLoggedUser","getClassInfo","isClassFree"]),
+  },
+
+  methods: {
+    ...mapMutations(["SET_NEW_CLASS"]),
+
+    addClass(){
+      if (!this.isClassFree(this.className)) {
+        this.classForm={
+          className: this.className,
+          teacher: this.getLoggedUser.username,
+          students: []
+        }
+        this.SET_NEW_CLASS(this.classForm)
+      } else {
+        alert("Este nome já pertence a uma das suas turmas!")
+      }
+      
+    }
+
+
+
+
+
+  }
+  
+}
 </script>
 
 <style>

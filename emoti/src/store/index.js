@@ -32,13 +32,12 @@ export default new Vuex.Store({
             },
             
           ],
-      class: localStorage.class
-        ? JSON.parse(localStorage.class)
+      classes: localStorage.classes
+        ? JSON.parse(localStorage.classes)
         : [
             {
-              id:0,
-              name: "",
-              teacher: "",
+              name: "teste",
+              teacher: "teste",
               students: [{nameStudent:'',aproved:false}],
             },
               
@@ -75,6 +74,10 @@ export default new Vuex.Store({
       state.users.some(
         (user) => user.username === username && user.tutor === null
       ),
+
+    isClassFree:(state) => (className) => state.classes.some(
+      (team) => team.teacher === state.loggedUser.username && team.name === className
+    ),
 
   },
 
@@ -129,6 +132,11 @@ export default new Vuex.Store({
     SET_REMOVE_RELATION_CHILD(state){
       state.users.find((user) => user.username === state.loggedUser.child).tutor = null;
       localStorage.users = JSON.stringify(state.users)
+    },
+
+    SET_NEW_CLASS(state,variable){
+      state.classes.push(variable);
+      localStorage.classes = JSON.stringify(state.classes);
     },
     
   },
