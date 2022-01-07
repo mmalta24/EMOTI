@@ -111,7 +111,7 @@
              <div class="col-6 d-flex flex-row justify-content-end" v-if="getLoggedUser.child == null"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Associar criança</b-button></div>
              <div class="col-6 d-flex flex-row justify-content-end" v-if="getLoggedUser.child != null"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="removeRelation()">Desassociar criança</b-button></div>
 
-             <div v-if="getLoggedUser.child != null"> <!-- Div if-->
+             <div v-if="getLoggedUser.child != null" class="col-12 row"> <!-- Div if-->
              <div class="col-2 d-flex flex-row justify-content-center align-items-start mt-5">
                 <img src="../assets/Imagem 1.png" :style="{width:'220px'}" alt="">
              </div>
