@@ -61,20 +61,22 @@
               <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="whatModalDo=='addkid'">
                 <h4 :style="{color:'#e87461'}">Associar Criança</h4>
 
-                <b-form>
+                <b-form @submit="addChild()">
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Username (Criança):" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input  id="input-sm" required></b-form-input>
+                    <b-form-input  id="input-sm" v-model="formAdd.childName" required></b-form-input>
                  </b-form-group>
 
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Password (Criança):" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="password" id="input-sm" required></b-form-input>
+                    <b-form-input type="password" id="input-sm" v-model="formAdd.childPass" required></b-form-input>
                  </b-form-group>
+
+                 <div class="d-flex flex-row justify-content-end">
+                   <b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Associar</b-button>
+                 </div>
 
                 </b-form>
 
-                <div class="d-flex flex-row justify-content-end">
-                  <b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Associar</b-button>
-                </div>
+                
 
               </div>
 
@@ -106,29 +108,29 @@
            <!--Parte vivível para os pais-->
           <div class="row col-12 mt-5" v-if="getLoggedUser.typeUser == 'Tutor'">
              <div class="col-6"><h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Dados da Criança</h2></div>
-             <div class="col-6 d-flex flex-row justify-content-end"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Associar criança</b-button></div>
-             <div class="col-6 d-flex flex-row justify-content-end"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Desassociar criança</b-button></div>
+             <div class="col-6 d-flex flex-row justify-content-end" v-if="getLoggedUser.child == null"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Associar criança</b-button></div>
+             <div class="col-6 d-flex flex-row justify-content-end" v-if="getLoggedUser.child != null"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="removeRelation()">Desassociar criança</b-button></div>
 
-             <div> <!-- Div if-->
+             <div v-if="getLoggedUser.child != null"> <!-- Div if-->
              <div class="col-2 d-flex flex-row justify-content-center align-items-start mt-5">
                 <img src="../assets/Imagem 1.png" :style="{width:'220px'}" alt="">
              </div>
              <div class="col-5 mt-5">
               <b-form>
               <b-form-group label="Nome:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" v-model="getLoggedUser.name" disabled></b-form-input>
+                <b-form-input id="nested-street" v-model="getAssociatedChild.name" disabled></b-form-input>
               </b-form-group>
               <b-form-group label="Username:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getLoggedUser.username"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getAssociatedChild.username"></b-form-input>
               </b-form-group>
               <b-form-group label="Password:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getLoggedUser.password"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getAssociatedChild.password"></b-form-input>
               </b-form-group>
                <b-form-group label="Email:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getLoggedUser.email"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getAssociatedChild.email"></b-form-input>
               </b-form-group>
               <b-form-group label="Tipo de Utilizador:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getLoggedUser.typeUser"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getAssociatedChild.typeUser"></b-form-input>
               </b-form-group>        
               </b-form>
             </div>
@@ -160,8 +162,8 @@
             </div>
             </div>
 
-            <div class="mt-5 text-center"> <!--Não associou a criança-->
-            <p>Não existe criança associada, a este perfil</p>
+            <div class="mt-5 col-12 d-flex flex-row justify-content-center" v-if="getLoggedUser.child == null"> <!--Não associou a criança-->
+              <p>Não existe criança associada, a este perfil</p>
             </div>
 
           </div>
@@ -180,6 +182,10 @@ export default {
         newPass:"",
         confPass:""
       },
+      formAdd:{
+        childName:"",
+        childPass:""
+      },
       /*
       getLoggedUser: {
         username:"",
@@ -194,11 +200,11 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser"]),
+    ...mapGetters(["getLoggedUser","getAssociatedChild","isUserChild","isChildFree"]),
   },
 
   methods: {
-    ...mapMutations(["SET_NEW_PASSWORD"]),
+    ...mapMutations(["SET_NEW_PASSWORD","SET_RELATION_TUTOR","SET_RELATION_CHILD","SET_REMOVE_RELATION_TUTOR","SET_REMOVE_RELATION_CHILD"]),
 
     changePassword(){
       if (this.passForm.oldPass != this.getLoggedUser.password) {
@@ -211,7 +217,27 @@ export default {
           alert("Password alterada com sucesso!")
         }
       }
-    }
+    },
+
+    addChild() {
+      if (this.isUserChild(this.formAdd.childName, this.formAdd.childPass)) {
+        if (this.isChildFree(this.formAdd.childName)) {
+          this.SET_RELATION_TUTOR(this.formAdd.childName);
+          this.SET_RELATION_CHILD(this.formAdd.childName);
+        } else {
+          alert("A criança já tem um tutor associado!") 
+        }  
+      } else {
+        alert("Os dados inseridos estão incorretos ou a criança não está registada!");
+      }
+    },
+
+    removeRelation(){
+      if (confirm("Deseja mesmo desassociar esta criança?")) {
+        this.SET_REMOVE_RELATION_CHILD()
+        this.SET_REMOVE_RELATION_TUTOR()
+      }
+    },
 
   },
   

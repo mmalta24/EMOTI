@@ -17,31 +17,6 @@ export default new Vuex.Store({
             typeUser: "Administrador",
             name:'Administrador'
           },
-          /* All propreties 
-          {
-            username: "user123",
-            password: "user123",
-            email:'',
-            typeUser: "Criança",
-            name:'',
-            tutor:null,
-            child:null,
-            activitiesSugest:[{
-              sugestFor:'Tutor',
-              activities:[]
-            },
-            {
-              sugestFor:'Professor',
-              activities:[]
-            }],
-            badgesId:[],
-            history:[],
-            points:null,
-            block:false,
-            imageProfile:''
-          },
-          */
-
         ],
     activities: localStorage.activities
         ? JSON.parse(localStorage.activities)
@@ -84,10 +59,22 @@ export default new Vuex.Store({
 
     getLoggedUser: (state) => state.loggedUser,
 
+    getAssociatedChild:(state) => state.users.find((user) => user.username === state.loggedUser.child),
+
     getFilteredActivities: (state)=>(formFilter)=> state.activities.filter(activity=>(activity.level==formFilter.level || formFilter.level=='') &&
     (activity.category==formFilter.category || formFilter.category=='')),
 
-    getActivity:(state)=>(id)=>state.activities.find((activitiy)=>activitiy.id==id)
+    getActivity:(state)=>(id)=>state.activities.find((activitiy)=>activitiy.id==id),
+
+    isUserChild:(state) => (username, password) =>
+      state.users.some(
+        (user) => user.username === username && user.password === password && user.typeUser === "Criança"
+      ),
+    
+    isChildFree:(state) => (username) =>
+      state.users.some(
+        (user) => user.username === username && user.tutor === null
+      ),
 
   },
 
@@ -118,7 +105,31 @@ export default new Vuex.Store({
     SET_REMOVE_USER(state, variable){
       localStorage.removeItem(state.users.find((user) => user.username === variable));
       localStorage.users = JSON.stringify(state.users)
-    }
+    },
+
+    SET_RELATION_TUTOR(state,variable){
+      state.loggedUser.child = variable
+      sessionStorage.loggedUser = JSON.stringify(state.loggedUser);
+      state.users.find((user) => user.username === state.loggedUser.username).child = variable;
+      localStorage.users = JSON.stringify(state.users)
+    },
+
+    SET_RELATION_CHILD(state,variable){
+      state.users.find((user) => user.username === variable).tutor = state.loggedUser.username;
+      localStorage.users = JSON.stringify(state.users)
+    },
+
+    SET_REMOVE_RELATION_TUTOR(state){
+      state.loggedUser.child = null
+      sessionStorage.loggedUser = JSON.stringify(state.loggedUser);
+      state.users.find((user) => user.username === state.loggedUser.username).child = null;
+      localStorage.users = JSON.stringify(state.users)
+    },
+
+    SET_REMOVE_RELATION_CHILD(state){
+      state.users.find((user) => user.username === state.loggedUser.child).tutor = null;
+      localStorage.users = JSON.stringify(state.users)
+    },
     
   },
 
