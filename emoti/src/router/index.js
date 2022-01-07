@@ -61,6 +61,7 @@ const routes = [
     component: ActivitiesP,
     meta: {
       requiresAuth: true,
+      requiresBeTutorOrTeacher:true
     },
   },
   {
@@ -69,6 +70,7 @@ const routes = [
     component: Class,
     meta: {
       requiresAuth: true,
+      requiresBeTeacher:true
     },
   },
   {
@@ -106,7 +108,13 @@ router.beforeEach((to, from, next) => {
     }
   else if (to.meta.requiresBeAdmin && store.getters.getLoggedUser.typeUser!='Administrador') {
       next({ name: "Home" });
-    } 
+    }
+  else if(to.meta.requiresBeTeacher && store.getters.getLoggedUser.typeUser!='Professor'){
+    next({name :"Home"})
+  }
+  else if(to.meta.requiresBeTutorOrTeacher && store.getters.getLoggedUser.typeUser!='Professor' && store.getters.getLoggedUser.typeUser!='Tutor'){
+    next({name :"Home"})
+  }
   else {
     next();
   }
