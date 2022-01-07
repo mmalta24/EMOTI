@@ -127,9 +127,8 @@
               </b-form-group>
               <b-form-group label="Tipo de Utilizador:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
                 <b-form-input id="nested-street" disabled v-model="getLoggedUser.typeUser"></b-form-input>
-              </b-form-group>
-              
-            </b-form>
+              </b-form-group>        
+              </b-form>
             </div>
             <div class="col-5"></div>
 
