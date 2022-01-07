@@ -107,7 +107,9 @@
           <div class="row col-12 mt-5" v-if="getLoggedUser.typeUser == 'Tutor'">
              <div class="col-6"><h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Dados da Criança</h2></div>
              <div class="col-6 d-flex flex-row justify-content-end"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Associar criança</b-button></div>
+             <div class="col-6 d-flex flex-row justify-content-end"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Desassociar criança</b-button></div>
 
+             <div> <!-- Div if-->
              <div class="col-2 d-flex flex-row justify-content-center align-items-start mt-5">
                 <img src="../assets/Imagem 1.png" :style="{width:'220px'}" alt="">
              </div>
@@ -155,6 +157,11 @@
 
             <div class="col-12 mt-4 pb-5 d-flex flex-row justify-content-end" >
               <b-button :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" v-b-modal.modal-profile @click="whatModalDo='intoclass'" >Pedidos para Associar</b-button>
+            </div>
+            </div>
+
+            <div class="mt-5 text-center"> <!--Não associou a criança-->
+            <p>Não existe criança associada, a este perfil</p>
             </div>
 
           </div>
