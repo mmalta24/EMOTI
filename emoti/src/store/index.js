@@ -13,9 +13,9 @@ export default new Vuex.Store({
           {
             username: "admin",
             password: "admin",
-            email:'',
+            email:'administrador@gmail.com',
             typeUser: "Administrador",
-            name:''
+            name:'Administrador'
           },
           /* All propreties 
           {

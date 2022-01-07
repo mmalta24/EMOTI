@@ -159,7 +159,7 @@ export default {
               email: this.formRegister.email,
               typeUser: this.formRegister.typeUser,
               imageProfile:'',
-              child: '',
+              child: null,
               blocked: false,
 
             }
