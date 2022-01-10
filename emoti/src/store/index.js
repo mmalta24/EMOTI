@@ -37,7 +37,7 @@ export default new Vuex.Store({
         : [
             {
               name: "teste",
-              teacher: "teste",
+              teacher: "prof",
               students: [{nameStudent:'',aproved:false}],
             },
               
@@ -65,6 +65,8 @@ export default new Vuex.Store({
 
     getActivity:(state)=>(id)=>state.activities.find((activitiy)=>activitiy.id==id),
 
+    getTeacherClasses:(state)=>state.classes.filter(team=>team.teacher === state.loggedUser.username),
+
     isUserChild:(state) => (username, password) =>
       state.users.some(
         (user) => user.username === username && user.password === password && user.typeUser === "Criança"
@@ -75,8 +77,8 @@ export default new Vuex.Store({
         (user) => user.username === username && user.tutor === null
       ),
 
-    isClassFree:(state) => (className) => state.classes.some(
-      (team) => team.teacher === state.loggedUser.username && team.name === className
+    isClassOccupied:(state) => (name) => state.classes.some(
+      (team) => team.teacher === state.loggedUser.username && team.name === name
     ),
 
   },
@@ -137,6 +139,13 @@ export default new Vuex.Store({
     SET_NEW_CLASS(state,variable){
       state.classes.push(variable);
       localStorage.classes = JSON.stringify(state.classes);
+    },
+
+    SET_REMOVE_CLASS(state,variable){
+      let rest = state.classes.filter((team) => team.teacher != state.loggedUser.username)
+      let edit = state.classes.filter((team) => team.teacher === state.loggedUser.username && team.name != variable)
+      state.classes = rest.concat(edit)
+      localStorage.classes = JSON.stringify(state.classes)
     },
     
   },

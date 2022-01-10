@@ -50,10 +50,10 @@
                       <th>Nome</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" >
-                      <td class="p-4">01</td>
-                      <td>AA</td>
-                      <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(team, index) in getTeacherClasses" :key="index">
+                      <td class="p-4">{{index+1}}</td>
+                      <td>{{team.name}}</td>
+                      <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeClass(team.name)"><b-icon icon="trash-fill"></b-icon></b-button></td>
                   </tr>
                 </table>
            </div>
@@ -148,16 +148,16 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getClassInfo","isClassFree"]),
+    ...mapGetters(["getLoggedUser","getClassInfo","isClassOccupied","getTeacherClasses"]),
   },
 
   methods: {
-    ...mapMutations(["SET_NEW_CLASS"]),
+    ...mapMutations(["SET_NEW_CLASS","SET_REMOVE_CLASS"]),
 
     addClass(){
-      if (!this.isClassFree(this.className)) {
+      if (!this.isClassOccupied(this.className)) {
         this.classForm={
-          className: this.className,
+          name: this.className,
           teacher: this.getLoggedUser.username,
           students: []
         }
@@ -166,11 +166,13 @@ export default {
         alert("Este nome já pertence a uma das suas turmas!")
       }
       
-    }
+    },
 
-
-
-
+    removeClass(teamName){
+      if (confirm("Pretende mesmo eliminar esta turma? Esta ação não pode ser desfeita!")) {
+        this.SET_REMOVE_CLASS(teamName)
+      }
+    },
 
   }
   
