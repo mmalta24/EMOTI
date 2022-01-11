@@ -135,16 +135,20 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["isUser","isUsernameAvailable"]),
+    ...mapGetters(["isUser","isUsernameAvailable","isUserBlocked"]),
   },
 
   methods: {
     login() {
       if (this.isUser(this.formLogin.username, this.formLogin.password)) {
-        this.SET_LOGGED_USER(this.formLogin.username);
-        this.$router.push({ name: "Home" });
+        if (this.isUserBlocked(this.formLogin.username)) {
+          alert("A conta que pretende aceder foi bloqueada!");
+        } else {
+          this.SET_LOGGED_USER(this.formLogin.username);
+          this.$router.push({ name: "Home" });
+        } 
       } else {
-        alert("username ou password incorretos! por favor tente novamente.");
+        alert("Username ou password incorretos! por favor tente novamente.");
       }
     },
 

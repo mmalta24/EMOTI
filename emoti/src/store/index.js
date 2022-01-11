@@ -58,6 +58,10 @@ export default new Vuex.Store({
 
     getLoggedUser: (state) => state.loggedUser,
 
+    isUserBlocked: (state) => (username) => state.users.some(
+      (user) => user.username === username && user.blocked === true
+    ),
+
     getAssociatedChild:(state) => state.users.find((user) => user.username === state.loggedUser.child),
 
     getFilteredActivities: (state)=>(formFilter)=> state.activities.filter(activity=>(activity.level==formFilter.level || formFilter.level=='') &&
