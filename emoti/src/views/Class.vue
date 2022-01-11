@@ -27,12 +27,14 @@
                       <th>Turma</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" >
-                      <td class="p-4">joao123</td>
-                      <td>João Soares Pereira de Amorim</td>
-                      <td>AA</td>
-                      <td><b-button style="border:none" class=" ml-2 mr-1" v-b-modal.modal-class @click="modalClassDo='editstudent'"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
-                  </tr>
+                  <tbody v-for="(team,index) in getTeacherClasses" :key="index">
+                    <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(student,index) in team.students" :key="index">
+                      <td class="p-4">{{student.usernameStudent}}</td>
+                      <td>{{student.nameStudent}}</td>
+                      <td>{{team.name}}</td>
+                      <td><b-button style="border:none" class=" ml-2 mr-1" v-b-modal.modal-class @click="openEditor(student,team.name)"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeStudent(student.usernameStudent)"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                    </tr>
+                  </tbody>
                 </table>
            </div>
 
@@ -65,26 +67,30 @@
         <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalClassDo=='addstudent'">
           <h4 :style="{color:'#e87461'}">Novo Aluno</h4>
 
-          <b-form>
+          <b-form @submit="addStudent()">
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Username:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required></b-form-input>
+                    <b-form-input id="input-sm" v-model="studentUsername" required @change="getStudentInfo()"></b-form-input>
              </b-form-group>
 
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Nome:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required disabled></b-form-input>
+                    <b-form-input id="input-sm" required disabled v-model="studentName"></b-form-input>
              </b-form-group>
 
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Tutor:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required disabled></b-form-input>
+                    <b-form-input id="input-sm" disabled v-model="studentTutor"></b-form-input>
              </b-form-group>
 
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Turma:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-select id="input-sm" required ></b-form-select>
+                    <b-form-select id="input-sm" required v-model="teamToAdd" >
+                      <b-form-select-option v-for="(team,index) in getTeacherClasses" :key="index" :value="team.name">
+                        {{team.name}}
+                      </b-form-select-option>
+                    </b-form-select>
              </b-form-group>
-
+             <div class="d-flex flex-row justify-content-end"><b-button type="submit" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
           </b-form>
 
-          <div class="d-flex flex-row justify-content-end"><b-button type="submit" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
+          
      
         </div>
 
@@ -92,27 +98,30 @@
         <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalClassDo=='editstudent'">
           <h4 :style="{color:'#e87461'}">Editar Aluno</h4>
 
-          <b-form>
+          <b-form @submit="makeChanges()">
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Username:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required disabled></b-form-input>
+                    <b-form-input id="input-sm" required disabled v-model="studentInfo.usernameStudent"></b-form-input>
              </b-form-group>
 
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Nome:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required disabled></b-form-input>
+                    <b-form-input id="input-sm" required disabled v-model="studentInfo.nameStudent"></b-form-input>
              </b-form-group>
 
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Tutor:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required disabled></b-form-input>
+                    <b-form-input id="input-sm" required disabled v-model="studentInfo.tutorStudent"></b-form-input>
              </b-form-group>
 
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Turma:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-select id="input-sm" required ></b-form-select>
+                    <b-form-select id="input-sm" required v-model="studentInfo.team"  >  
+                      <b-form-select-option v-for="(team,index) in getTeacherClasses" :key="index" :value="team.name">
+                        {{team.name}}
+                      </b-form-select-option>
+                    </b-form-select>
              </b-form-group>
 
+            <div class="d-flex flex-row justify-content-end"><b-button type="submit" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Alterar</b-button></div>
           </b-form>
 
-          <div class="d-flex flex-row justify-content-end"><b-button type="submit" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Alterar</b-button></div>
-     
         </div>
 
         <!--Adicionar turma-->
@@ -143,16 +152,22 @@ export default {
       modalClassDo: '',
       classForm:{},
       className: '',
+      studentUsername: '',
+      studentName: '',
+      studentTutor: '',
+      teamToAdd:'',
+      student: {},
+      studentInfo: {},
       
     };
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getClassInfo","isClassOccupied","getTeacherClasses"]),
+    ...mapGetters(["getLoggedUser","getClassInfo","isClassOccupied","getTeacherClasses","getStudent","CheckInTeams"]),
   },
 
   methods: {
-    ...mapMutations(["SET_NEW_CLASS","SET_REMOVE_CLASS"]),
+    ...mapMutations(["SET_NEW_CLASS","SET_REMOVE_CLASS","SET_NEW_STUDENT","ALTER_STUDENT_INFO","REMOVE_STUDENT_CLASS","ALTER_STUDENT_CLASS"]),
 
     addClass(){
       if (!this.isClassOccupied(this.className)) {
@@ -173,6 +188,66 @@ export default {
         this.SET_REMOVE_CLASS(teamName)
       }
     },
+
+    getStudentInfo(){
+      if (!this.getStudent(this.studentUsername)) {
+        alert("O utilizador não pode ser encontrado!")
+        this.studentName=""
+        this.studentTutor=""
+      }else{
+        let result = this.getStudent(this.studentUsername)
+        this.studentName=result.name
+        this.studentTutor=result.tutor
+        if (this.studentTutor=="null") {
+          this.studentTutor=""
+        }
+      }
+      
+    },
+
+    addStudent(){
+      if (this.studentTutor === "") {
+        alert("A criança não pode ser associada!")
+      } else {
+        if (this.CheckInTeams(this.studentUsername)) {
+          alert("Esta criança já pertence a uma das suas turmas!")
+        } else {
+          this.student={
+            teamName: this.teamToAdd,
+            username: this.studentUsername,
+            tutorStudent: this.studentTutor,
+            name: this.studentName,
+          }
+          this.SET_NEW_STUDENT(this.student)
+        }
+      }    
+    },
+
+    openEditor(student,teamName){
+      this.modalClassDo='editstudent'
+      this.studentInfo={
+        usernameStudent: student.usernameStudent,
+        nameStudent: student.nameStudent,
+        tutorStudent: student.tutorStudent,
+        team: teamName
+      }
+    },
+
+    makeChanges(){
+      this.ALTER_STUDENT_CLASS(this.studentInfo);
+    },
+
+    removeStudent(username){
+      if (confirm("Deseja mesmo eliminar este aluno?")) {
+        this.REMOVE_STUDENT_CLASS(username)
+      }
+      
+    },
+
+
+
+
+
 
   }
   

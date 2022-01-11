@@ -38,7 +38,7 @@ export default new Vuex.Store({
             {
               name: "teste",
               teacher: "prof",
-              students: [{nameStudent:'',aproved:false}],
+              students: [{usernameStudent:'test',nameStudent:"kid test",tutorStudent:"tutorTeste" ,aproved:false}],
             },
               
           ],
@@ -86,7 +86,10 @@ export default new Vuex.Store({
     ),
 
     getUsers: (state)=>state.users,
+
+    getStudent: (state) => (username) => state.users.find((user)=>user.username===username && user.typeUser == "Criança"),
     
+    CheckInTeams: (state) => (variable) => state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable)),
 
   },
 
@@ -162,6 +165,7 @@ export default new Vuex.Store({
 
     REMOVE_TEAMS_TEACHER(state,variable){
       state.classes=state.classes.filter((team)=>team.teacher!=variable)
+      localStorage.classes = JSON.stringify(state.classes)
     },
 
     SET_REMOVE_RELATION_TUTOR_ADMIN(state,variable){
@@ -173,6 +177,26 @@ export default new Vuex.Store({
       state.users.find((user) => user.username === variable).child = null;
       localStorage.users = JSON.stringify(state.users)
     },
+
+    SET_NEW_STUDENT(state,variable){
+      state.classes.find((team)=>team.teacher === state.loggedUser.username && team.name===variable.teamName).students.push({usernameStudent: variable.username, nameStudent: variable.name, tutorStudent: variable.tutorStudent,aproved:false})
+      localStorage.classes = JSON.stringify(state.classes)
+    },
+
+    REMOVE_STUDENT_CLASS(state,variable){
+      let teamStudents = state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable)).students
+      state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable)).students = teamStudents.filter((student)=> student.usernameStudent != variable)
+      localStorage.classes = JSON.stringify(state.classes)
+    },
+
+    ALTER_STUDENT_CLASS(state,variable){
+      let teamStudents = state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable.usernameStudent)).students
+      state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable.usernameStudent)).students = teamStudents.filter((student)=> student.usernameStudent != variable.usernameStudent)
+      state.classes.find((team)=>team.teacher === state.loggedUser.username && team.name===variable.team).students.push({usernameStudent: variable.usernameStudent, nameStudent: variable.nameStudent, tutorStudent: variable.tutorStudent,aproved:true})
+      localStorage.classes = JSON.stringify(state.classes)
+    }
+
+    
     
 
   },
