@@ -81,6 +81,9 @@ export default new Vuex.Store({
       (team) => team.teacher === state.loggedUser.username && team.name === name
     ),
 
+    getUsers: (state)=>state.users,
+    
+
   },
 
   mutations: {
@@ -108,7 +111,7 @@ export default new Vuex.Store({
     },
 
     SET_REMOVE_USER(state, variable){
-      localStorage.removeItem(state.users.find((user) => user.username === variable));
+      state.users=state.users.filter((user) => user.username != variable);
       localStorage.users = JSON.stringify(state.users)
     },
 
@@ -147,7 +150,27 @@ export default new Vuex.Store({
       state.classes = rest.concat(edit)
       localStorage.classes = JSON.stringify(state.classes)
     },
+
+    CHANGE_STATE_USER(state,variable){
+      state.users.find((user) => user.username === variable.username).blocked = variable.logic;
+      localStorage.users = JSON.stringify(state.users)
+    },
+
+    REMOVE_TEAMS_TEACHER(state,variable){
+      state.classes=state.classes.filter((team)=>team.teacher!=variable)
+    },
+
+    SET_REMOVE_RELATION_TUTOR_ADMIN(state,variable){
+      state.users.find((user) => user.username === variable).tutor = null;
+      localStorage.users = JSON.stringify(state.users)
+    },
+
+    SET_REMOVE_RELATION_CHILD_ADMIN(state,variable){
+      state.users.find((user) => user.username === variable).child = null;
+      localStorage.users = JSON.stringify(state.users)
+    },
     
+
   },
 
   modules: {},
