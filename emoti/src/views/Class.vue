@@ -154,7 +154,7 @@ export default {
       className: '',
       studentUsername: '',
       studentName: '',
-      studentTutor: '',
+      studentTutor: null,
       teamToAdd:'',
       student: {},
       studentInfo: {},
@@ -193,20 +193,20 @@ export default {
       if (!this.getStudent(this.studentUsername)) {
         alert("O utilizador não pode ser encontrado!")
         this.studentName=""
-        this.studentTutor=""
+        this.studentTutor=null
       }else{
         let result = this.getStudent(this.studentUsername)
         this.studentName=result.name
         this.studentTutor=result.tutor
         if (this.studentTutor=="null") {
-          this.studentTutor=""
+          this.studentTutor=null
         }
       }
       
     },
 
     addStudent(){
-      if (this.studentTutor === "") {
+      if (this.studentTutor === null) {
         alert("A criança não pode ser associada!")
       } else {
         if (this.CheckInTeams(this.studentUsername)) {
