@@ -181,6 +181,8 @@ export default new Vuex.Store({
     SET_NEW_STUDENT(state,variable){
       state.classes.find((team)=>team.teacher === state.loggedUser.username && team.name===variable.teamName).students.push({usernameStudent: variable.username, nameStudent: variable.name, tutorStudent: variable.tutorStudent,aproved:false})
       localStorage.classes = JSON.stringify(state.classes)
+      state.users.find((user)=>user.username==variable.tutorStudent).classResquests.push({teacherName: state.loggedUser.username, className:variable.teamName})
+      localStorage.users = JSON.stringify(state.users)
     },
 
     REMOVE_STUDENT_CLASS(state,variable){

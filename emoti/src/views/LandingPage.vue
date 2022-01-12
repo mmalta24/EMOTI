@@ -164,6 +164,7 @@ export default {
               typeUser: this.formRegister.typeUser,
               imageProfile:'',
               child: null,
+              classResquests: [],
               blocked: false,
 
             }
