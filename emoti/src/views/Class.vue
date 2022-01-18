@@ -27,7 +27,7 @@
                       <th>Turma</th>
                       <th>Ações</th>
                   </tr>
-                  <tbody v-for="(team,index) in filterStudents" :key="index">
+                  <tbody v-for="(team,index) in getTeacherClasses" :key="index">
                     <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(student,index) in team.students" :key="index">
                       <td class="p-4">{{student.usernameStudent}}</td>
                       <td>{{student.nameStudent}}</td>
@@ -158,22 +158,13 @@ export default {
       teamToAdd:'',
       student: {},
       studentInfo: {},
-      teams:''
       
     };
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getClassInfo","isClassOccupied","getTeacherClasses","getStudent","CheckInTeams"]),
+    ...mapGetters(["getLoggedUser","getClassInfo","isClassOccupied","getTeacherClasses","getStudent","CheckInTeams","getAprovedStudents"]),
 
-    filterStudents(){
-      let students=[]
-      this.teams.forEach(team => {
-        students.concat(team.filter((t)=>t.aproved==true))
-      });
-      console.log(students);
-      return false
-    }
   },
 
   methods: {
@@ -184,6 +175,7 @@ export default {
         this.classForm={
           name: this.className,
           teacher: this.getLoggedUser.username,
+          requests:[],
           students: []
         }
         this.SET_NEW_CLASS(this.classForm)
@@ -261,9 +253,6 @@ export default {
 
   },
 
-  created () {
-    this.teams=this.getTeacherClasses;
-  },
   
 }
 </script>

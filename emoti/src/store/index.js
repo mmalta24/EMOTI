@@ -38,7 +38,8 @@ export default new Vuex.Store({
             {
               name: "teste",
               teacher: "prof",
-              students: [{usernameStudent:'test',nameStudent:"kid test",tutorStudent:"tutorTeste" ,aproved:false}],
+              requests:[{usernameStudent:'test',nameStudent:"kid test",tutorStudent:"tutorTeste"}],
+              students: [],
             },
               
           ],
@@ -89,7 +90,9 @@ export default new Vuex.Store({
 
     getStudent: (state) => (username) => state.users.find((user)=>user.username===username && user.typeUser == "Criança"),
     
-    CheckInTeams: (state) => (variable) => state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable)),
+    CheckInTeams: (state) => (variable) => state.classes.find((team) => team.teacher === state.loggedUser.username && (team.students.find((student)=> student.usernameStudent === variable) || team.requests.find((request) => request.usernameStudent === variable))),
+
+    getAprovedStudents: (state) => state.classes.filter((team)=>team.teacher === state.loggedUser.username).filter((t)=>t.students)
 
   },
 
@@ -179,7 +182,7 @@ export default new Vuex.Store({
     },
 
     SET_NEW_STUDENT(state,variable){
-      state.classes.find((team)=>team.teacher === state.loggedUser.username && team.name===variable.teamName).students.push({usernameStudent: variable.username, nameStudent: variable.name, tutorStudent: variable.tutorStudent,aproved:false})
+      state.classes.find((team)=>team.teacher === state.loggedUser.username && team.name===variable.teamName).requests.push({usernameStudent: variable.username, nameStudent: variable.name, tutorStudent: variable.tutorStudent})
       localStorage.classes = JSON.stringify(state.classes)
       state.users.find((user)=>user.username==variable.tutorStudent).classResquests.push({teacherName: state.loggedUser.username, className:variable.teamName})
       localStorage.users = JSON.stringify(state.users)
