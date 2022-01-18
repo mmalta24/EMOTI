@@ -6,6 +6,7 @@
         <div class="row col-12">
           <div class="col-2 d-flex flex-row justify-content-center align-items-center">
             <img src="../assets/Imagem 1.png" :style="{width:'220px'}" alt="">
+            <b-button style="position:absolute;z-index:1;right:5px;bottom:50px;background-color:#e87461;border:none" pill size="sm" v-b-modal.modal-profile @click="whatModalDo='changePicture'"><span class="material-icons-round" style="display:flex;justify-content:center" >mode_edit</span></b-button>
           </div>
           <div class="col-5">
             <b-form>
@@ -102,6 +103,25 @@
 
 
               </div>
+
+              <!--Alterar imagem-->
+
+              <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="whatModalDo=='changePicture'">
+                <h4 :style="{color:'#e87461'}">Alterar Foto</h4>
+
+                <b-form >
+                 <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Nova Imagem (URL):" label-for="input-sm" class="mt-4 mb-4">
+                    <b-form-input  id="input-sm" required></b-form-input>
+                 </b-form-group>
+
+                 <div class="d-flex flex-row justify-content-end">
+                   <b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Alterar</b-button>
+                 </div>
+
+                </b-form>
+
+              </div>
+
 
            </b-modal>
 
