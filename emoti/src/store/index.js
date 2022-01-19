@@ -199,6 +199,16 @@ export default new Vuex.Store({
       state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable.usernameStudent)).students = teamStudents.filter((student)=> student.usernameStudent != variable.usernameStudent)
       state.classes.find((team)=>team.teacher === state.loggedUser.username && team.name===variable.team).students.push({usernameStudent: variable.usernameStudent, nameStudent: variable.nameStudent, tutorStudent: variable.tutorStudent,aproved:true})
       localStorage.classes = JSON.stringify(state.classes)
+    },
+
+    SET_REMOVE_REQUEST(state,variable){
+      let ativeRequests = state.classes.find((team)=>team.teacher==variable.teacherName && team.name==variable.className).requests
+      state.classes.find((team)=>team.teacher==variable.teacherName && team.name==variable.className).requests = ativeRequests.filter((request)=> request.usernameStudent != state.loggedUser.child)
+      localStorage.classes = JSON.stringify(state.classes)
+
+      let tutorRequests = state.users.find((user)=>user.username==state.loggedUser.username).classResquests
+      state.users.find((user)=>user.username==state.loggedUser.username).classResquests = tutorRequests.filter((request)=> request.teacherName!=variable.teacherName && request.className!=variable.className)
+      localStorage.users = JSON.stringify(state.users)
     }
 
     
