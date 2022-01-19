@@ -91,7 +91,7 @@
                             <th>Professor</th>
                             <th>Ações</th>
                         </tr>
-                        <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(request,index) in getLoggedUser.classResquests" :key="index">
+                        <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(request,index) in getLoggedUser.classRequests" :key="index">
                             <td class="p-4">{{request.className}}</td>
                             <td>{{request.teacherName}}</td>
                             <td><b-button size="sm" style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1" @click="acceptRequest(request)"><span class="material-icons-round">done</span></b-button>
@@ -168,10 +168,10 @@
                       <th>Professor</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" >
-                      <td class="p-4">AA</td>
-                      <td>João Soares Pereira de Amorim</td>
-                      <td><b-button variant="danger" ><b-icon icon="trash-fill"></b-icon> Anular</b-button></td>
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(team,index) in getChildTeams" :key="index">
+                      <td class="p-4">{{team.name}}</td>
+                      <td>{{team.teacher}}</td>
+                      <td><b-button variant="danger" @click="removeKidFromClass(team)"><b-icon icon="trash-fill"></b-icon> Anular</b-button></td>
                   </tr>
               </table>
 
@@ -206,25 +206,16 @@ export default {
         childName:"",
         childPass:""
       },
-      /*
-      getLoggedUser: {
-        username:"",
-        password:"",
-        name:"",
-        email:"",
-        typeUser: ["Criança", "Tutor", "Professor","Admin"]
-      }
-      */
       
     };
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getAssociatedChild","isUserChild","isChildFree"]),
+    ...mapGetters(["getLoggedUser","getAssociatedChild","isUserChild","isChildFree","getChildTeams"]),
   },
 
   methods: {
-    ...mapMutations(["SET_NEW_PASSWORD","SET_RELATION_TUTOR","SET_RELATION_CHILD","SET_REMOVE_RELATION_TUTOR","SET_REMOVE_RELATION_CHILD","SET_REMOVE_REQUEST","SET_ACCEPT_REQUEST"]),
+    ...mapMutations(["SET_NEW_PASSWORD","SET_RELATION_TUTOR","SET_RELATION_CHILD","SET_REMOVE_RELATION_TUTOR","SET_REMOVE_RELATION_CHILD","SET_REMOVE_REQUEST","SET_ACCEPT_REQUEST","SET_REMOVE_KID_FROM_CLASS"]),
 
     changePassword(){
       if (this.passForm.oldPass != this.getLoggedUser.password) {
@@ -269,6 +260,12 @@ export default {
       if (confirm("Quer aceitar este pedido?")) {
         this.SET_ACCEPT_REQUEST(request)
         this.SET_REMOVE_REQUEST(request)
+      }
+    },
+
+    removeKidFromClass(team){
+      if (confirm("Quer remover a criança desta turma?")) {
+        this.SET_REMOVE_KID_FROM_CLASS(team)
       }
     },
 

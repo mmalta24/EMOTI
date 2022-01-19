@@ -25,7 +25,11 @@ export default new Vuex.Store({
               id:0,
               title: "Qual é o meu nome?",
               level: "Fácil",
-              question: [],
+              questions: [{
+                img:'',
+                respC:'',
+                respE:[],
+              }],
               caseIMG:'https://github.com/mmalta24/images/blob/main/Imagem%202.png?raw=true',
               description:'',
               category:'Quiz'
@@ -92,7 +96,9 @@ export default new Vuex.Store({
     
     CheckInTeams: (state) => (variable) => state.classes.find((team) => team.teacher === state.loggedUser.username && (team.students.find((student)=> student.usernameStudent === variable) || team.requests.find((request) => request.usernameStudent === variable))),
 
-    getAprovedStudents: (state) => state.classes.filter((team)=>team.teacher === state.loggedUser.username).filter((t)=>t.students)
+    getAprovedStudents: (state) => state.classes.filter((team)=>team.teacher === state.loggedUser.username).filter((t)=>t.students),
+
+    getChildTeams: (state) => state.classes.filter((team)=>team.students.find((student)=>student.usernameStudent==state.loggedUser.child))
 
   },
 
@@ -184,7 +190,7 @@ export default new Vuex.Store({
     SET_NEW_STUDENT(state,variable){
       state.classes.find((team)=>team.teacher === state.loggedUser.username && team.name===variable.teamName).requests.push({usernameStudent: variable.username, nameStudent: variable.name, tutorStudent: variable.tutorStudent})
       localStorage.classes = JSON.stringify(state.classes)
-      state.users.find((user)=>user.username==variable.tutorStudent).classResquests.push({teacherName: state.loggedUser.username, className:variable.teamName})
+      state.users.find((user)=>user.username==variable.tutorStudent).classRequests.push({teacherName: state.loggedUser.username, className:variable.teamName})
       localStorage.users = JSON.stringify(state.users)
     },
 
@@ -206,11 +212,11 @@ export default new Vuex.Store({
       state.classes.find((team)=>team.teacher==variable.teacherName && team.name==variable.className).requests = ativeRequests.filter((request)=> request.usernameStudent != state.loggedUser.child)
       localStorage.classes = JSON.stringify(state.classes)
 
-      let tutorRequests = state.users.find((user)=>user.username==state.loggedUser.username).classResquests
-      state.users.find((user)=>user.username==state.loggedUser.username).classResquests = tutorRequests.filter((request)=> request.teacherName!=variable.teacherName && request.className!=variable.className)
+      let tutorRequests = state.users.find((user)=>user.username==state.loggedUser.username).classRequests
+      state.users.find((user)=>user.username==state.loggedUser.username).classRequests = tutorRequests.filter((request)=> request.teacherName!=variable.teacherName && request.className!=variable.className)
       localStorage.users = JSON.stringify(state.users)
 
-      state.loggedUser.classResquests=tutorRequests.filter((request)=> request.teacherName!=variable.teacherName && request.className!=variable.className)
+      state.loggedUser.classRequests=tutorRequests.filter((request)=> request.teacherName!=variable.teacherName && request.className!=variable.className)
       sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
     },
 
@@ -219,7 +225,13 @@ export default new Vuex.Store({
       let newStudent = studentsList.find((student)=> student.usernameStudent == state.loggedUser.child)
       state.classes.find((team)=>team.teacher==variable.teacherName && team.name==variable.className).students.push(newStudent)
       localStorage.classes = JSON.stringify(state.classes)
-    }
+    },
+
+    SET_REMOVE_KID_FROM_CLASS(state,variable){
+      let teamStudents = state.classes.find((team) => team.teacher === variable.teacher && team.students.find((student)=> student.usernameStudent === state.loggedUser.child)).students
+      state.classes.find((team) => team.teacher === variable.teacher && team.students.find((student)=> student.usernameStudent === state.loggedUser.child)).students = teamStudents.filter((student)=> student.usernameStudent != state.loggedUser.child)
+      localStorage.classes = JSON.stringify(state.classes)
+    },
 
     
     
