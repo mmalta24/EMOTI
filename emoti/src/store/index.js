@@ -209,6 +209,16 @@ export default new Vuex.Store({
       let tutorRequests = state.users.find((user)=>user.username==state.loggedUser.username).classResquests
       state.users.find((user)=>user.username==state.loggedUser.username).classResquests = tutorRequests.filter((request)=> request.teacherName!=variable.teacherName && request.className!=variable.className)
       localStorage.users = JSON.stringify(state.users)
+
+      state.loggedUser.classResquests=tutorRequests.filter((request)=> request.teacherName!=variable.teacherName && request.className!=variable.className)
+      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
+    },
+
+    SET_ACCEPT_REQUEST(state,variable){
+      let studentsList = state.classes.find((team)=>team.teacher==variable.teacherName && team.name==variable.className).requests
+      let newStudent = studentsList.find((student)=> student.usernameStudent == state.loggedUser.child)
+      state.classes.find((team)=>team.teacher==variable.teacherName && team.name==variable.className).students.push(newStudent)
+      localStorage.classes = JSON.stringify(state.classes)
     }
 
     

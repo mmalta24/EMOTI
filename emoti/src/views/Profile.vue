@@ -94,7 +94,7 @@
                         <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(request,index) in getLoggedUser.classResquests" :key="index">
                             <td class="p-4">{{request.className}}</td>
                             <td>{{request.teacherName}}</td>
-                            <td><b-button size="sm" style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1"><span class="material-icons-round">done</span></b-button>
+                            <td><b-button size="sm" style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1" @click="acceptRequest(request)"><span class="material-icons-round">done</span></b-button>
                             <b-button variant="danger" size="sm" style="border:none;" class=" ml-1 mr-2" @click="removeRequest(request)"><span class="material-icons-round">close</span></b-button></td>
                         </tr>
                      </table>
@@ -224,7 +224,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["SET_NEW_PASSWORD","SET_RELATION_TUTOR","SET_RELATION_CHILD","SET_REMOVE_RELATION_TUTOR","SET_REMOVE_RELATION_CHILD","SET_REMOVE_REQUEST"]),
+    ...mapMutations(["SET_NEW_PASSWORD","SET_RELATION_TUTOR","SET_RELATION_CHILD","SET_REMOVE_RELATION_TUTOR","SET_REMOVE_RELATION_CHILD","SET_REMOVE_REQUEST","SET_ACCEPT_REQUEST"]),
 
     changePassword(){
       if (this.passForm.oldPass != this.getLoggedUser.password) {
@@ -261,6 +261,13 @@ export default {
 
     removeRequest(request){
       if (confirm("Quer eliminar este pedido?")) {
+        this.SET_REMOVE_REQUEST(request)
+      }
+    },
+
+    acceptRequest(request){
+      if (confirm("Quer aceitar este pedido?")) {
+        this.SET_ACCEPT_REQUEST(request)
         this.SET_REMOVE_REQUEST(request)
       }
     },
