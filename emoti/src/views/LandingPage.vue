@@ -177,6 +177,7 @@ export default {
               password: this.formRegister.password,
               name: this.formRegister.name,
               email: this.formRegister.email,
+              imageProfile:'',
               typeUser: this.formRegister.typeUser,
               blocked: false,
             }

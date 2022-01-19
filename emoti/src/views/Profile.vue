@@ -109,9 +109,9 @@
               <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="whatModalDo=='changePicture'">
                 <h4 :style="{color:'#e87461'}">Alterar Foto</h4>
 
-                <b-form >
+                <b-form @submit="alterImg()">
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Nova Imagem (URL):" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input  id="input-sm" required></b-form-input>
+                    <b-form-input  id="input-sm" v-model="newImg" required></b-form-input>
                  </b-form-group>
 
                  <div class="d-flex flex-row justify-content-end">
@@ -206,6 +206,7 @@ export default {
         childName:"",
         childPass:""
       },
+      newImg:"",
       
     };
   },
@@ -215,7 +216,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["SET_NEW_PASSWORD","SET_RELATION_TUTOR","SET_RELATION_CHILD","SET_REMOVE_RELATION_TUTOR","SET_REMOVE_RELATION_CHILD","SET_REMOVE_REQUEST","SET_ACCEPT_REQUEST","SET_REMOVE_KID_FROM_CLASS"]),
+    ...mapMutations(["SET_NEW_PASSWORD","SET_RELATION_TUTOR","SET_RELATION_CHILD","SET_REMOVE_RELATION_TUTOR","SET_REMOVE_RELATION_CHILD","SET_REMOVE_REQUEST","SET_ACCEPT_REQUEST","SET_REMOVE_KID_FROM_CLASS","SET_ALTER_IMG"]),
 
     changePassword(){
       if (this.passForm.oldPass != this.getLoggedUser.password) {
@@ -268,6 +269,11 @@ export default {
         this.SET_REMOVE_KID_FROM_CLASS(team)
       }
     },
+
+    alterImg(){
+      this.SET_ALTER_IMG(this.newImg)
+    }
+    
 
 
   },

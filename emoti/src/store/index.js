@@ -233,6 +233,14 @@ export default new Vuex.Store({
       localStorage.classes = JSON.stringify(state.classes)
     },
 
+    SET_ALTER_IMG(state,variable){
+      state.loggedUser.imageProfile = variable
+      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
+
+      state.users.find((user)=> user.username == state.loggedUser.username).imageProfile = variable
+      localStorage.users = JSON.stringify(state.users)
+    },
+
     
     
 
