@@ -45,34 +45,43 @@
           <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='addactivity'">
               <h4 :style="{color:'#e87461'}">Adicionar Atividade</h4>
 
-              <b-form>
+              <b-form @submit="addActivity()">
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required></b-form-input>
+                    <b-form-input id="input-sm" v-model="newActivity.title" required></b-form-input>
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Dificuldade:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-select id="input-sm" required></b-form-select>
+                    <b-form-select id="input-sm" v-model="newActivity.level" required>
+                       <b-form-select-option value="Fácil">Fácil</b-form-select-option>
+                       <b-form-select-option value="Médio">Médio</b-form-select-option>
+                       <b-form-select-option value="Dificil">Dificil</b-form-select-option>
+                    </b-form-select>
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Categoria:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-select id="input-sm" required></b-form-select>
+                    <b-form-select id="input-sm" v-model="newActivity.category" required>
+                       <b-form-select-option value="Quiz">Quiz</b-form-select-option>
+                       <b-form-select-option value="Reconhecimento" disabled>Reconhecimento</b-form-select-option>
+                    </b-form-select>
                  </b-form-group>
 
-                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4">
+                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4" v-for="(question,index) in newActivity.questions" :key="index">
                     <div class="row">
-                       <b-form-select id="input-sm" class="col-3 ml-3" required></b-form-select>
-                       <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Emoção" required></b-form-input>
-                       <b-form-input id="input-sm" class="col-2 ml-2" placeholder="Pontos" required></b-form-input>
-                       <b-button class="col-1 ml-2"><b-icon icon="plus-circle-fill"></b-icon></b-button>
+                       <b-form-select id="input-sm" class="col-3 ml-3" v-model="question.correctAnswer" :disabled="index+1 != newActivity.questions.length" required>
+                          <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
+                       </b-form-select>
+                       <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Imagem" v-model="question.img" :disabled="index+1 != newActivity.questions.length" required></b-form-input>
+                       <b-form-input id="input-sm" type="number" class="col-2 ml-2" placeholder="Pontos" v-model.number="question.points" :disabled="index+1 != newActivity.questions.length" required></b-form-input>
+                       <b-button class="col-1 ml-2" @click="addNewQuestion()" :disabled="index+1 != newActivity.questions.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
                     </div>
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Capa (IMG):" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="url" id="input-sm" required></b-form-input>
+                    <b-form-input type="url" id="input-sm" v-model="newActivity.caseIMG" required></b-form-input>
                  </b-form-group>
                  
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Descrição:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-textarea v-model="text" placeholder="Enter something..." rows="3" max-rows="6"></b-form-textarea>
+                    <b-form-textarea v-model="newActivity.description" placeholder="Enter something..." rows="3" max-rows="6"></b-form-textarea>
                  </b-form-group>
             
               </b-form>
@@ -160,16 +169,35 @@ export default {
       return {
          modalActivityDo:"",
          newEmotion:"",
+
+         newActivity:{
+            title: "",
+            level: "",
+            questions: [{
+               img:'',
+               correctAnswer:'',
+               answers:[],
+               points:0
+            }],
+            caseIMG:'',
+            description:'',
+            category:'' 
+         },
          
       };
    },
 
    computed: {
-      ...mapGetters(["getLoggedUser","getEmotions","checkInEmotions"]),
+      ...mapGetters(["getLoggedUser","getEmotions","checkInEmotions","getActivities","checkInActivities"]),
    },
 
+   /*created(){
+      this.emotionsList=this.getEmotions
+      console.log(this.emotionsList);
+   },*/
+
    methods: {
-      ...mapMutations(["SET_REMOVE_EMOTION","SET_NEW_EMOTION"]),
+      ...mapMutations(["SET_REMOVE_EMOTION","SET_NEW_EMOTION","SET_REMOVE_ACTIVITY","SET_NEW_ACTIVITY"]),
 
       removeEmotion(emotion){
          this.SET_REMOVE_EMOTION(emotion)
@@ -182,6 +210,16 @@ export default {
          }else{
             alert("A emoção já está registada!")
          }
+      },
+
+      addNewQuestion(){
+
+         this.newActivity.questions.push({
+            img:'',
+            correctAnswer:'',
+            answers:[],
+            points:0
+         })
       },
 
    },

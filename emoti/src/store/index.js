@@ -104,6 +104,9 @@ export default new Vuex.Store({
 
     checkInEmotions: (state) => (variable) => state.emotions.some((emotion)=>emotion.toLowerCase()==variable.toLowerCase()),
 
+    getActivities: (state) => state.activities,
+
+    checkInActivities: (state) => (variable) => state.activities.some((activity)=>activity.title.toLowerCase()==variable.title.SET_NEW_CLASStoLowerCase()),    
   },
 
   mutations: {
@@ -254,6 +257,17 @@ export default new Vuex.Store({
     SET_NEW_EMOTION(state,variable){
       state.emotions.push(variable)
       localStorage.emotions = JSON.stringify(state.emotions)
+
+    },
+
+    SET_NEW_ACTIVITY(state,variable){
+      state.activities.push(variable)
+      localStorage.activities = JSON.stringify(state.activities)
+    },
+
+    SET_REMOVE_ACTIVITY(state,variable){
+      state.activities=state.activities.filter((activity)=>activity.title!=variable)
+      localStorage.activities = JSON.stringify(state.activities)
 
     },
 
