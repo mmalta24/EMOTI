@@ -124,9 +124,9 @@
               <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='manageremotion'">
                   <h4 :style="{color:'#e87461'}">Emoções</h4>
 
-                  <b-form>
+                  <b-form @submit.prevent="addNewEmotion()">
                     <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Nome:" label-for="input-sm" class="mt-4 mb-4">
-                        <b-form-input id="input-sm" required></b-form-input>
+                        <b-form-input id="input-sm" v-model="newEmotion" required></b-form-input>
                     </b-form-group>
 
                       <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
@@ -139,9 +139,9 @@
                       <th class="p-1">Nome</th>
                       <th>Ação</th>
                     </tr>
-                    <tr :style="{'border-bottom':'2px solid #707070'}" >
-                      <td class="p-4">Qual é o meu nome?</td>
-                      <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                    <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(emotion,index) in getEmotions" :key="index">
+                      <td class="p-4">{{emotion}}</td>
+                      <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeEmotion(emotion)"><b-icon icon="trash-fill"></b-icon></b-button></td>
                     </tr>
                   </table>
 
@@ -153,14 +153,40 @@
 </template>
 
 <script>
-
+import { mapGetters, mapMutations } from "vuex";
 export default {
-  data() {
-    return {
-      modalActivityDo: ''
-    }
-  },
-};
+   name:"ManagerActivities",
+   data() {
+      return {
+         modalActivityDo:"",
+         newEmotion:"",
+         
+      };
+   },
+
+   computed: {
+      ...mapGetters(["getLoggedUser","getEmotions","checkInEmotions"]),
+   },
+
+   methods: {
+      ...mapMutations(["SET_REMOVE_EMOTION","SET_NEW_EMOTION"]),
+
+      removeEmotion(emotion){
+         this.SET_REMOVE_EMOTION(emotion)
+      },
+
+      addNewEmotion(){
+         if (!this.checkInEmotions(this.newEmotion)) {
+            this.SET_NEW_EMOTION(this.newEmotion)
+            this.newEmotion=""
+         }else{
+            alert("A emoção já está registada!")
+         }
+      },
+
+   },
+  
+}
 </script>
 
 <style>

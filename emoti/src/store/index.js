@@ -22,19 +22,18 @@ export default new Vuex.Store({
         ? JSON.parse(localStorage.activities)
         : [
             {
-              id:0,
               title: "Qual é o meu nome?",
               level: "Fácil",
               questions: [{
                 img:'',
-                respC:'',
-                respE:[],
+                correctAnswer:'',
+                answers:[],
+                points:0
               }],
               caseIMG:'https://github.com/mmalta24/images/blob/main/Imagem%202.png?raw=true',
               description:'',
               category:'Quiz'
-            },
-            
+            },         
           ],
       classes: localStorage.classes
         ? JSON.parse(localStorage.classes)
@@ -42,13 +41,14 @@ export default new Vuex.Store({
             {
               name: "teste",
               teacher: "prof",
-              requests:[{usernameStudent:'test',nameStudent:"kid test",tutorStudent:"tutorTeste"}],
+              requests:[],
               students: [],
             },
               
           ],
      
       loggedUser: sessionStorage.loggedUser ? JSON.parse(sessionStorage.loggedUser) : null,
+      emotions: localStorage.emotions ? JSON.parse(localStorage.emotions) : ['Feliz','Triste','Envergonhado','Preocupado'],
       
   },
   
@@ -98,7 +98,11 @@ export default new Vuex.Store({
 
     getAprovedStudents: (state) => state.classes.filter((team)=>team.teacher === state.loggedUser.username).filter((t)=>t.students),
 
-    getChildTeams: (state) => state.classes.filter((team)=>team.students.find((student)=>student.usernameStudent==state.loggedUser.child))
+    getChildTeams: (state) => state.classes.filter((team)=>team.students.find((student)=>student.usernameStudent==state.loggedUser.child)),
+
+    getEmotions: (state) => state.emotions,
+
+    checkInEmotions: (state) => (variable) => state.emotions.some((emotion)=>emotion.toLowerCase()==variable.toLowerCase()),
 
   },
 
@@ -239,6 +243,18 @@ export default new Vuex.Store({
 
       state.users.find((user)=> user.username == state.loggedUser.username).imageProfile = variable
       localStorage.users = JSON.stringify(state.users)
+    },
+
+    SET_REMOVE_EMOTION(state,variable){
+      state.emotions=state.emotions.filter((emotion)=>emotion!=variable)
+      localStorage.emotions = JSON.stringify(state.emotions)
+
+    },
+
+    SET_NEW_EMOTION(state,variable){
+      state.emotions.push(variable)
+      localStorage.emotions = JSON.stringify(state.emotions)
+
     },
 
     
