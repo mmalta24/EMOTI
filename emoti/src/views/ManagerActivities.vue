@@ -72,7 +72,7 @@
                        </b-form-select>
                        <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Imagem" v-model="question.img" :disabled="index+1 != newActivity.questions.length" required></b-form-input>
                        <b-form-input id="input-sm" type="number" class="col-2 ml-2" placeholder="Pontos" v-model.number="question.points" :disabled="index+1 != newActivity.questions.length" required></b-form-input>
-                       <b-button class="col-1 ml-2" @click="addNewQuestion()" :disabled="index+1 != newActivity.questions.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
+                       <b-button class="col-1 ml-2" @click="addNewQuestion(index)" :disabled="index+1 != newActivity.questions.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
                     </div>
                  </b-form-group>
 
@@ -212,8 +212,26 @@ export default {
          }
       },
 
-      addNewQuestion(){
-
+      addNewQuestion(index){
+         //let wrongEmotions = []
+         for (let i = 0; i < 3; i++) {
+            let emotionId = Math.floor(Math.random()*this.getEmotions.length)
+            let validation=false
+            let a = 0
+            //if (this.getEmotions[emotionId] == this.newActivity.questions[index].correctAnswer) {
+               while(!validation){
+                  emotionId = Math.floor(Math.random()*this.getEmotions.length)
+                  if (this.getEmotions[emotionId] != this.newActivity.questions[index].answers[a] && this.getEmotions[emotionId] != this.newActivity.questions[index].correctAnswer){
+                     validation=true
+                     console.log(this.getEmotions[emotionId],"-----", this.newActivity.questions[index].correctAnswer);
+                  }
+                  a++
+               }
+            //
+            console.log(this.newActivity.questions[0].answers[a]);
+            
+         }
+         this.newActivity.questions[index].answers=[]
          this.newActivity.questions.push({
             img:'',
             correctAnswer:'',
