@@ -213,8 +213,9 @@ export default {
       },
 
       addNewQuestion(index){
+         console.log(index);
          //let wrongEmotions = []
-         for (let i = 0; i < 3; i++) {
+         /*for (let i = 0; i < 3; i++) {
             let emotionId = Math.floor(Math.random()*this.getEmotions.length)
             let validation=false
             let a = 0
@@ -229,9 +230,28 @@ export default {
                }
             //
             console.log(this.newActivity.questions[0].answers[a]);
+         
             
          }
-         this.newActivity.questions[index].answers=[]
+         this.newActivity.questions[index].answers=[]*/
+         let wrongEmotions=[]
+         let emotionId = ''
+         let validation=false
+         let validation1=false
+
+         for (let i = 0; i <3; i++) {
+            while(validation==false){
+               emotionId=Math.floor(Math.random()*this.getEmotions.length)
+               validation1=wrongEmotions.some((wrong)=>wrong==this.getEmotions[emotionId])
+               if(this.getEmotions[emotionId] != this.newActivity.questions[index].correctAnswer && validation1==false){
+                  wrongEmotions.push(this.getEmotions[emotionId])
+                  validation=true
+               }
+            }
+            validation=false
+         }
+         console.log(wrongEmotions);
+
          this.newActivity.questions.push({
             img:'',
             correctAnswer:'',
