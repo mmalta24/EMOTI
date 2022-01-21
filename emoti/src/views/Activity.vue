@@ -35,24 +35,24 @@
        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center d-flex flex-column align-items-center">
          <h2 :style="{color:'#e87461'}" class="mt-4">Parabéns, concluíste a atividade !!</h2>
 
-         <p :style="{fontSize:'40px'}" class="mt-4"><span :style="{color:'#e87461'}">4</span>/5</p>
+         <p :style="{fontSize:'40px'}" class="mt-4"><span :style="{color:'#e87461'}">{{countRightAnswers}}</span>/{{tQuestion}}</p>
 
-         <p :style="{fontSize:'22px',fontFamily:'EAmbit Regular'}">Conseguiste acertar 4 questões em 5 propostas</p>
+         <p :style="{fontSize:'22px',fontFamily:'EAmbit Regular'}">Conseguiste acertar {{countRightAnswers}} questões em {{tQuestion}} propostas</p>
 
           <table class="col-8 text-center mt-4 mb-3">
             <tr :style="{'background-color':'#e87461',color:'#fbfbf3'}">
               <th class="p-1">Emoção</th>
               <th>Pontos</th>
             </tr>
-            <tr :style="{'border-bottom':'2px solid #707070'}">
-              <td class="p-4">4</td>
-              <td>4</td>
+            <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(result,index) in countResponsesRightList" :key="index">
+              <td class="p-4">{{result.emotion}}</td>
+              <td>{{result.points}}</td>
             </tr>
           </table>
 
-          <p :style="{fontSize:'22px',fontFamily:'EAmbit Regular'}" class="mt-5">Conseguiste acumular mais <span :style="{color:'#e87461'}">500</span> pontos!</p>
+          <p :style="{fontSize:'22px',fontFamily:'EAmbit Regular'}" class="mt-5">Conseguiste acumular mais <span :style="{color:'#e87461'}">{{countPointsEarned}}</span> pontos!</p>
 
-          <b-button :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" class="mt-4 mb-5">Voltar ao Catálogo</b-button>
+          <b-button :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" class="mt-4 mb-5"><router-link to="/activities" :style="{color:'#ffffff','text-decoration':'none'}">Voltar ao Catálogo</router-link></b-button>
 
        </div>
 
@@ -73,7 +73,20 @@ export default {
       tQuestion:null,
       positionArray:0,
       responses:[],
+      countResponsesRightList:[],
+      countRightAnswers:0,
+      countPointsEarned:0,
     }
+
+    /*history:[
+          {
+            date:"",
+            activityTitle:"",
+            result:[],
+            pointsEarned:0
+          }
+      ],
+    */
   },
   computed: {
     ...mapGetters(["getLoggedUser","getActivity"]),
@@ -85,7 +98,7 @@ export default {
 	},
 
   methods: {
-    ...mapGetters([]),
+    ...mapMutations(["SET_ADD_TO_HISTORY"]),
 
     nextQuestion() {
       this.positionArray++
@@ -100,10 +113,31 @@ export default {
     submitActivity(){
       for (let i = 0; i < this.tQuestion; i++) {
         if (this.responses[i]==this.activity.questions[i].correctAnswer) {
-          
-        }
-        
+          this.countRightAnswers+=1
+          this.countPointsEarned+=this.activity.questions[i].points
+          this.countResponsesRightList.push({emotion:this.activity.questions[i].correctAnswer,points:this.activity.questions[i].points})
+        }else{
+          this.countResponsesRightList.push({emotion:this.activity.questions[i].correctAnswer,points:0})
+        }   
       }
+
+      //regist results in local
+      if (this.getLoggedUser.typeUser=="Criança") {
+        let newDate = new Date();
+        let day = String(newDate. getDate());
+        let month = String(newDate. getMonth()+1);
+        let year = newDate. getFullYear();
+        let actualDate = day + '/' + month + '/' + year;
+        let info = {
+          date: actualDate,
+          activityTitle:this.activity.title,
+          results:this.countResponsesRightList,
+          pointsEarned:this.countPointsEarned
+        }
+        console.log(info);
+        this.SET_ADD_TO_HISTORY(info)
+      }
+
     }
   },
 };
