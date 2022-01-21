@@ -25,7 +25,7 @@ export default new Vuex.Store({
               title: "Qual é o meu nome?",
               level: "Fácil",
               questions: [{
-                img:'',
+                img:'1234',
                 correctAnswer:'',
                 answers:[],
                 points:0
