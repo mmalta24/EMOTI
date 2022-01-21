@@ -22,7 +22,7 @@
             <div class="col-8 mb-4">
               <b-form-group v-slot="{ ariaDescribedby }">
                 <b-form-radio-group v-model="responses[positionArray]" :aria-describedby="ariaDescribedby" stacked>
-                  <b-form-radio class="mb-3" size="lg" v-model="qAnswer" :aria-describedby="ariaDescribedby" name="some-radios" v-for="(answer,index) in activity.questions[positionArray].answers" :key="index" :value="answer">{{answer}}</b-form-radio>
+                  <b-form-radio class="mb-3" size="lg" :aria-describedby="ariaDescribedby" name="some-radios" v-for="(answer,index) in activity.questions[positionArray].answers" :key="index" :value="answer">{{answer}}</b-form-radio>
                 </b-form-radio-group>
               </b-form-group>
             </div>
@@ -34,6 +34,7 @@
 
 <script>
 import { mapGetters} from "vuex";
+import { mapMutations} from "vuex";
 
 export default {
   
@@ -43,12 +44,11 @@ export default {
       nQuestion:1,
       tQuestion:null,
       positionArray:0,
-      qAnswer:"",
       responses:[],
     }
   },
   computed: {
-    ...mapGetters(["getActivity"]),
+    ...mapGetters(["getLoggedUser","getActivity"]),
   },
 
   created() {
@@ -57,6 +57,8 @@ export default {
 	},
 
   methods: {
+    ...mapGetters([]),
+
     nextQuestion() {
       this.positionArray++
       this.nQuestion++
@@ -68,7 +70,12 @@ export default {
     },
 
     submitActivity(){
-      console.log(this.responses);
+      for (let i = 0; i < this.tQuestion; i++) {
+        if (this.responses[i]==this.activity.questions[i].correctAnswer) {
+          
+        }
+        
+      }
     }
   },
 };
