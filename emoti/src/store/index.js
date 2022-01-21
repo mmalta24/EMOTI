@@ -72,7 +72,7 @@ export default new Vuex.Store({
     getFilteredActivities: (state)=>(formFilter)=> state.activities.filter(activity=>(activity.level==formFilter.level || formFilter.level=='') &&
     (activity.category==formFilter.category || formFilter.category=='')),
 
-    getActivity:(state)=>(id)=>state.activities.find((activitiy)=>activitiy.id==id),
+    getActivity:(state)=>(title)=>state.activities.find((activitiy)=>activitiy.title==title),
 
     getTeacherClasses:(state)=>state.classes.filter(team=>team.teacher === state.loggedUser.username),
 

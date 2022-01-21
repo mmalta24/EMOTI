@@ -46,7 +46,7 @@ export default {
   },
 
   created() {
-			this.activity=this.getActivity(this.$route.params.id)
+			this.activity=this.getActivity(this.$route.params.name)
 		},
 };
 </script>
