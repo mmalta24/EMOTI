@@ -21,7 +21,9 @@
             </div>
             <div class="col-8 mb-4">
               <b-form-group v-slot="{ ariaDescribedby }">
-                <b-form-radio class="mb-3" size="lg" v-model="qAnswer" :aria-describedby="ariaDescribedby" name="some-radios" v-for="(answer,index) in activity.questions[positionArray].answers" :key="index" :value="answer">{{answer}}</b-form-radio>
+                 <b-form-radio-group id="" v-model="selected">
+                   <b-form-radio class="mb-3" size="lg" v-model="qAnswer" :aria-describedby="ariaDescribedby" name="some-radios" v-for="(answer,index) in activity.questions[positionArray].answers" :key="index" :value="answer">{{answer}}</b-form-radio>
+                </b-form-radio-group>
               </b-form-group>
             </div>
           </div>
