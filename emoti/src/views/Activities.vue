@@ -48,7 +48,7 @@
             <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
           </div>
         </div>
-           <b-card-title><b-link :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" class="stretched-link" @click="$router.push({ name: 'Activity', params: { id: activity.id } })">{{activity.title}}</b-link></b-card-title>
+           <b-card-title><b-link :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" class="stretched-link" @click="$router.push({ name: 'Activity', params: { id: activity.title } })">{{activity.title}}</b-link></b-card-title>
         </b-card>
         
         
@@ -74,7 +74,7 @@ export default {
         sugestFrom:'',
         nQuestions:'',
       },
-      levels:['Fácil','Médio','Díficil'],
+      levels:['Fácil','Médio','Dificil'],
       categories:['Quiz','Reconhecimento','Atividades Personalizadas (Tutor)','Atividades Personalizadas (Professor)'],
       sugestions:['Tutor','Professor','Ambos'],
     }

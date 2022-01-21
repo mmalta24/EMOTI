@@ -106,7 +106,7 @@ export default new Vuex.Store({
 
     getActivities: (state) => state.activities,
 
-    checkInActivities: (state) => (variable) => state.activities.some((activity)=>activity.title.toLowerCase()==variable.title.SET_NEW_CLASStoLowerCase()),    
+    checkInActivities: (state) => (variable) => state.activities.find((activity)=>activity.title.toLowerCase()==variable.toLowerCase()),    
   },
 
   mutations: {

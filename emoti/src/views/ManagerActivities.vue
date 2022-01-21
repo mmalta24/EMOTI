@@ -30,11 +30,11 @@
                       <th>Categoria</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" >
-                      <td class="p-4">Qual é o meu nome?</td>
-                      <td>Fácil</td>
-                      <td>www.home.com/123</td>
-                      <td>Reconhecimento</td>
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(activity,index) in getActivities" :key="index">
+                      <td class="p-4">{{activity.title}}</td>
+                      <td>{{activity.level}}</td>
+                      <td>{{activity.caseIMG}}</td>
+                      <td>{{activity.category}}</td>
                       <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerActivity @click="modalActivityDo='editactivity'"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
                   </tr>
              </table>
@@ -45,7 +45,7 @@
           <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='addactivity'">
               <h4 :style="{color:'#e87461'}">Adicionar Atividade</h4>
 
-              <b-form @submit="addActivity()">
+              <b-form @submit.prevent="addActivity()">
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" v-model="newActivity.title" required></b-form-input>
                  </b-form-group>
@@ -67,11 +67,11 @@
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4" v-for="(question,index) in newActivity.questions" :key="index">
                     <div class="row">
-                       <b-form-select id="input-sm" class="col-3 ml-3" v-model="question.correctAnswer" :disabled="index+1 != newActivity.questions.length" required>
+                       <b-form-select id="input-sm" class="col-3 ml-3" v-model="question.correctAnswer" :disabled="index+1 != newActivity.questions.length">
                           <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
                        </b-form-select>
-                       <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Imagem" v-model="question.img" :disabled="index+1 != newActivity.questions.length" required></b-form-input>
-                       <b-form-input id="input-sm" type="number" class="col-2 ml-2" placeholder="Pontos" v-model.number="question.points" :disabled="index+1 != newActivity.questions.length" required></b-form-input>
+                       <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Imagem" v-model="question.img" :disabled="index+1 != newActivity.questions.length"></b-form-input>
+                       <b-form-input id="input-sm" type="number" class="col-2 ml-2" placeholder="Pontos" min="0"  v-model.number="question.points" :disabled="index+1 != newActivity.questions.length"></b-form-input>
                        <b-button class="col-1 ml-2" @click="addNewQuestion(index)" :disabled="index+1 != newActivity.questions.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
                     </div>
                  </b-form-group>
@@ -83,9 +83,9 @@
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Descrição:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-textarea v-model="newActivity.description" placeholder="Enter something..." rows="3" max-rows="6"></b-form-textarea>
                  </b-form-group>
-            
+               <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
               </b-form>
-              <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
+              
 
           </div>
 
@@ -133,7 +133,7 @@
               <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='manageremotion'">
                   <h4 :style="{color:'#e87461'}">Emoções</h4>
 
-                  <b-form @submit.prevent="addNewEmotion()">
+                  <b-form @submit="addNewEmotion()">
                     <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Nome:" label-for="input-sm" class="mt-4 mb-4">
                         <b-form-input id="input-sm" v-model="newEmotion" required></b-form-input>
                     </b-form-group>
@@ -191,11 +191,6 @@ export default {
       ...mapGetters(["getLoggedUser","getEmotions","checkInEmotions","getActivities","checkInActivities"]),
    },
 
-   /*created(){
-      this.emotionsList=this.getEmotions
-      console.log(this.emotionsList);
-   },*/
-
    methods: {
       ...mapMutations(["SET_REMOVE_EMOTION","SET_NEW_EMOTION","SET_REMOVE_ACTIVITY","SET_NEW_ACTIVITY"]),
 
@@ -213,27 +208,6 @@ export default {
       },
 
       addNewQuestion(index){
-         console.log(index);
-         //let wrongEmotions = []
-         /*for (let i = 0; i < 3; i++) {
-            let emotionId = Math.floor(Math.random()*this.getEmotions.length)
-            let validation=false
-            let a = 0
-            //if (this.getEmotions[emotionId] == this.newActivity.questions[index].correctAnswer) {
-               while(!validation){
-                  emotionId = Math.floor(Math.random()*this.getEmotions.length)
-                  if (this.getEmotions[emotionId] != this.newActivity.questions[index].answers[a] && this.getEmotions[emotionId] != this.newActivity.questions[index].correctAnswer){
-                     validation=true
-                     console.log(this.getEmotions[emotionId],"-----", this.newActivity.questions[index].correctAnswer);
-                  }
-                  a++
-               }
-            //
-            console.log(this.newActivity.questions[0].answers[a]);
-         
-            
-         }
-         this.newActivity.questions[index].answers=[]*/
          let wrongEmotions=[]
          let emotionId = ''
          let validation=false
@@ -250,7 +224,10 @@ export default {
             }
             validation=false
          }
-         console.log(wrongEmotions);
+         
+         wrongEmotions.push(this.newActivity.questions[index].correctAnswer)
+         this.newActivity.questions[index].answers=wrongEmotions
+         wrongEmotions.sort(()=> Math.random() - 0.5)
 
          this.newActivity.questions.push({
             img:'',
@@ -258,6 +235,15 @@ export default {
             answers:[],
             points:0
          })
+      },
+
+      addActivity(){
+         if (!this.checkInActivities(this.newActivity.title)) {
+            this.newActivity.questions.pop()
+            this.SET_NEW_ACTIVITY(this.newActivity)
+         } else {
+            alert("Já existe uma atividade com esse nome!")
+         }
       },
 
    },
