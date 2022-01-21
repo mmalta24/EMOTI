@@ -10,7 +10,7 @@
               <p class="align-self-center" style="font-size:20px">Pergunta <span style="font-weight:bolder;color:#e87461">{{nQuestion}}</span> de <span style="font-weight:bolder">{{tQuestion}}</span></p>
               
               <b-button class="d-flex flex-row justify-content-center align-items-center"  :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" @click="nextQuestion()" v-if="positionArray != activity.questions.length-1"><span class="material-icons-round">arrow_forward_ios</span></b-button>
-              <b-button v-else class="d-flex flex-row justify-content-center align-items-center"  :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" @click="submitActivity()"><span class="material-icons-round">done_all</span></b-button>
+              <b-button v-else class="d-flex flex-row justify-content-center align-items-center"  :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" @click="submitActivity()"  v-b-modal.modalActivity><span class="material-icons-round">done_all</span></b-button>
             </div>
 
             <div class="col-8">
@@ -29,6 +29,34 @@
           </div>
         </div>
      </b-container>
+
+     <b-modal id="modalActivity" size="lg" centered hide-footer header-border-variant="0" header-class="color" body-class="color" hide-header-close no-close-on-esc no-close-on-backdrop>
+
+       <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center d-flex flex-column align-items-center">
+         <h2 :style="{color:'#e87461'}" class="mt-4">Parabéns, concluíste a atividade !!</h2>
+
+         <p :style="{fontSize:'40px'}" class="mt-4"><span :style="{color:'#e87461'}">4</span>/5</p>
+
+         <p :style="{fontSize:'22px',fontFamily:'EAmbit Regular'}">Conseguiste acertar 4 questões em 5 propostas</p>
+
+          <table class="col-8 text-center mt-4 mb-3">
+            <tr :style="{'background-color':'#e87461',color:'#fbfbf3'}">
+              <th class="p-1">Emoção</th>
+              <th>Pontos</th>
+            </tr>
+            <tr :style="{'border-bottom':'2px solid #707070'}">
+              <td class="p-4">4</td>
+              <td>4</td>
+            </tr>
+          </table>
+
+          <p :style="{fontSize:'22px',fontFamily:'EAmbit Regular'}" class="mt-5">Conseguiste acumular mais <span :style="{color:'#e87461'}">500</span> pontos!</p>
+
+          <b-button :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" class="mt-4 mb-5">Voltar ao Catálogo</b-button>
+
+       </div>
+
+     </b-modal>
   </div>
 </template>
 
