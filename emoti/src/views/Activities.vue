@@ -39,8 +39,8 @@
       </div>
     </b-sidebar>
 
-      <b-card-group style="border: 2px solid red" class="row col-12" columns>
-        <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column" class="mb-2 mr-2"  v-for="(activity, index) in getFilteredActivities(this.formFilter)" :key="index">
+      <b-card-group class="row col-12" columns>
+        <b-card tag="article" :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-top':cardAffect==index?'0px':'10px'}" class="mb-2 mr-2"  v-for="(activity, index) in getFilteredActivities(this.formFilter)" :key="index" @mouseover="cardAffect=index" @mouseleave="cardAffect=null">
         <img v-bind:src="activity.caseIMG" alt="" style="width:17rem">
         <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
           <b-card-sub-title class="mb-2"><span style="color:#e87461">{{activity.category}}</span></b-card-sub-title>
@@ -77,6 +77,7 @@ export default {
       levels:['Fácil','Médio','Dificil'],
       categories:['Quiz','Reconhecimento','Atividades Personalizadas (Tutor)','Atividades Personalizadas (Professor)'],
       sugestions:['Tutor','Professor','Ambos'],
+      cardAffect:null
     }
   },
 methods: {

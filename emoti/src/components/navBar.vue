@@ -6,11 +6,11 @@
         </b-navbar-nav>
 
         <b-navbar-nav class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0" :style="{fontFamily:'EAmbit SemiBold'}">
-          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Home')"><router-link to="/home" class="d-flex flex-column align-items-center"  :style="{color:colorAffect=='Home'?'#e87461':'#bfbfbf','text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px" >home</span>Home</router-link></b-nav-item>
-          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Activities')"><router-link to="/activities" class="d-flex flex-column align-items-center"  :style="{color:colorAffect=='Activities'?'#e87461':'#bfbfbf','text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">videogame_asset</span>Atividades</router-link></b-nav-item>
-          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Profile')"><router-link to="/profile" class="d-flex flex-column align-items-center" :style="{color:colorAffect=='Profile'?'#e87461':'#bfbfbf','text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">person</span>Perfil</router-link></b-nav-item>
-          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Activities P.')"><router-link to="/myactivities" class="d-flex flex-column align-items-center" :style="{color:colorAffect=='Activities P.'?'#e87461':'#bfbfbf','text-decoration':'none'}" v-if="$store.getters.getLoggedUser.typeUser=='Professor' || $store.getters.getLoggedUser.typeUser=='Tutor'"><span class="material-icons-round" style="font-size:30px">palette</span>Atividades P.</router-link></b-nav-item>
-          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Class')"><router-link to="/class" class="d-flex flex-column align-items-center" :style="{color:colorAffect=='Class'?'#e87461':'#bfbfbf','text-decoration':'none'}"  v-if="$store.getters.getLoggedUser.typeUser=='Professor'"><span class="material-icons-round" style="font-size:30px">assignment</span>Turmas</router-link></b-nav-item>
+          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Home')" @mouseover="colorHome='#e87461'" @mouseleave="colorHome='#bfbfbf'"><router-link to="/home" class="d-flex flex-column align-items-center"  :style="{color:colorAffect=='Home'?'#e87461':colorHome,'text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px" >home</span>Home</router-link></b-nav-item>
+          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Activities')" @mouseover="colorActivities='#e87461'" @mouseleave="colorActivities='#bfbfbf'"><router-link to="/activities" class="d-flex flex-column align-items-center"  :style="{color:colorAffect=='Activities'?'#e87461':colorActivities,'text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">videogame_asset</span>Atividades</router-link></b-nav-item>
+          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Profile')" @mouseover="colorProfile='#e87461'" @mouseleave="colorProfile='#bfbfbf'"><router-link to="/profile" class="d-flex flex-column align-items-center" :style="{color:colorAffect=='Profile'?'#e87461':colorProfile,'text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">person</span>Perfil</router-link></b-nav-item>
+          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Activities P.')" @mouseover="colorActivitiesP='#e87461'" @mouseleave="colorActivitiesP='#bfbfbf'"><router-link to="/myactivities" class="d-flex flex-column align-items-center" :style="{color:colorAffect=='Activities P.'?'#e87461':colorActivitiesP,'text-decoration':'none'}" v-if="$store.getters.getLoggedUser.typeUser=='Professor' || $store.getters.getLoggedUser.typeUser=='Tutor'"><span class="material-icons-round" style="font-size:30px">palette</span>Atividades P.</router-link></b-nav-item>
+          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Class')" @mouseover="colorTeams='#e87461'" @mouseleave="colorTeams='#bfbfbf'"><router-link to="/class" class="d-flex flex-column align-items-center" :style="{color:colorAffect=='Class'?'#e87461':colorTeams,'text-decoration':'none'}"  v-if="$store.getters.getLoggedUser.typeUser=='Professor'"><span class="material-icons-round" style="font-size:30px">assignment</span>Turmas</router-link></b-nav-item>
         </b-navbar-nav> 
 
         <!--Right aligned nav items-->
@@ -54,9 +54,11 @@ export default {
       this.colorAffect=page
     },
     logout(){
-      this.$store.commit('SET_LOGOUT')
-      this.colorAffect='home';
+      this.$store.commit('SET_LOGOUT');
     }
+  },
+  created () {
+    this.colorAffect=this.$route.name;
   },
 }
 </script>
