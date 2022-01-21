@@ -49,10 +49,8 @@
           </div>
         </div>
            <b-card-title><b-link :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" class="stretched-link" @click="$router.push({ name: 'Activity', params: { name: activity.title } })">{{activity.title}}</b-link></b-card-title>
-        </b-card>
-        
-        
-        </b-card-group>
+        </b-card>  
+      </b-card-group>
 
         
         
