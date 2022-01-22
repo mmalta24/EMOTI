@@ -9,6 +9,7 @@ import ActivitiesP from "../views/ActivitiesP.vue";
 import Class from "../views/Class.vue"
 import ManagerUser from "../views/ManagerUser.vue"
 import ManagerActivities from "../views/ManagerActivities.vue"
+import ManagerBadges from "../views/ManagerBadges.vue"
 
 import store from "../store/index.js";
 
@@ -90,7 +91,16 @@ const routes = [
       requiresAuth: true,
       requiresBeAdmin:true,
     },
-  }
+  },
+  {
+    path:"/managerbadges",
+    name:"ManagerBadges",
+    component:ManagerBadges,
+    meta:{
+      requiresAuth:true,
+      requiresBeAdmin:true
+    }
+  },
 
 ];
 

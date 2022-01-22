@@ -1,10 +1,10 @@
 <template>
    <div id="backgroundHome">
     <b-container class="col-11 pt-4">
-      <div style="border:2px solid red">
+      <div>
         <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Novidades</h2>
 
-        <b-card-group style="border: 2px solid red" class="d-flex flex-row flex-wrap justify-content-between">
+        <b-card-group class="d-flex flex-row flex-wrap justify-content-between">
         <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column" class="mb-2 mr-2">
         <img src="../assets/Imagem 2.png" alt="" style="width:17rem">
         <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
@@ -51,12 +51,12 @@
         
         </b-card-group>
 
-        <div class="mt-4" style="border: 2px solid blue" v-if="getLoggedUser.typeUser == 'Criança'">
+        <div class="mt-4" v-if="getLoggedUser.typeUser == 'Criança'">
           <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Os meus badges</h2>
 
           <div class="d-flex flex-row flex-wrap justify-content-around">
             <div class="text-center mt-3 ml-5 mr-5">
-              <img src="../assets/Grupo 399.png" alt="" :style="{width:'150px'}">
+              <img src="../assets/Grupo 399.png" alt="" :style="{width:'150px',filter:'grayscale(100%)'}">
               <b-progress :value="75" show-progress class="mb-3 mt-3" variant="warning"></b-progress>
               <h5 :style="{fontFamily:'EAmbit SemiBold'}">Felicidade</h5>
             </div>

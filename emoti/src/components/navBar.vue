@@ -6,7 +6,7 @@
         </b-navbar-nav>
 
         <b-navbar-nav class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0" :style="{fontFamily:'EAmbit SemiBold'}">
-          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Home')" @mouseover="colorHome='#e87461'" @mouseleave="colorHome='#bfbfbf'"><router-link to="/home" class="d-flex flex-column align-items-center"  :style="{color:colorAffect=='Home'?'#e87461':colorHome,'text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px" >home</span>Home</router-link></b-nav-item>
+          <b-nav-item class="ml-3 mr-3"  @click="colorClick('Home')" @mouseover="colorHome='#e87461'" @mouseleave="colorHome='#bfbfbf'"><router-link to="/home" class="d-flex flex-column align-items-center"  :style="{color:colorAffect=='Home' || colorAffect=='LandingPage'?'#e87461':colorHome,'text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px" >home</span>Home</router-link></b-nav-item>
           <b-nav-item class="ml-3 mr-3"  @click="colorClick('Activities')" @mouseover="colorActivities='#e87461'" @mouseleave="colorActivities='#bfbfbf'"><router-link to="/activities" class="d-flex flex-column align-items-center"  :style="{color:colorAffect=='Activities'?'#e87461':colorActivities,'text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">videogame_asset</span>Atividades</router-link></b-nav-item>
           <b-nav-item class="ml-3 mr-3"  @click="colorClick('Profile')" @mouseover="colorProfile='#e87461'" @mouseleave="colorProfile='#bfbfbf'"><router-link to="/profile" class="d-flex flex-column align-items-center" :style="{color:colorAffect=='Profile'?'#e87461':colorProfile,'text-decoration':'none'}"><span class="material-icons-round" style="font-size:30px">person</span>Perfil</router-link></b-nav-item>
           <b-nav-item class="ml-3 mr-3"  @click="colorClick('Activities P.')" @mouseover="colorActivitiesP='#e87461'" @mouseleave="colorActivitiesP='#bfbfbf'"><router-link to="/myactivities" class="d-flex flex-column align-items-center" :style="{color:colorAffect=='Activities P.'?'#e87461':colorActivitiesP,'text-decoration':'none'}" v-if="$store.getters.getLoggedUser.typeUser=='Professor' || $store.getters.getLoggedUser.typeUser=='Tutor'"><span class="material-icons-round" style="font-size:30px">palette</span>Atividades P.</router-link></b-nav-item>
@@ -21,13 +21,13 @@
             <b-avatar style="background-color:#BFBFBF;color:#FDFDED"></b-avatar>
           </template>
           <b-dropdown-item-button variant="secondary"  v-if="$store.getters.getLoggedUser.typeUser=='Administrador'" @click="colorClick('')">
-          <router-link to="/manageruser" :style="{color:'#bfbfbf','text-decoration':'none'}" ><b-icon icon="person-lines-fill" aria-hidden="true" ></b-icon> Gerir Utilizadores</router-link>
+          <router-link to="/manageruser" :style="{color:'#2B4141','text-decoration':'none'}" ><b-icon icon="person-lines-fill" aria-hidden="true" ></b-icon> Gerir Utilizadores</router-link>
           </b-dropdown-item-button >
           <b-dropdown-item-button variant="secondary"  v-if="$store.getters.getLoggedUser.typeUser=='Administrador'"  @click="colorClick('')">
-          <router-link to="/manageractivities" :style="{color:'#bfbfbf','text-decoration':'none'}"><b-icon icon="brush-fill" aria-hidden="true" ></b-icon> Gerir Actividades</router-link>
+          <router-link to="/manageractivities" :style="{color:'#2B4141','text-decoration':'none'}"><b-icon icon="brush-fill" aria-hidden="true" ></b-icon> Gerir Atividades</router-link>
           </b-dropdown-item-button >
           <b-dropdown-item-button variant="secondary"  v-if="$store.getters.getLoggedUser.typeUser=='Administrador'"  @click="colorClick('')">
-          <router-link to="" :style="{color:'#bfbfbf','text-decoration':'none'}"><b-icon icon="award-fill" aria-hidden="true" ></b-icon> Gerir Badges</router-link>
+          <router-link to="/managerbadges" :style="{color:'#2B4141','text-decoration':'none'}"><b-icon icon="award-fill" aria-hidden="true" ></b-icon> Gerir Badges</router-link>
           </b-dropdown-item-button >
           <b-dropdown-divider v-if="$store.getters.getLoggedUser.typeUser=='Administrador'"></b-dropdown-divider>
           <b-dropdown-item href="#" size="sm" class="mb-2" variant="danger" @click="logout()"><b-icon icon="door-closed-fill" aria-hidden="true"></b-icon> Terminar Sessão</b-dropdown-item>
@@ -41,7 +41,7 @@
 export default {
   data() {
     return {
-      colorHome: '#e87461',
+      colorHome: '#bfbfbf',
       colorActivities:'#bfbfbf',
       colorProfile:'#bfbfbf',
       colorActivitiesP:'#bfbfbf',
@@ -55,11 +55,13 @@ export default {
     },
     logout(){
       this.$store.commit('SET_LOGOUT');
+      this.colorAffect='Home'
     }
   },
   created () {
     this.colorAffect=this.$route.name;
   },
+  
 }
 </script>
 
