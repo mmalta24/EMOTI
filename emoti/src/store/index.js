@@ -292,13 +292,21 @@ export default new Vuex.Store({
       sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
 
       state.users.find((user)=> user.username == state.loggedUser.username).history.push(variable)
-      state.users.find((user)=> user.username == state.loggedUser.username).questionsDone=state.users.find((user)=> user.username == state.loggedUser.username).questionsDone.concat(variable.results)
+      state.users.find((user)=> user.username == state.loggedUser.username).questionsDone.concat(variable.results)
       localStorage.users = JSON.stringify(state.users)
     },
 
     SET_NEW_BADGE(state,variable){
       state.badges.push(variable)
       localStorage.badges = JSON.stringify(state.badges)
+    },
+
+    SET_NEW_BADGE_TO_USER(state,variable){
+      state.loggedUser.badgesId.push(variable)
+      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
+
+      state.users.find((user)=> user.username == state.loggedUser.username).badgesId.push(variable) 
+      localStorage.users = JSON.stringify(state.users)     
     },
     
     

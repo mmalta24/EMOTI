@@ -80,7 +80,7 @@ export default {
 
   },
   computed: {
-    ...mapGetters(["getLoggedUser","getActivity","checkWinBadge"]),
+    ...mapGetters(["getLoggedUser","getActivity","getBagdes"]),
   },
 
   created() {
@@ -89,7 +89,7 @@ export default {
 	},
 
   methods: {
-    ...mapMutations(["SET_ADD_TO_HISTORY"]),
+    ...mapMutations(["SET_ADD_TO_HISTORY","SET_NEW_BADGE_TO_USER"]),
 
     nextQuestion() {
       this.positionArray++
@@ -125,11 +125,42 @@ export default {
           results:this.countResponsesRightList,
           pointsEarned:this.countPointsEarned
         }
-        console.log(info);
         this.SET_ADD_TO_HISTORY(info)
+
+        //check if won any badges
+        this.CheckBadgesWon()
+
+
       }
 
-    }
+    },
+
+    CheckBadgesWon(){
+      
+      for (let i = 0; i < this.getBagdes.length; i++) {
+        if (this.getBagdes[i].badgeEmotion=="Total") {
+          if (this.getLoggedUser.points>=this.getBagdes[i].pointsNedded) {
+            if (!this.getLoggedUser.badgesId.some((badgeId)=>badgeId==this.getBagdes[i].badgeName)) {
+              this.SET_NEW_BADGE_TO_USER(this.getBagdes[i].badgeName)
+            }
+          }
+        }else{
+          var checkerPoints = 0
+          for (let a = 0; a < this.getLoggedUser.questionsDone.length; a++) {
+            if (this.getLoggedUser.questionsDone[a].emotion == this.getBagdes[i].badgeEmotion) {
+              checkerPoints += +this.getLoggedUser.questionsDone[a].points
+            }          
+          }
+          if (checkerPoints >= this.getBagdes[i].pointsNedded) {
+            if (!this.getLoggedUser.badgesId.some((badgeId)=>badgeId==this.getBagdes[i].badgeName)) {
+              this.SET_NEW_BADGE_TO_USER(this.getBagdes[i].badgeName)
+            }
+          }
+          
+        }
+        
+      }
+    },
   },
 };
 </script>
