@@ -35,7 +35,7 @@
                       <td>{{activity.level}}</td>
                       <td>{{activity.caseIMG}}</td>
                       <td>{{activity.category}}</td>
-                      <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerActivity @click="modalActivityDo='editactivity'"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                      <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerActivity @click="modalActivityDo='editactivity'"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeActivity(activity.title)"><b-icon icon="trash-fill"></b-icon></b-button></td>
                   </tr>
              </table>
          </div>
@@ -243,6 +243,12 @@ export default {
             this.SET_NEW_ACTIVITY(this.newActivity)
          } else {
             alert("Já existe uma atividade com esse nome!")
+         }
+      },
+
+      removeActivity(variable){
+         if (confirm("Tem a certeza que pretende remover esta atividade?")) {
+            this.SET_REMOVE_ACTIVITY(variable)
          }
       },
 
