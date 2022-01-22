@@ -46,6 +46,17 @@ export default new Vuex.Store({
             },
               
           ],
+
+      badges: localStorage.badges
+        ? JSON.parse(localStorage.badges)
+        : [
+            {
+              badgeName: "teste",
+              badgeIMG: "img teste",
+              pointsNedded:20,
+              badgeEmotion: "Feliz",
+            },          
+          ],
      
       loggedUser: sessionStorage.loggedUser ? JSON.parse(sessionStorage.loggedUser) : null,
       emotions: localStorage.emotions ? JSON.parse(localStorage.emotions) : ['Feliz','Triste','Envergonhado','Preocupado'],
@@ -107,6 +118,10 @@ export default new Vuex.Store({
     getActivities: (state) => state.activities,
 
     checkInActivities: (state) => (variable) => state.activities.find((activity)=>activity.title.toLowerCase()==variable.toLowerCase()),    
+  
+    getBagdes: (state)=> state.badges,
+
+    checkBadges: (state)=>(variable) => state.badges.find((badge)=>badge.badgeName.toLowerCase()==variable.toLowerCase()),
   },
 
   mutations: {
@@ -273,12 +288,18 @@ export default new Vuex.Store({
 
     SET_ADD_TO_HISTORY(state,variable){
       state.loggedUser.history.push(variable)
+      state.loggedUser.questionsDone=state.loggedUser.questionsDone.concat(variable.results)
       sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
 
       state.users.find((user)=> user.username == state.loggedUser.username).history.push(variable)
+      state.users.find((user)=> user.username == state.loggedUser.username).questionsDone=state.users.find((user)=> user.username == state.loggedUser.username).questionsDone.concat(variable.results)
       localStorage.users = JSON.stringify(state.users)
-    }
+    },
 
+    SET_NEW_BADGE(state,variable){
+      state.badges.push(variable)
+      localStorage.badges = JSON.stringify(state.badges)
+    },
     
     
 

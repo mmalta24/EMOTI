@@ -55,42 +55,10 @@
           <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Os meus badges</h2>
 
           <div class="d-flex flex-row flex-wrap justify-content-around">
-            <div class="text-center mt-3 ml-5 mr-5">
-              <img src="../assets/Grupo 399.png" alt="" :style="{width:'150px',filter:'grayscale(100%)'}">
-              <b-progress :value="75" show-progress class="mb-3 mt-3" variant="warning"></b-progress>
-              <h5 :style="{fontFamily:'EAmbit SemiBold'}">Felicidade</h5>
+            <div class="text-center mt-3 ml-5 mr-5" v-for="(badge,index) in getBagdes" :key="index">
+              <img :src="badge.badgeIMG" alt="" :style="{width:'150px',filter:'grayscale(100%)'}">
+              <h5 :style="{fontFamily:'EAmbit SemiBold'}">{{badge.badgeName}}</h5>
             </div>
-
-            <div class="text-center mt-3 ml-5 mr-5">
-              <img src="../assets/Grupo 399.png" alt="" :style="{width:'150px'}">
-              <b-progress :value="75" show-progress class="mb-3 mt-3" variant="warning"></b-progress>
-              <h5 :style="{fontFamily:'EAmbit SemiBold'}">Felicidade</h5>
-            </div>
-
-            <div class="text-center mt-3 ml-5 mr-5">
-              <img src="../assets/Grupo 399.png" alt="" :style="{width:'150px'}">
-              <b-progress :value="75" show-progress class="mb-3 mt-3" variant="warning"></b-progress>
-              <h5 :style="{fontFamily:'EAmbit SemiBold'}">Felicidade</h5>
-            </div>
-
-            <div class="text-center mt-3 ml-5 mr-5">
-              <img src="../assets/Grupo 399.png" alt="" :style="{width:'150px'}">
-              <b-progress :value="75" show-progress class="mb-3 mt-3" variant="warning"></b-progress>
-              <h5 :style="{fontFamily:'EAmbit SemiBold'}">Felicidade</h5>
-            </div>
-
-            <div class="text-center mt-3 ml-5 mr-5">
-              <img src="../assets/Grupo 399.png" alt="" :style="{width:'150px'}">
-              <b-progress :value="75" show-progress class="mb-3 mt-3" variant="warning"></b-progress>
-              <h5 :style="{fontFamily:'EAmbit SemiBold'}">Felicidade</h5>
-            </div>
-            <div class="text-center mt-3 ml-5 mr-5">
-              <img src="../assets/Grupo 399.png" alt="" :style="{width:'150px'}">
-              <b-progress :value="75" show-progress class="mb-3 mt-3" variant="warning"></b-progress>
-              <h5 :style="{fontFamily:'EAmbit SemiBold'}">Felicidade</h5>
-            </div>
-
-         
           </div>
         </div>
 
@@ -151,21 +119,12 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
-      /*
-      getLoggedUser: {
-        username:"",
-        password:"",
-        name:"",
-        email:"",
-        typeUser: ["Criança", "Tutor", "Professor","Admin"]
-      }
-      */
       
     };
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser"]),
+    ...mapGetters(["getLoggedUser","getBagdes"]),
   },
 
   methods: {

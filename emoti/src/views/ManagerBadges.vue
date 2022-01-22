@@ -27,13 +27,11 @@
                       <th>Pontos Necessários</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}">
-                      <td class="p-4"></td>
-                      <td></td>
-                      <td></td>
-                      <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerBadges @click="modalBadgeDo='editBadge'"><b-icon icon="pencil-fill"></b-icon></b-button>
-                      <b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button>
-                      </td>
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(badge,index) in getBagdes" :key="index">
+                      <td class="p-4">{{badge.badgeName}}</td>
+                      <td>{{badge.badgeEmotion}}</td>
+                      <td>{{badge.pointsNedded}}</td>
+                      <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
                   </tr>
              </table>
          </div>
@@ -43,52 +41,23 @@
          <!--Adicionar Badge-->
          <div v-if="modalBadgeDo=='addBadge'" :style="{fontFamily:'EAmbit SemiBold'}" class="text-center">
             <h4 :style="{color:'#e87461'}">Adicionar Badge</h4>
-             <b-form>
+             <b-form @submit="addNewBadge()">
               <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Descrição:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required></b-form-input>
+                    <b-form-input id="input-sm" v-model="newBadgeForm.badgeName" required></b-form-input>
               </b-form-group>
 
                <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Pontos:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" type="number" required></b-form-input>
+                    <b-form-input id="input-sm" type="number" min="0" v-model.number="newBadgeForm.pointsNedded" required></b-form-input>
                </b-form-group>
 
                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Imagem (URL):" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" type="url" required></b-form-input>
+                    <b-form-input id="input-sm" type="url" v-model="newBadgeForm.badgeIMG" required></b-form-input>
                 </b-form-group>
 
                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Emoção:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-select id="input-sm">
-                       <b-form-select-option value="Quiz">Quiz</b-form-select-option>
-                       <b-form-select-option value="Reconhecimento" disabled>Reconhecimento</b-form-select-option>
-                    </b-form-select>
-                </b-form-group>
-
-                <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
-              </b-form>
-
-         </div>
-
-         <!--Editar Badge-->
-         <div v-if="modalBadgeDo=='editBadge'" :style="{fontFamily:'EAmbit SemiBold'}" class="text-center">
-            <h4 :style="{color:'#e87461'}">Editar Badge</h4>
-
-            <b-form>
-              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Descrição:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required></b-form-input>
-              </b-form-group>
-
-               <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Pontos:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" type="number" required></b-form-input>
-               </b-form-group>
-
-                <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Imagem (URL):" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" type="url" required></b-form-input>
-                </b-form-group>
-
-                <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Emoção:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-select id="input-sm">
-                       <b-form-select-option value="Quiz">Quiz</b-form-select-option>
-                       <b-form-select-option value="Reconhecimento" disabled>Reconhecimento</b-form-select-option>
+                    <b-form-select id="input-sm" v-model="newBadgeForm.badgeEmotion">
+                       <b-form-select-option value="Total" >Total</b-form-select-option>
+                       <b-form-select-option v-for="(emotion, index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
                     </b-form-select>
                 </b-form-group>
 
@@ -101,10 +70,34 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 export default {
     data() {
         return {
-            modalBadgeDo: ''
+            modalBadgeDo: '',
+
+            newBadgeForm:{
+              badgeName: "",
+              badgeIMG: "",
+              pointsNedded:0,
+              badgeEmotion: "",
+            },          
+        }
+    },
+
+    computed: {
+        ...mapGetters(["getLoggedUser","getEmotions","getBagdes","checkBadges"]),
+    },
+
+    methods: {
+        ...mapMutations(["SET_NEW_BADGE"]),
+
+        addNewBadge() {
+            if (!this.checkBadges(this.newBadgeForm.badgeName)) {
+                this.SET_NEW_BADGE(this.newBadgeForm)
+            } else {
+                alert("Já existe um badge com esse nome!")
+            }
         }
     },
 

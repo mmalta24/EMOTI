@@ -78,18 +78,9 @@ export default {
       countPointsEarned:0,
     }
 
-    /*history:[
-          {
-            date:"",
-            activityTitle:"",
-            result:[],
-            pointsEarned:0
-          }
-      ],
-    */
   },
   computed: {
-    ...mapGetters(["getLoggedUser","getActivity"]),
+    ...mapGetters(["getLoggedUser","getActivity","checkWinBadge"]),
   },
 
   created() {

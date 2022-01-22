@@ -204,6 +204,7 @@ export default {
               badgesId:[],
               history:[],
               points:0,
+              questionsDone:[],
               blocked:false,
             }
             this.SET_NEW_USER(this.form);
