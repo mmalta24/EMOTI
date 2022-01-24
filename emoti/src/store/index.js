@@ -32,7 +32,8 @@ export default new Vuex.Store({
               }],
               caseIMG:'https://github.com/mmalta24/images/blob/main/Imagem%202.png?raw=true',
               description:'',
-              category:'Quiz'
+              category:'Quiz',
+              author:"admin",
             },         
           ],
       classes: localStorage.classes
@@ -104,6 +105,8 @@ export default new Vuex.Store({
     getUsers: (state)=>state.users,
 
     getStudent: (state) => (username) => state.users.find((user)=>user.username===username && user.typeUser == "Criança"),
+
+    getTeamStudents: (state) => (teamName) => state.classes.find((team)=>team.name == teamName && team.teacher== state.loggedUser.username).students ,
     
     CheckInTeams: (state) => (variable) => state.classes.find((team) => team.teacher === state.loggedUser.username && (team.students.find((student)=> student.usernameStudent === variable) || team.requests.find((request) => request.usernameStudent === variable))),
 
@@ -116,6 +119,10 @@ export default new Vuex.Store({
     checkInEmotions: (state) => (variable) => state.emotions.some((emotion)=>emotion.toLowerCase()==variable.toLowerCase()),
 
     getActivities: (state) => state.activities,
+
+    getActivitiesAdmin: (state) => state.activities.filter((activity)=>activity.category=="Quiz"||activity.category=="Reconhecimento"),
+
+    getActivitiesPers: (state) => state.activities.filter((activity)=>activity.author==state.loggedUser.username),
 
     checkInActivities: (state) => (variable) => state.activities.find((activity)=>activity.title.toLowerCase()==variable.toLowerCase()),    
   
@@ -308,7 +315,26 @@ export default new Vuex.Store({
       state.users.find((user)=> user.username == state.loggedUser.username).badgesId.push(variable) 
       localStorage.users = JSON.stringify(state.users)     
     },
+
+    SET_ADD_ACTIVITY_TO_KID(state,variable){
+      state.users.find((user) => user.username === state.loggedUser.child).activitiesPers[0].activities.push(variable.title);
+      localStorage.users = JSON.stringify(state.users)
+    },
     
+    SET_REMOVE_ACTIVITY_FROM_KID(state,variable){
+      state.users.find((user) => user.username === state.loggedUser.child).activitiesPers[0].activities = state.users.find((user) => user.username === state.loggedUser.child).activitiesPers[0].activities.filter((activity)=>activity!=variable);
+      localStorage.users = JSON.stringify(state.users)
+    },
+
+    SET_ADD_ACTIVITY_TO_CLASS(state,variable){
+      state.users.find((user) => user.username === variable.studentName).activitiesPers[1].activities.push(variable.activity);
+      localStorage.users = JSON.stringify(state.users)
+    },
+    
+    /*SET_REMOVE_ACTIVITY_FROM_CLASS(state,variable){
+      state.users.find((user) => user.username==variable.student).activitiesPers[1].activities = state.users.find((user) == state.users.find((user) => user.username==variable.student).activitiesPers[1].activities.filter((activity)=>activity!=variable);
+      localStorage.users = JSON.stringify(state.users)
+    }*/
     
 
   },

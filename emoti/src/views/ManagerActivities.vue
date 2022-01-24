@@ -30,7 +30,7 @@
                       <th>Categoria</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(activity,index) in getActivities" :key="index">
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(activity,index) in getActivitiesAdmin" :key="index">
                       <td class="p-4">{{activity.title}}</td>
                       <td>{{activity.level}}</td>
                       <td>{{activity.caseIMG}}</td>
@@ -45,7 +45,7 @@
           <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='addactivity'">
               <h4 :style="{color:'#e87461'}">Adicionar Atividade</h4>
 
-              <b-form @submit.prevent="addActivity()">
+              <b-form @submit="addActivity()">
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" v-model="newActivity.title" required></b-form-input>
                  </b-form-group>
@@ -181,14 +181,15 @@ export default {
             }],
             caseIMG:'',
             description:'',
-            category:'' 
+            category:'' ,
+            author:'admin'
          },
          
       };
    },
 
    computed: {
-      ...mapGetters(["getLoggedUser","getEmotions","checkInEmotions","getActivities","checkInActivities"]),
+      ...mapGetters(["getLoggedUser","getEmotions","checkInEmotions","getActivitiesAdmin","checkInActivities"]),
    },
 
    methods: {

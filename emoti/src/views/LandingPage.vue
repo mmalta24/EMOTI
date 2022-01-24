@@ -201,6 +201,14 @@ export default {
                 sugestBy:'Professor',
                 activities:[]
               }], 
+              activitiesPers:[{
+                createdBy:'Tutor',
+                activities:[]
+              },
+              {
+                createdBy:'Professor',
+                activities:[]
+              }],
               badgesId:[],
               history:[],
               points:0,

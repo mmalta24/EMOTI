@@ -27,11 +27,11 @@
                       <th>Imagem (Capa)</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" >
-                      <td class="p-4">Qual é o meu nome?</td>
-                      <td>Fácil</td>
-                      <td>https://www.imagem.com/123</td>
-                      <td><b-button style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1" @click="modalDo='viewgame'"  v-b-modal.modal-myactivities><b-icon icon="eye-fill" ></b-icon></b-button><b-button style="border:none" class=" ml-2 mr-1" @click="modalDo='editgame'"  v-b-modal.modal-myactivities><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(activity,index) in getActivitiesPers" :key="index">
+                      <td class="p-4">{{activity.title}}</td>
+                      <td>{{activity.level}}</td>
+                      <td>{{activity.caseIMG}}</td>
+                      <td><b-button v-if="getLoggedUser.typeUser == 'Professor'" style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1" @click="openModal(activity.title)"  v-b-modal.modal-myactivities><b-icon icon="eye-fill" ></b-icon></b-button><b-button style="border:none" class=" ml-2 mr-1" @click="modalDo='editgame'"  v-b-modal.modal-myactivities><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill" @click="removeActivity(activity.title)"></b-icon></b-button></td>
                   </tr>
                 </table>
              </div>
@@ -42,35 +42,40 @@
             <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalDo=='addgame'">
               <h4 :style="{color:'#e87461'}">Adicionar Atividade Personalizada</h4>
 
-              <b-form>
+              <b-form @submit.prevent="addActivity()">
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required></b-form-input>
+                    <b-form-input id="input-sm" v-model="newActivity.title" required></b-form-input>
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Dificuldade:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-select id="input-sm" required></b-form-select>
+                    <b-form-select id="input-sm" v-model="newActivity.level" required>
+                       <b-form-select-option value="Fácil">Fácil</b-form-select-option>
+                       <b-form-select-option value="Médio">Médio</b-form-select-option>
+                       <b-form-select-option value="Dificil">Dificil</b-form-select-option>
+                    </b-form-select>
                  </b-form-group>
 
-                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4">
+                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4" v-for="(question,index) in newActivity.questions" :key="index">
                     <div class="row">
-                       <b-form-select id="input-sm" class="col-3 ml-3" required></b-form-select>
-                       <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Emoção" required></b-form-input>
-                       <b-form-input id="input-sm" class="col-2 ml-2" placeholder="Pontos" required></b-form-input>
-                       <b-button class="col-1 ml-2"><b-icon icon="plus-circle-fill"></b-icon></b-button>
+                       <b-form-select id="input-sm" class="col-3 ml-3" v-model="question.correctAnswer" :disabled="index+1 != newActivity.questions.length">
+                          <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
+                       </b-form-select>
+                       <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Imagem" v-model="question.img" :disabled="index+1 != newActivity.questions.length"></b-form-input>
+                       <b-form-input id="input-sm" type="number" class="col-2 ml-2" placeholder="Pontos" min="0"  v-model.number="question.points" :disabled="index+1 != newActivity.questions.length"></b-form-input>
+                       <b-button class="col-1 ml-2" @click="addNewQuestion(index)" :disabled="index+1 != newActivity.questions.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
                     </div>
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Capa (IMG):" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="url" id="input-sm" required></b-form-input>
+                    <b-form-input type="url" id="input-sm" v-model="newActivity.caseIMG" required></b-form-input>
                  </b-form-group>
                  
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Descrição:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-textarea v-model="text" placeholder="Enter something..." rows="3" max-rows="6"></b-form-textarea>
+                    <b-form-textarea v-model="newActivity.description" placeholder="Enter something..." rows="3" max-rows="6"></b-form-textarea>
                  </b-form-group>
-            
-              </b-form>
-              <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
-              </div>
+                  <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
+              </b-form>        
+            </div>
 
             <!--Editar Atividade-->
             <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalDo=='editgame'">
@@ -110,22 +115,24 @@
             <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalDo=='viewgame'">
                <h4 :style="{color:'#e87461'}">Visibilidade</h4>
 
-               <b-form>
+               <b-form @submit.prevent="defineVisibility()">
                   <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required disabled></b-form-input>
+                    <b-form-input id="input-sm" v-model="activityName" required disabled></b-form-input>
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Atribuir a:" label-for="input-sm" class="mt-4 mb-4">
-                    <div class="row">
-                       <b-form-select id="input-sm" class="col-5 ml-3" required></b-form-select>
-                       <b-form-select id="input-sm" class="col-5 ml-2" placeholder="Emoção" required></b-form-select>
-                       <b-button class="col-1 ml-2"><b-icon icon="plus-circle-fill"></b-icon></b-button>
+                    <div class="row" v-for="(teamView,index) in classesView" :key="index">
+                       <b-form-select id="input-sm" class="col-8 ml-3" :disabled="index+1 != classesView.length" v-model="classesView[index]">
+                          <b-form-select-option disabled value="">---Turmas---</b-form-select-option>
+                          <b-form-select-option v-for="(team,index) in getTeacherClasses" :key="index" :value="team.name">{{team.name}}</b-form-select-option>
+                       </b-form-select>
+                       <b-button class="col-1 ml-2" @click="newClassView()" :disabled="index+1 != classesView.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
                     </div>
                  </b-form-group>
-
+                  <div class=" d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Definir</b-button></div>
                </b-form>
 
-               <div class=" d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Definir</b-button></div>
+               
             </div>
 
           </b-modal>
@@ -136,12 +143,132 @@
 </template>
 
 <script>
-
+import { mapGetters, mapMutations } from "vuex";
 export default {
    data() {
       return {
-         modalDo: ''
+         modalDo: '',
+         activityName: "",
+         classesView:[""],
+         newActivity:{
+            title: "",
+            level: "",
+            questions: [{
+               img:'',
+               correctAnswer:'',
+               answers:[],
+               points:0
+            }],
+            caseIMG:'',
+            description:'',
+            category:'' ,
+            author:''
+         },
+         data:{
+            student1:"",
+            activity:""
+         }
       }
+   },
+   
+   computed: {
+      ...mapGetters(["getLoggedUser","getEmotions","getActivitiesPers","checkInActivities","getTeacherClasses","getTeamStudents"]),
+   },
+
+   methods: {
+      ...mapMutations(["SET_REMOVE_ACTIVITY","SET_NEW_ACTIVITY","SET_ADD_ACTIVITY_TO_KID","SET_REMOVE_ACTIVITY_FROM_KID","SET_REMOVE_ACTIVITY_FROM_CLASS","SET_ADD_ACTIVITY_TO_CLASS"]),
+
+      addNewQuestion(index){
+         let wrongEmotions=[]
+         let emotionId = ''
+         let validation=false
+         let validation1=false
+
+         for (let i = 0; i <3; i++) {
+            while(validation==false){
+               emotionId=Math.floor(Math.random()*this.getEmotions.length)
+               validation1=wrongEmotions.some((wrong)=>wrong==this.getEmotions[emotionId])
+               if(this.getEmotions[emotionId] != this.newActivity.questions[index].correctAnswer && validation1==false){
+                  wrongEmotions.push(this.getEmotions[emotionId])
+                  validation=true
+               }
+            }
+            validation=false
+         }
+         
+         wrongEmotions.push(this.newActivity.questions[index].correctAnswer)
+         this.newActivity.questions[index].answers=wrongEmotions
+         wrongEmotions.sort(()=> Math.random() - 0.5)
+
+         this.newActivity.questions.push({
+            img:'',
+            correctAnswer:'',
+            answers:[],
+            points:0
+         })
+      },
+
+      addActivity(){
+         if (!this.checkInActivities(this.newActivity.title)) {
+            this.newActivity.questions.pop()
+            if (this.getLoggedUser.typeUser=="Tutor") {
+               this.newActivity.category="Atividades Personalizadas (Tutor)"
+               this.newActivity.author=this.getLoggedUser.username
+               this.SET_NEW_ACTIVITY(this.newActivity)
+               this.SET_ADD_ACTIVITY_TO_KID(this.newActivity)
+            }else{
+               this.newActivity.category="Atividades Personalizadas (Professor)"
+               this.newActivity.author=this.getLoggedUser.username
+               this.SET_NEW_ACTIVITY(this.newActivity)
+            }
+         } else {
+            alert("Já existe uma atividade com esse nome!")
+         }
+      },
+
+      removeActivity(variable){
+         if (confirm("Tem a certeza que pretende remover esta atividade?")) {
+            if (this.getLoggedUser.typeUser=="Tutor") {
+               this.SET_REMOVE_ACTIVITY(variable)
+               this.SET_REMOVE_ACTIVITY_FROM_KID(variable)
+            } else {
+               this.SET_REMOVE_ACTIVITY(variable)
+               //this.SET_REMOVE_ACTIVITY_FROM_CLASS(variable)
+            }
+         }
+      },
+
+      openModal(variable){
+         this.modalDo="viewgame"
+         this.activityName = variable
+      },
+
+      newClassView(){
+         this.classesView.push("")
+      },
+
+      defineVisibility(){
+         if (this.classesView.lenght>1) {
+            this.classesView.pop()
+         }
+         
+         
+         for (let i = 0; i < this.classesView.length; i++) {
+            let team = this.classesView[i];
+            for (let a = 0; a < this.getTeamStudents(team).length; a++) {
+               let student1 = this.getTeamStudents(team)[a].usernameStudent
+               this.data= {studentName:student1,activity:this.activityName}
+               this.SET_ADD_ACTIVITY_TO_CLASS(this.data)
+               
+            }
+         }
+
+          
+          
+         
+         
+      },
+
    },
 };
 </script>
