@@ -194,11 +194,11 @@ export default {
               typeUser: this.formRegister.typeUser,
               tutor:null,
               activitiesSugest:[{
-                sugestFor:'Tutor',
+                sugestBy:'Tutor',
                 activities:[]
               },
               {
-                sugestFor:'Professor',
+                sugestBy:'Professor',
                 activities:[]
               }], 
               badgesId:[],
