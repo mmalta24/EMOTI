@@ -41,14 +41,14 @@
 
       <b-card-group class="row col-12" columns>
         <b-card tag="article" :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-top':cardAffect==index?'0px':'10px'}" class="mb-2 mr-2"  v-for="(activity, index) in getFilteredActivities(this.formFilter)" :key="index" @mouseover="cardAffect=index" @mouseleave="cardAffect=null">
-        <img v-bind:src="activity.caseIMG" alt="" style="width:17rem">
+        <b-link><img v-bind:src="activity.caseIMG" alt="" style="width:17rem" @click="$router.push({ name: 'Activity', params: { name: activity.title } })"></b-link>
         <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
           <b-card-sub-title class="mb-2"><span style="color:#e87461">{{activity.category}}</span></b-card-sub-title>
           <div>
-            <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
+            <b-card-sub-title class="mb-2"><b-link :style="{color:'#e87461',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" v-b-modal.modalCatalog><span class="material-icons-round" :style="{color:'#87461'}">edit</span></b-link><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
           </div>
         </div>
-           <b-card-title><b-link :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" class="stretched-link" @click="$router.push({ name: 'Activity', params: { name: activity.title } })">{{activity.title}}</b-link></b-card-title>
+           <b-card-title><b-link :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" @click="$router.push({ name: 'Activity', params: { name: activity.title } })">{{activity.title}}</b-link></b-card-title>
         </b-card>  
       </b-card-group>
 
@@ -56,6 +56,54 @@
         
 
      </b-container>
+
+     <b-modal id="modalCatalog" centered hide-footer header-border-variant="0" header-class="color" body-class="color">
+        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center"> <!--Falta v-if -->
+               <h4 :style="{color:'#e87461'}">Sugerir Atividade</h4>
+
+               <b-form>
+                 <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atividade:" label-for="input-sm" class="mt-4 mb-4">
+                    <b-form-input type="text" id="input-sm" disabled required></b-form-input>
+                 </b-form-group>
+
+                 <b-form-group label-cols="4" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Atribuir a:" label-for="input-sm" class="mt-4 mb-4">
+                    <div class="row">
+                       <b-form-select id="input-sm" class="col-4 ml-3">
+                          <b-form-select-option value="" >a</b-form-select-option>
+                       </b-form-select>
+                           <b-form-select id="input-sm" class="col-4 ml-3">
+                          <b-form-select-option value="">a</b-form-select-option>
+                       </b-form-select>
+                       <b-button class="col-2 ml-2"><b-icon icon="plus-circle-fill"></b-icon></b-button>
+                    </div>
+                 </b-form-group>
+
+                 <div class="d-flex flex-row justify-content-end">
+                  <b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Sugerir</b-button>
+                  </div>
+               </b-form>
+        </div>
+
+        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center"> <!--Falta v-if -->
+               <h4 :style="{color:'#e87461'}">Sugerir Atividade</h4>
+
+               <b-form>
+                 <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atividade:" label-for="input-sm" class="mt-4 mb-4">
+                    <b-form-input type="text" id="input-sm" disabled required></b-form-input>
+                 </b-form-group>
+
+                 <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atribuir a:" label-for="input-sm" class="mt-4 mb-4">
+                    <b-form-input type="text" id="input-sm" disabled required></b-form-input>
+                 </b-form-group>
+
+
+                 <div class="d-flex flex-row justify-content-end">
+                  <b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Sugerir</b-button>
+                  </div>
+               </b-form>
+        </div>
+
+     </b-modal>
     
   </div>
 </template>
