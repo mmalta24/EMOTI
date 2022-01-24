@@ -18,7 +18,8 @@
         <b-nav-item-dropdown right :style="{fontFamily:'EAmbit SemiBold'}">
            <!--Using 'button-content' slot-->
           <template #button-content>
-            <b-avatar style="background-color:#BFBFBF;color:#FDFDED"></b-avatar>
+            <b-avatar v-if="$store.getters.getLoggedUser.imageProfile==''" style="background-color:#BFBFBF;color:#FDFDED"></b-avatar>
+            <img v-else :src="$store.getters.getLoggedUser.imageProfile" :style="{width:'50px',height:'50px','border-radius':'100%'}" alt="">
           </template>
           <b-dropdown-item-button variant="secondary"  v-if="$store.getters.getLoggedUser.typeUser=='Administrador'" @click="colorClick('')">
           <router-link to="/manageruser" :style="{color:'#2B4141','text-decoration':'none'}" ><b-icon icon="person-lines-fill" aria-hidden="true" ></b-icon> Gerir Utilizadores</router-link>

@@ -50,18 +50,19 @@
         </b-card>
         
         </b-card-group>
-
+        <!--Conteudo para a criança-->
         <div class="mt-4" v-if="getLoggedUser.typeUser == 'Criança'">
           <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Os meus badges</h2>
 
-          <div class="d-flex flex-row flex-wrap justify-content-around">
+          <div class="row mb-4 mt-2">
             <div class="text-center mt-3 ml-5 mr-5" v-for="(badge,index) in getBagdes" :key="index">
-              <img :src="badge.badgeIMG" alt="" :style="{width:'150px',filter:'grayscale(100%)'}">
+              <img :src="badge.badgeIMG" alt="" class="mb-1" :style="{width:'150px',filter:'grayscale(100%)'}">
               <h5 :style="{fontFamily:'EAmbit SemiBold'}">{{badge.badgeName}}</h5>
             </div>
           </div>
         </div>
 
+        <!--Conteudo para o tutor-->
         <div class="mt-4" style="border: 2px solid blue" v-if="getLoggedUser.typeUser == 'Tutor'">
            <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Evolução do meu filho</h2>
 
@@ -91,6 +92,7 @@
           </table>
         </div>
         
+        <!--Conteudo para o professor-->
         <div class="mt-4" style="border: 2px solid blue" v-if="getLoggedUser.typeUser == 'Professor'">
           <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Evolução dos meus alunos</h2>
 
@@ -140,7 +142,7 @@ export default {
 <style>
   #backgroundHome {
   width: 100%;
-  height: auto;
+  min-height: 100vh;
   background: url("../assets/Grupo 6.svg");
   background-size: 1525px auto;
   background-repeat: repeat;

@@ -5,7 +5,8 @@
         
         <div class="row col-12">
           <div class="col-2 d-flex flex-row justify-content-center align-items-center">
-            <img src="../assets/Imagem 1.png" :style="{width:'220px'}" alt="">
+            <b-avatar v-if="getLoggedUser.imageProfile==''" :style="{color:'#FDFDED','background-color':'#BFBFBF',width:'230px',height:'190px'}"></b-avatar>
+            <img v-else :src="getLoggedUser.imageProfile" :style="{width:'220px',height:'220px','border-radius':'100%'}" alt="">
             <b-button style="position:absolute;z-index:1;right:5px;bottom:50px;background-color:#e87461;border:none" pill size="sm" v-b-modal.modal-profile @click="whatModalDo='changePicture'"><span class="material-icons-round" style="display:flex;justify-content:center" >mode_edit</span></b-button>
           </div>
           <div class="col-5">
