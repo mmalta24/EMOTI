@@ -301,7 +301,7 @@ export default new Vuex.Store({
       state.loggedUser.history.push(variable)
       sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
 
-      state.users.find((user)=> user.username == state.loggedUser.username).history.push(variable)
+      state.users.find((user)=> user.username == state.loggedUser.username).history = state.loggedUser.history
       localStorage.users = JSON.stringify(state.users)
     },
 
