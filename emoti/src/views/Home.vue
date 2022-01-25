@@ -116,23 +116,11 @@ export default {
       if (studA.pointsStudents > studB.pointsStudents) return 1;
       else if (studA.pointsStudents < studB.pointsStudents) return -1;
       else return 0;
-      
     },
-    getDatesBetweenDates(startDate, endDate){
-      let dates = []
-      //to avoid modifying the original date
-      const theDate = new Date(startDate)
-      while (theDate < endDate) {
-        dates = [...dates, new Date(theDate)]
-        theDate.setDate(theDate.getDate() + 1)
-      }
-      return dates
-    }
   },
   
 
   created () {
-    console.log(this.getDatesBetweenDates('15/01/2021','15/02/2021'));
     for (let i = 0; i < this.getTeacherClasses.length; i++) {
       let team = this.getTeacherClasses[i].name
       for (let a = 0; a < this.getTeamStudents(team).length; a++) {
