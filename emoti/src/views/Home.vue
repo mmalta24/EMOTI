@@ -6,14 +6,11 @@
 
 
 
-        <b-card-group class="d-flex flex-row flex-wrap justify-content-between">
-          <b-card tag="article" style="max-width: 20vw;background-color:#fbfbf3;border:none;d-flex flex-column" class="mb-2 mr-2" v-for="(quiz,index) in lastQuizesInfo" :key="index">
+        <b-card-group class="row col-12" columns>
+          <b-card tag="article"  :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-left':cardAffectHome==index?'0px':'10px'}" class="mb-2 mr-2" v-for="(quiz,index) in lastQuizesInfo" :key="index" @mouseover="cardAffectHome=index" @mouseleave="cardAffectHome=null">
             <img :src="quiz.caseIMG" alt="" style="width:17rem">
             <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
               <b-card-sub-title class="mb-2"><span style="color:#e87461">{{quiz.category}}</span></b-card-sub-title>
-              <div>
-                <b-card-sub-title class="mb-2"><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
-              </div>
             </div>
             <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">{{quiz.title}}</b-card-title>
           </b-card>
@@ -31,7 +28,7 @@
         </div>
 
         <!--Conteudo para o tutor-->
-        <div class="mt-4" style="border: 2px solid blue" v-if="getLoggedUser.typeUser == 'Tutor'">
+        <div class="mt-4" v-if="getLoggedUser.typeUser == 'Tutor'" >
            <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Evolução do meu filho</h2>
 
            <b-form inline class="mt-4">
@@ -97,7 +94,8 @@ export default {
       childInfo:[],
       childResults:[],
       dataBegin:"",
-      dataEnd:""
+      dataEnd:"",
+      cardAffectHome:null
       
     };
   },
@@ -120,10 +118,21 @@ export default {
       else return 0;
       
     },
+    getDatesBetweenDates(startDate, endDate){
+      let dates = []
+      //to avoid modifying the original date
+      const theDate = new Date(startDate)
+      while (theDate < endDate) {
+        dates = [...dates, new Date(theDate)]
+        theDate.setDate(theDate.getDate() + 1)
+      }
+      return dates
+    }
   },
   
 
   created () {
+    console.log(this.getDatesBetweenDates('15/01/2021','15/02/2021'));
     for (let i = 0; i < this.getTeacherClasses.length; i++) {
       let team = this.getTeacherClasses[i].name
       for (let a = 0; a < this.getTeamStudents(team).length; a++) {
@@ -144,6 +153,8 @@ export default {
       this.childInfo = this.getStudent(this.getLoggedUser.child)
       console.log(this.childInfo);
       let resultsData = []
+
+      
 
       for (let emotion of this.getEmotions) {
         for (let i = 0; i < this.childInfo.history.length; i++) {
