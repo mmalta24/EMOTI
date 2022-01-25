@@ -370,6 +370,14 @@ export default new Vuex.Store({
       state.users.find((user) => user.username==variable.studentName).activitiesSugest[1].activities = state.users.find((user) => user.username==variable.studentName).activitiesSugest[1].activities.filter((activity)=>activity!=variable.activity),
       localStorage.users = JSON.stringify(state.users)
     },
+
+    SET_EDIT_ACTIVITY(state,variable){
+      state.activities.find((activity)=>activity.title == variable.title).level = variable.level
+      state.activities.find((activity)=>activity.title == variable.title).description = variable.description
+      state.activities.find((activity)=>activity.title == variable.title).questions = variable.questions
+      state.activities.find((activity)=>activity.title == variable.title).caseIMG = variable.caseIMG
+      localStorage.activities = JSON.stringify(state.activities)
+    }
     
 
   },

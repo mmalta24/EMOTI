@@ -35,7 +35,7 @@
                       <td>{{activity.level}}</td>
                       <td>{{activity.caseIMG}}</td>
                       <td>{{activity.category}}</td>
-                      <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerActivity @click="modalActivityDo='editactivity'"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeActivity(activity.title)"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                      <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerActivity @click="modalEditOpen(activity)"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeActivity(activity.title)"><b-icon icon="trash-fill"></b-icon></b-button></td>
                   </tr>
              </table>
          </div>
@@ -94,38 +94,45 @@
           <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='editactivity'">
               <h4 :style="{color:'#e87461'}">Editar Atividade</h4>
 
-              <b-form>
+              <b-form @submit.prevent="applyChangesActivity()">
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" required></b-form-input>
+                    <b-form-input id="input-sm" v-model="editActivity.title" disabled required></b-form-input>
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Dificuldade:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-select id="input-sm" required></b-form-select>
+                    <b-form-select id="input-sm" v-model="editActivity.level" required>
+                       <b-form-select-option value="Fácil">Fácil</b-form-select-option>
+                       <b-form-select-option value="Médio">Médio</b-form-select-option>
+                       <b-form-select-option value="Dificil">Dificil</b-form-select-option>
+                    </b-form-select>
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Categoria:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-select id="input-sm" required></b-form-select>
+                    <b-form-select id="input-sm" v-model="editActivity.category" disabled required>
+                       <b-form-select-option value="Quiz">Quiz</b-form-select-option>
+                    </b-form-select>
                  </b-form-group>
 
-                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4">
+                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4" v-for="(question,index) in editActivity.questions" :key="index">
                     <div class="row">
-                       <b-form-select id="input-sm" class="col-3 ml-3" required></b-form-select>
-                       <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Emoção" required></b-form-input>
-                       <b-form-input id="input-sm" class="col-2 ml-2" placeholder="Pontos" required></b-form-input>
-                       <b-button class="col-1 ml-2"><b-icon icon="plus-circle-fill"></b-icon></b-button>
+                       <b-form-select id="input-sm" class="col-3 ml-3" v-model="question.correctAnswer" disabled>
+                          <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
+                       </b-form-select>
+                       <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Imagem" v-model="question.img"></b-form-input>
+                       <b-form-input id="input-sm" type="number" class="col-2 ml-2" placeholder="Pontos" min="0"  v-model.number="question.points"></b-form-input>
                     </div>
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Capa (IMG):" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="url" id="input-sm" required></b-form-input>
+                    <b-form-input type="url" id="input-sm" v-model="editActivity.caseIMG" required></b-form-input>
                  </b-form-group>
                  
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Descrição:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-textarea v-model="text" placeholder="Enter something..." rows="3" max-rows="6"></b-form-textarea>
+                    <b-form-textarea v-model="editActivity.description" placeholder="Enter something..." rows="3" max-rows="6"></b-form-textarea>
                  </b-form-group>
-            
+                  <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Editar</b-button></div>
               </b-form>
-              <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Editar</b-button></div>
+
 
           </div>
 
@@ -184,6 +191,17 @@ export default {
             category:'' ,
             author:'admin'
          },
+
+         editActivity:{
+            title:"",
+            level: "",
+            questions: [{}],
+            caseIMG:'',
+            description:'',
+            category:'' ,
+            author:"admin"
+
+         },
          
       };
    },
@@ -193,7 +211,17 @@ export default {
    },
 
    methods: {
-      ...mapMutations(["SET_REMOVE_EMOTION","SET_NEW_EMOTION","SET_REMOVE_ACTIVITY","SET_NEW_ACTIVITY"]),
+      ...mapMutations(["SET_REMOVE_EMOTION","SET_NEW_EMOTION","SET_REMOVE_ACTIVITY","SET_NEW_ACTIVITY","SET_REMOVE_EMOTION","SET_EDIT_ACTIVITY"]),
+
+      modalEditOpen(variable){
+         this.modalActivityDo='editactivity'
+         this.editActivity=variable
+      },
+
+      applyChangesActivity(){
+         
+         this.SET_EDIT_ACTIVITY(this.editActivity)
+      },
 
       removeEmotion(emotion){
          this.SET_REMOVE_EMOTION(emotion)
