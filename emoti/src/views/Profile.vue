@@ -134,7 +134,8 @@
 
              <div v-if="getLoggedUser.child != null" class="col-12 row"> <!-- Div if-->
              <div class="col-2 d-flex flex-row justify-content-center align-items-start mt-5">
-                <img src="../assets/Imagem 1.png" :style="{width:'220px'}" alt="">
+                 <b-avatar v-if="getAssociatedChild.imageProfile==''" :style="{color:'#FDFDED','background-color':'#BFBFBF',width:'230px',height:'190px'}"></b-avatar>
+                <img v-else :src="getAssociatedChild.imageProfile" :style="{width:'220px',height:'220px','border-radius':'100%'}" alt="">
              </div>
              <div class="col-5 mt-5">
               <b-form>
