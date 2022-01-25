@@ -40,12 +40,12 @@
     </b-sidebar>
 
       <b-card-group class="row col-12" columns>
-        <b-card tag="article" :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-top':cardAffect==index?'0px':'10px'}" class="mb-2 mr-2"  v-for="(activity, index) in getFilteredActivities(this.formFilter)" :key="index" @mouseover="cardAffect=index" @mouseleave="cardAffect=null">
+        <b-card tag="article" :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-top':cardAffect==index?'0px':'10px'}" class="mb-2 mr-2"  v-for="(activity, index) in activitiesCatalog" :key="index" @mouseover="cardAffect=index" @mouseleave="cardAffect=null">
         <b-link><img v-bind:src="activity.caseIMG" alt="" style="width:17rem" @click="$router.push({ name: 'Activity', params: { name: activity.title } })"></b-link>
         <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
           <b-card-sub-title class="mb-2"><span style="color:#e87461">{{activity.category}}</span></b-card-sub-title>
           <div>
-            <b-card-sub-title class="mb-2"><b-link :style="{color:'#e87461',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" v-b-modal.modalCatalog><span class="material-icons-round" :style="{color:'#87461'}">edit</span></b-link><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
+            <b-card-sub-title class="mb-2"><b-link @click="activityTitle=activity.title" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" v-b-modal.modalCatalog  v-if="activity.author=='admin' && (getLoggedUser.typeUser!='Criança' || getLoggedUser.typeUser!='admin')"><span class="material-icons-round" :style="{color:'#87461'}">edit</span></b-link><span class="material-icons-round">done</span><span class="material-icons-round">school</span><span class="material-icons-round" style="margin-left:5px">family_restroom</span></b-card-sub-title>
           </div>
         </div>
            <b-card-title><b-link :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" @click="$router.push({ name: 'Activity', params: { name: activity.title } })">{{activity.title}}</b-link></b-card-title>
@@ -58,23 +58,21 @@
      </b-container>
 
      <b-modal id="modalCatalog" centered hide-footer header-border-variant="0" header-class="color" body-class="color">
-        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center"> <!--Falta v-if -->
+        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="getLoggedUser.typeUser=='Professor'"> <!--Falta v-if -->
                <h4 :style="{color:'#e87461'}">Sugerir Atividade</h4>
 
-               <b-form>
+               <b-form @submit="sugestToClasses()">
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atividade:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="text" id="input-sm" disabled required></b-form-input>
+                    <b-form-input type="text" id="input-sm" disabled required v-model="activityTitle">{{activityTitle}}</b-form-input>
                  </b-form-group>
 
                  <b-form-group label-cols="4" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Atribuir a:" label-for="input-sm" class="mt-4 mb-4">
-                    <div class="row">
-                       <b-form-select id="input-sm" class="col-4 ml-3">
-                          <b-form-select-option value="" >a</b-form-select-option>
+                    <div class="row" v-for="(teamView,index) in classesView" :key="index">
+                       <b-form-select id="input-sm" class="col-4 ml-3" v-model="classesView[index]">
+                          <b-form-select-option disabled value="">---Turmas---</b-form-select-option>
+                          <b-form-select-option v-for="(team,index) in getTeacherClasses" :key="index" :value="team.name">{{team.name}}</b-form-select-option>
                        </b-form-select>
-                           <b-form-select id="input-sm" class="col-4 ml-3">
-                          <b-form-select-option value="">a</b-form-select-option>
-                       </b-form-select>
-                       <b-button class="col-2 ml-2"><b-icon icon="plus-circle-fill"></b-icon></b-button>
+                       <b-button class="col-1 ml-2" @click="newClassView()" :disabled="index+1 != classesView.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
                     </div>
                  </b-form-group>
 
@@ -84,16 +82,16 @@
                </b-form>
         </div>
 
-        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center"> <!--Falta v-if -->
+        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="getLoggedUser.typeUser=='Tutor'"> <!--Falta v-if -->
                <h4 :style="{color:'#e87461'}">Sugerir Atividade</h4>
 
-               <b-form>
+               <b-form @submit="sugestToKid()">
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atividade:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="text" id="input-sm" disabled required></b-form-input>
+                    <b-form-input type="text" id="input-sm" disabled required v-model="activityTitle">{{activityTitle}}</b-form-input>
                  </b-form-group>
 
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atribuir a:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="text" id="input-sm" disabled required></b-form-input>
+                    <b-form-input type="text" id="input-sm" disabled required v-model="getLoggedUser.child">{{getLoggedUser.child}}</b-form-input>
                  </b-form-group>
 
 
@@ -109,7 +107,7 @@
 </template>
 
 <script>
-import { mapGetters} from "vuex";
+import { mapGetters, mapMutations} from "vuex";
 
 export default {
   data() {
@@ -123,23 +121,100 @@ export default {
       levels:['Fácil','Médio','Dificil'],
       categories:['Quiz','Reconhecimento','Atividades Personalizadas (Tutor)','Atividades Personalizadas (Professor)'],
       sugestions:['Tutor','Professor','Ambos'],
-      cardAffect:null
+      cardAffect:null,
+      activitiesCatalog:"",
+      activityTitle:"",
+      classesView:[""],
     }
+
   },
 methods: {
+
+  ...mapMutations(["SET_SUGESTION_TO_KID","SET_SUGESTION_TO_STUDENTS","SET_REMOVE_SUGESTION_FROM_STUDENTS"]),
+
   resetForm() {
     this.formFilter.level=this.formFilter.category=this.formFilter.sugestFrom=this.formFilter.nQuestions=''
-  }
+  },
+
+  activitiesForUser(){
+    if (this.getLoggedUser.typeUser=="Professor") {
+      this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin" || activity.author==this.getLoggedUser.username)
+    }else if (this.getLoggedUser.typeUser=="Tutor") {
+      this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin" || activity.author==this.getLoggedUser.username)
+    }else if (this.getLoggedUser.typeUser=="admin") {
+      this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin")
+    }else{
+      this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin" || activity.author==this.getLoggedUser.tutor || activity.title==this.checkActivityPersName(activity.title))
+
+    }
+    console.log(this.activitiesCatalog);
+  },
+
+  checkActivityPersName(variable){
+    let result=""
+    for (const activity of this.getLoggedUser.activitiesPers[1].activities) {
+      if (activity == variable) {
+        result=variable
+      }
+    }
+    return result
+  },
+
+  sugestToKid(){
+    if (!this.checkSugestions(this.activityTitle)) {
+      this.SET_SUGESTION_TO_KID(this.activityTitle)
+    }else{
+      alert("Já sugeriu esta atividade!")
+    }
+    
+  },
+
+  sugestToClasses(){
+    if (this.classesView.lenght>1) {
+      this.classesView.pop()
+    }
+         
+    this.resetActivitiesInStudents(this.activityTitle)
+    for (let i = 0; i < this.classesView.length; i++) {
+      let team = this.classesView[i];
+      for (let a = 0; a < this.getTeamStudents(team).length; a++) {
+        let student1 = this.getTeamStudents(team)[a].usernameStudent
+        this.data= {studentName:student1,activity:this.activityTitle}
+        this.SET_SUGESTION_TO_STUDENTS(this.data)
+      }
+    }    
+  },
+
+  resetActivitiesInStudents(variable){
+    for (let i = 0; i < this.getTeacherClasses.length; i++) {
+      let team = this.getTeacherClasses[i].name
+      for (let a = 0; a < this.getTeamStudents(team).length; a++) {
+        let student1 = this.getTeamStudents(team)[a].usernameStudent
+        let data2= {studentName:student1,activity:variable}
+        this.SET_REMOVE_SUGESTION_FROM_STUDENTS(data2)       
+      }
+    }
+  },
+
+  newClassView(){
+    this.classesView.push("")
+  },
+
+
 },
 
 computed: {
-    ...mapGetters(["getFilteredActivities"]),
+    ...mapGetters(["getFilteredActivities","getLoggedUser","checkSugestions","getTeacherClasses","getTeamStudents"]),
 
 
   },
 watch: {
   formFilter() {
   }
+},
+created () {
+  this.activitiesCatalog=this.getFilteredActivities(this.formFilter)
+  this.activitiesForUser()
 },
 
 };

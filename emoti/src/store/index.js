@@ -112,6 +112,8 @@ export default new Vuex.Store({
 
     getAprovedStudents: (state) => state.classes.filter((team)=>team.teacher === state.loggedUser.username).filter((t)=>t.students),
 
+    getStudentData: (state) => (variable) => state.users.find((user)=>user.username==variable).points,
+
     getChildTeams: (state) => state.classes.filter((team)=>team.students.find((student)=>student.usernameStudent==state.loggedUser.child)),
 
     getEmotions: (state) => state.emotions,
@@ -124,11 +126,13 @@ export default new Vuex.Store({
 
     getActivitiesPers: (state) => state.activities.filter((activity)=>activity.author==state.loggedUser.username),
 
-    checkInActivities: (state) => (variable) => state.activities.find((activity)=>activity.title.toLowerCase()==variable.toLowerCase()),    
+    checkInActivities: (state) => (variable) => state.activities.find((activity)=>activity.title.toLowerCase()==variable.toLowerCase()), 
   
     getBagdes: (state)=> state.badges,
 
     checkBadges: (state)=>(variable) => state.badges.find((badge)=>badge.badgeName.toLowerCase()==variable.toLowerCase()),
+
+    checkSugestions: (state) => (variable) => state.users.find((user)=> user.username == state.loggedUser.child).activitiesSugest[0].activities.find((sugestion)=> sugestion == variable),
   },
 
   mutations: {
@@ -295,10 +299,16 @@ export default new Vuex.Store({
 
     SET_ADD_TO_HISTORY(state,variable){
       state.loggedUser.history.push(variable)
-      state.loggedUser.questionsDone=state.loggedUser.questionsDone.concat(variable.results)
       sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
 
       state.users.find((user)=> user.username == state.loggedUser.username).history.push(variable)
+      localStorage.users = JSON.stringify(state.users)
+    },
+
+    SET_ADD_TO_QUESTIONSDONE(state,variable){
+      state.loggedUser.questionsDone=state.loggedUser.questionsDone.concat(variable.results)
+      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
+
       state.users.find((user)=> user.username == state.loggedUser.username).questionsDone.concat(variable.results)
       localStorage.users = JSON.stringify(state.users)
     },
@@ -331,10 +341,25 @@ export default new Vuex.Store({
       localStorage.users = JSON.stringify(state.users)
     },
     
-    /*SET_REMOVE_ACTIVITY_FROM_CLASS(state,variable){
-      state.users.find((user) => user.username==variable.student).activitiesPers[1].activities = state.users.find((user) == state.users.find((user) => user.username==variable.student).activitiesPers[1].activities.filter((activity)=>activity!=variable);
+    SET_REMOVE_ACTIVITY_FROM_CLASS(state,variable){
+      state.users.find((user) => user.username==variable.studentName).activitiesPers[1].activities = state.users.find((user) => user.username==variable.studentName).activitiesPers[1].activities.filter((activity)=>activity!=variable.activity),
       localStorage.users = JSON.stringify(state.users)
-    }*/
+    },
+
+    SET_SUGESTION_TO_KID(state,variable){
+      state.users.find((user) => user.username === state.loggedUser.child).activitiesSugest[0].activities.push(variable);
+      localStorage.users = JSON.stringify(state.users)
+    },
+
+    SET_SUGESTION_TO_STUDENTS(state,variable){
+      state.users.find((user) => user.username === variable.studentName).activitiesSugest[1].activities.push(variable.activity);
+      localStorage.users = JSON.stringify(state.users)
+    },
+
+    SET_REMOVE_SUGESTION_FROM_STUDENTS(state,variable){
+      state.users.find((user) => user.username==variable.studentName).activitiesSugest[1].activities = state.users.find((user) => user.username==variable.studentName).activitiesSugest[1].activities.filter((activity)=>activity!=variable.activity),
+      localStorage.users = JSON.stringify(state.users)
+    },
     
 
   },

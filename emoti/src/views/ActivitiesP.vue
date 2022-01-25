@@ -233,11 +233,11 @@ export default {
                this.SET_REMOVE_ACTIVITY_FROM_KID(variable)
             } else {
                this.SET_REMOVE_ACTIVITY(variable)
-               //this.SET_REMOVE_ACTIVITY_FROM_CLASS(variable)
+               this.resetActivitiesInStudents(variable)
             }
          }
       },
-
+      
       openModal(variable){
          this.modalDo="viewgame"
          this.activityName = variable
@@ -252,21 +252,29 @@ export default {
             this.classesView.pop()
          }
          
-         
+         this.resetActivitiesInStudents(this.activityName)
          for (let i = 0; i < this.classesView.length; i++) {
             let team = this.classesView[i];
             for (let a = 0; a < this.getTeamStudents(team).length; a++) {
                let student1 = this.getTeamStudents(team)[a].usernameStudent
                this.data= {studentName:student1,activity:this.activityName}
                this.SET_ADD_ACTIVITY_TO_CLASS(this.data)
+            }
+         }   
+         
+         
+      },
+
+      resetActivitiesInStudents(variable){
+         for (let i = 0; i < this.getTeacherClasses.length; i++) {
+            let team = this.getTeacherClasses[i].name
+            for (let a = 0; a < this.getTeamStudents(team).length; a++) {
+               let student1 = this.getTeamStudents(team)[a].usernameStudent
+               let data2= {studentName:student1,activity:variable}
+               this.SET_REMOVE_ACTIVITY_FROM_CLASS(data2)
                
             }
          }
-
-          
-          
-         
-         
       },
 
    },
