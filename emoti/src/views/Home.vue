@@ -33,10 +33,10 @@
 
            <b-form inline class="mt-4">
             <label class="mr-sm-3" for="example-datepicker">De: </label>
-            <b-form-datepicker id="example-datepicker" v-model="value" class="mb-2 mr-sm-4 mb-sm-0" :style="{'background-color':'#fbfbf3'}"></b-form-datepicker>
+            <b-form-datepicker id="example-datepicker" v-model="dataStart" class="mb-2 mr-sm-4 mb-sm-0" :style="{'background-color':'#fbfbf3'}"></b-form-datepicker>
 
             <label class="mr-sm-3" for="example-datepicker1">Até: </label>
-            <b-form-datepicker id="example-datepicker1" v-model="value1" class="mb-2 mr-sm-4 mb-sm-0" :style="{'background-color':'#fbfbf3'}"></b-form-datepicker>
+            <b-form-datepicker id="example-datepicker1" v-model="dataEnd" class="mb-2 mr-sm-4 mb-sm-0" :style="{'background-color':'#fbfbf3'}"></b-form-datepicker>
            </b-form>
            
           <table class="col-11 ml-2 mr-2 mt-5 mb-5 text-center">
@@ -93,7 +93,7 @@ export default {
       lastQuizesInfo:[],
       childInfo:[],
       childResults:[],
-      dataBegin:"",
+      dataStart:"",
       dataEnd:"",
       cardAffectHome:null
       
@@ -117,18 +117,6 @@ export default {
       else if (studA.pointsStudents < studB.pointsStudents) return -1;
       else return 0;
     },
-    dateCompare(d1, d2){
-    const date1 = new Date(d1);
-    const date2 = new Date(d2);
-
-    if(date1 > date2){
-        return true
-    } else if(date1 < date2){
-        console.log(`${d2} is greater than ${d1}`)
-    } else{
-        console.log(`Both dates are equal`)
-    }
-    }
   },
   
 

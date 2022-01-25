@@ -315,6 +315,14 @@ export default new Vuex.Store({
       localStorage.users = JSON.stringify(state.users)
     },
 
+    SET_TOTAL_POINTS(state,variable){
+      state.loggedUser.points = state.loggedUser.points + variable
+      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
+
+      state.users.find((user)=> user.username == state.loggedUser.username).points = state.loggedUser.points
+      localStorage.users = JSON.stringify(state.users)
+    },
+
     SET_NEW_BADGE(state,variable){
       state.badges.push(variable)
       localStorage.badges = JSON.stringify(state.badges)

@@ -89,7 +89,7 @@ export default {
 	},
 
   methods: {
-    ...mapMutations(["SET_ADD_TO_HISTORY","SET_NEW_BADGE_TO_USER","SET_ADD_TO_QUESTIONSDONE"]),
+    ...mapMutations(["SET_ADD_TO_HISTORY","SET_NEW_BADGE_TO_USER","SET_ADD_TO_QUESTIONSDONE","SET_TOTAL_POINTS"]),
 
     nextQuestion() {
       this.positionArray++
@@ -128,6 +128,7 @@ export default {
         console.log(info);
         this.SET_ADD_TO_HISTORY(info)
         this.SET_ADD_TO_QUESTIONSDONE(info)
+        this.SET_TOTAL_POINTS(this.countPointsEarned)
         
         //check if won any badges
         this.CheckBadgesWon()
