@@ -40,7 +40,7 @@
     </b-sidebar>
 
       <b-card-group class="row col-12" columns>
-        <b-card tag="article" :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-top':cardAffect==index?'0px':'10px'}" class="mb-2 mr-2"  v-for="(activity, index) in activitiesCatalog" :key="index" @mouseover="cardAffect=index" @mouseleave="cardAffect=null">
+        <b-card tag="article" :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-top':cardAffect==index?'0px':'10px'}" class="mb-2 mr-2"  v-for="(activity, index) in filterActivities" :key="index" @mouseover="cardAffect=index" @mouseleave="cardAffect=null">
         <b-link><img v-bind:src="activity.caseIMG" alt="" style="width:17rem" @click="$router.push({ name: 'Activity', params: { name: activity.title } })"></b-link>
         <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
           <b-card-sub-title class="mb-2"><span style="color:#e87461">{{activity.category}}</span></b-card-sub-title>
@@ -205,7 +205,10 @@ methods: {
 
 computed: {
     ...mapGetters(["getFilteredActivities","getLoggedUser","checkSugestions","getTeacherClasses","getTeamStudents"]),
-
+    
+    filterActivities(){
+      return this.activitiesCatalog.filter((activity)=>(activity.level==this.formFilter.level || this.formFilter.level=='') && (activity.category==this.formFilter.category || this.formFilter.category==''))
+    }
 
   },
 watch: {
