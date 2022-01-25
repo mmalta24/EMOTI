@@ -125,8 +125,10 @@ export default {
           results:this.countResponsesRightList,
           pointsEarned:this.countPointsEarned
         }
+        console.log(info);
         this.SET_ADD_TO_HISTORY(info)
         this.SET_ADD_TO_QUESTIONSDONE(info)
+        
         //check if won any badges
         this.CheckBadgesWon()
 
