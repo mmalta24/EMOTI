@@ -132,6 +132,8 @@ export default new Vuex.Store({
 
     checkBadges: (state)=>(variable) => state.badges.find((badge)=>badge.badgeName.toLowerCase()==variable.toLowerCase()),
 
+    checkUserBadges: (state)=>(variable) =>  state.loggedUser.badgesId.find((badge)=> badge == variable),
+
     checkSugestions: (state) => (variable) => state.users.find((user)=> user.username == state.loggedUser.child).activitiesSugest[0].activities.find((sugestion)=> sugestion == variable),
   },
 

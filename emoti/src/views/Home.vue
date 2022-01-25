@@ -21,7 +21,7 @@
 
           <div class="row mb-4 mt-2">
             <div class="text-center mt-3 ml-5 mr-5" v-for="(badge,index) in getBagdes" :key="index">
-              <img :src="badge.badgeIMG" alt="" class="mb-1" :style="{width:'150px',filter:'grayscale(100%)'}">
+              <img :src="badge.badgeIMG" alt="" class="mb-1" :style="{width:'150px',filter: checkUserBadges(badge.badgeName) ? 'grayscale(0%)' : 'grayscale(100%)'}">
               <h5 :style="{fontFamily:'EAmbit SemiBold'}">{{badge.badgeName}}</h5>
             </div>
           </div>
@@ -101,7 +101,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getBagdes","getTeacherClasses","getTeamStudents","getStudentData","getActivitiesAdmin","getStudent","getEmotions"]),
+    ...mapGetters(["getLoggedUser","getBagdes","getTeacherClasses","getTeamStudents","getStudentData","getActivitiesAdmin","getStudent","getEmotions","checkUserBadges"]),
 
     /*orderStudents() {
       return this.students.sort(this.compareStudents);
