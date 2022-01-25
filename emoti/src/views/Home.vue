@@ -117,6 +117,18 @@ export default {
       else if (studA.pointsStudents < studB.pointsStudents) return -1;
       else return 0;
     },
+    dateCompare(d1, d2){
+    const date1 = new Date(d1);
+    const date2 = new Date(d2);
+
+    if(date1 > date2){
+        return true
+    } else if(date1 < date2){
+        console.log(`${d2} is greater than ${d1}`)
+    } else{
+        console.log(`Both dates are equal`)
+    }
+    }
   },
   
 
