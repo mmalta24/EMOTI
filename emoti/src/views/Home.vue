@@ -8,11 +8,11 @@
 
         <b-card-group class="row col-12" columns>
           <b-card tag="article"  :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-left':cardAffectHome==index?'0px':'10px'}" class="mb-2 mr-2" v-for="(quiz,index) in lastQuizesInfo" :key="index" @mouseover="cardAffectHome=index" @mouseleave="cardAffectHome=null">
-            <img :src="quiz.caseIMG" alt="" style="width:17rem">
+             <b-link><img v-bind:src="quiz.caseIMG" alt="" style="width:17rem;height:10rem;border-radius:5px" @click="$router.push({ name: 'Activity', params: { name: quiz.title } })"></b-link>
             <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
               <b-card-sub-title class="mb-2"><span style="color:#e87461">{{quiz.category}}</span></b-card-sub-title>
             </div>
-            <b-card-title :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px'}" class="pb-">{{quiz.title}}</b-card-title>
+            <b-card-title><b-link :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" @click="$router.push({ name: 'Activity', params: { name: quiz.title } })">{{quiz.title}}</b-link></b-card-title>
           </b-card>
         </b-card-group>
         <!--Conteudo para a criança-->
@@ -59,9 +59,9 @@
         </div>
         
         <!--Conteudo para o professor-->
-        <div class="mt-4" style="border: 2px solid blue" v-if="getLoggedUser.typeUser == 'Professor'">
+        <div class="mt-4" v-if="getLoggedUser.typeUser == 'Professor'">
           <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Evolução dos meus alunos</h2>
-
+          
           <table class="col-11 ml-2 mr-2 mt-5 mb-5 text-center">
             <tr :style="{'background-color':'#e87461',color:'#fbfbf3'}">
               <th class="p-2">Username</th>
