@@ -85,7 +85,7 @@
         <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="getLoggedUser.typeUser=='Tutor'"> <!--Falta v-if -->
                <h4 :style="{color:'#e87461'}">Sugerir Atividade</h4>
 
-               <b-form @submit="sugestToKid()">
+               <b-form @submit.prevent="sugestToKid()">
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atividade:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input type="text" id="input-sm" disabled required v-model="activityTitle">{{activityTitle}}</b-form-input>
                  </b-form-group>
@@ -98,6 +98,10 @@
                  <div class="d-flex flex-row justify-content-end">
                   <b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Sugerir</b-button>
                   </div>
+
+                 <div v-if="warning!=''" :style="{'background-color':'#C82333',color:'#fdfdf3','border-radius':'4px'}">
+                   <p>{{warning}}</p>
+                 </div>
                </b-form>
         </div>
 
@@ -112,6 +116,7 @@ import { mapGetters, mapMutations} from "vuex";
 export default {
   data() {
     return {
+      warning:'',
       formFilter: {
         level:'',
         category:'',
@@ -163,8 +168,9 @@ methods: {
   sugestToKid(){
     if (!this.checkSugestions(this.activityTitle)) {
       this.SET_SUGESTION_TO_KID(this.activityTitle)
+      location.reload()
     }else{
-      alert("Já sugeriu esta atividade!")
+      this.warning="Já sugeriu esta atividade!"
     }
     
   },

@@ -68,7 +68,7 @@ export default {
   
   data() {
     return {
-      activity: '',
+      warning:'',
       nQuestion:1,
       tQuestion:null,
       positionArray:0,

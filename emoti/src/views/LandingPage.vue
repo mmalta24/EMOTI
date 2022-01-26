@@ -49,6 +49,10 @@
               <b-button type="submit" style="background-color: #e87461; color: #fdfdf3; border: none" class="mb-2 w-25">Entrar</b-button>
             </div>
 
+            <div v-if="warning!=''" :style="{'background-color':'#C82333',color:'#fdfdf3','border-radius':'4px'}">
+              <p>{{warning}}</p>
+            </div>
+
           </b-form>
         </div>
 
@@ -103,6 +107,11 @@
             <div class="d-flex flex-row justify-content-end">
               <b-button type="submit" style="background-color: #e87461; color: #fdfdf3; border: none" class="mb-2 w-25">Registar</b-button>
             </div>
+
+            <div v-if="warning!=''" :style="{'background-color':'#C82333',color:'#fdfdf3','border-radius':'4px'}">
+              <p>{{warning}}</p>
+            </div>
+
           </b-form>
         </div>
       </b-modal>
@@ -116,6 +125,7 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
+      warning:'',
       whatDo: "",
       options: ["Criança", "Tutor", "Professor"],
       c_password:"",
@@ -142,13 +152,15 @@ export default {
     login() {
       if (this.isUser(this.formLogin.username, this.formLogin.password)) {
         if (this.isUserBlocked(this.formLogin.username)) {
-          alert("A conta que pretende aceder foi bloqueada!");
+          this.warning="A conta que pretende aceder foi bloqueada!";
+          
         } else {
           this.SET_LOGGED_USER(this.formLogin.username);
           this.$router.push({ name: "Home" });
+          location.reload()
         } 
       } else {
-        alert("Username ou password incorretos! por favor tente novamente.");
+        this.warning="Username ou password incorretos! por favor tente novamente.";
       }
     },
 
@@ -220,10 +232,10 @@ export default {
             this.$router.push({ name: "Home" });
           }
         } else {
-          alert("A palavra-passe é diferente da confirmação! Por favor tenta outra vez.");
+          this.warning="A palavra-passe é diferente da confirmação! Por favor tenta outra vez.";
         }  
       } else {
-        alert("Este nome já existe! Por favor escolha outro.");
+        this.warning="Este nome já existe! Por favor escolha outro.";
       }
     },
 

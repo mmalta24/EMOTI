@@ -26,7 +26,6 @@
               <b-form-group label="Tipo de Utilizador:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
                 <b-form-input id="nested-street" disabled v-model="getLoggedUser.typeUser"></b-form-input>
               </b-form-group>
-              
             </b-form>
           </div>
           <div class="col-7 d-flex flex-row justify-content-end" >
@@ -41,7 +40,7 @@
              <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="whatModalDo=='changekey'">
                <h4 :style="{color:'#e87461'}">Alterar Password</h4>
 
-               <b-form @submit="changePassword()">
+               <b-form @submit.prevent="changePassword()">
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Password Atual:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input type="password" id="input-sm" v-model="passForm.oldPass" required></b-form-input>
                  </b-form-group>
@@ -56,6 +55,9 @@
                  <div class="d-flex flex-row justify-content-end">
                   <b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Alterar</b-button>
                   </div>
+                  <div v-if="warning!=''" :style="{'background-color':'#C82333',color:'#fdfdf3','border-radius':'4px'}">
+                    <p>{{warning}}</p>
+                  </div>
                </b-form>
              </div>
 
@@ -63,7 +65,7 @@
               <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="whatModalDo=='addkid'">
                 <h4 :style="{color:'#e87461'}">Associar Criança</h4>
 
-                <b-form @submit="addChild()">
+                <b-form @submit.prevent="addChild()">
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Username (Criança):" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input  id="input-sm" v-model="formAdd.childName" required></b-form-input>
                  </b-form-group>
@@ -75,7 +77,9 @@
                  <div class="d-flex flex-row justify-content-end">
                    <b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Associar</b-button>
                  </div>
-
+                 <div v-if="warning!=''" :style="{'background-color':'#C82333',color:'#fdfdf3','border-radius':'4px'}">
+                   <p>{{warning}}</p>
+                 </div>
                 </b-form>
 
                 
@@ -99,11 +103,7 @@
                             <b-button variant="danger" size="sm" style="border:none;" class=" ml-1 mr-2" @click="removeRequest(request)"><span class="material-icons-round">close</span></b-button></td>
                         </tr>
                      </table>
-
-
-
-
-              </div>
+                </div>
 
               <!--Alterar imagem-->
 
@@ -153,7 +153,7 @@
               </b-form-group>
               <b-form-group label="Tipo de Utilizador:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
                 <b-form-input id="nested-street" disabled v-model="getAssociatedChild.typeUser"></b-form-input>
-              </b-form-group>        
+              </b-form-group>       
               </b-form>
             </div>
             <div class="col-5"></div>
@@ -198,6 +198,7 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
+      warning:'',
       whatModalDo:"",
       passForm:{
         oldPass:"",
@@ -222,13 +223,13 @@ export default {
 
     changePassword(){
       if (this.passForm.oldPass != this.getLoggedUser.password) {
-        alert("A password atual não correponde á inserida! Tente novamente.")
+        this.warning="A password atual não correponde á inserida! Tente novamente."
       } else {
         if (this.passForm.newPass != this.passForm.confPass) {
-          alert("A password que pretende colocar não corresponde a confirmação! Tente novamente.")
+          this.warning="A password que pretende colocar não corresponde a confirmação! Tente novamente."
         } else {
           this.SET_NEW_PASSWORD(this.passForm.newPass);
-          alert("Password alterada com sucesso!")
+          location.reload()
         }
       }
     },
@@ -238,11 +239,12 @@ export default {
         if (this.isChildFree(this.formAdd.childName)) {
           this.SET_RELATION_TUTOR(this.formAdd.childName);
           this.SET_RELATION_CHILD(this.formAdd.childName);
+          location.reload()
         } else {
-          alert("A criança já tem um tutor associado!") 
+          this.warning="A criança já tem um tutor associado!" 
         }  
       } else {
-        alert("Os dados inseridos estão incorretos ou a criança não está registada!");
+        this.warning="Os dados inseridos estão incorretos ou a criança não está registada!";
       }
     },
 

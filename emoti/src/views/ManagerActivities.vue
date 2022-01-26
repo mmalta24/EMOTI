@@ -94,7 +94,7 @@
           <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='editactivity'">
               <h4 :style="{color:'#e87461'}">Editar Atividade</h4>
 
-              <b-form @submit.prevent="applyChangesActivity()">
+              <b-form @submit="applyChangesActivity()">
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" v-model="editActivity.title" disabled required></b-form-input>
                  </b-form-group>
@@ -174,6 +174,7 @@ export default {
    name:"ManagerActivities",
    data() {
       return {
+         warning:'',
          modalActivityDo:"",
          newEmotion:"",
 

@@ -41,7 +41,7 @@
          <!--Adicionar Badge-->
          <div v-if="modalBadgeDo=='addBadge'" :style="{fontFamily:'EAmbit SemiBold'}" class="text-center">
             <h4 :style="{color:'#e87461'}">Adicionar Badge</h4>
-             <b-form @submit="addNewBadge()">
+             <b-form @submit.prevent="addNewBadge()">
               <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Descrição:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" v-model="newBadgeForm.badgeName" required></b-form-input>
               </b-form-group>
@@ -62,6 +62,9 @@
                 </b-form-group>
 
                 <div class="d-flex flex-row justify-content-end"><b-button type="submit" class="text-end" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
+                <div v-if="warning!=''" :style="{'background-color':'#C82333',color:'#fdfdf3','border-radius':'4px'}">
+                   <p>{{warning}}</p>
+                </div>
               </b-form>
 
          </div>
@@ -74,6 +77,7 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
     data() {
         return {
+            warning:'',
             modalBadgeDo: '',
 
             newBadgeForm:{
@@ -95,8 +99,9 @@ export default {
         addNewBadge() {
             if (!this.checkBadges(this.newBadgeForm.badgeName)) {
                 this.SET_NEW_BADGE(this.newBadgeForm)
+                location.reload()
             } else {
-                alert("Já existe um badge com esse nome!")
+                this.warning="Já existe um badge com esse nome!"
             }
         }
     },

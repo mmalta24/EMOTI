@@ -67,7 +67,7 @@
         <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalClassDo=='addstudent'">
           <h4 :style="{color:'#e87461'}">Novo Aluno</h4>
 
-          <b-form @submit="addStudent()">
+          <b-form @submit.prevent="addStudent()">
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Username:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" v-model="studentUsername" required @change="getStudentInfo()"></b-form-input>
              </b-form-group>
@@ -88,6 +88,9 @@
                     </b-form-select>
              </b-form-group>
              <div class="d-flex flex-row justify-content-end"><b-button type="submit" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
+             <div v-if="warning!=''" :style="{'background-color':'#C82333',color:'#fdfdf3','border-radius':'4px'}">
+               <p>{{warning}}</p>
+             </div>
           </b-form>
 
           
@@ -128,14 +131,16 @@
         <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalClassDo=='addclass'">
            <h4 :style="{color:'#e87461'}">Adicionar Turma</h4>
 
-           <b-form @submit="addClass()">
+          <b-form @submit.prevent="addClass()">
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Nome:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" v-model="className" required ></b-form-input>
              </b-form-group>
 
              <div class="d-flex flex-row justify-content-end"><b-button type="submit" :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}">Adicionar</b-button></div>
-          
-           </b-form>
+            <div v-if="warning!=''" :style="{'background-color':'#C82333',color:'#fdfdf3','border-radius':'4px'}">
+             <p>{{warning}}</p>
+            </div>
+          </b-form>
         </div>
       </b-modal>
   </div>
@@ -149,6 +154,7 @@ import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
     return {
+      warning:'',
       modalClassDo: '',
       classForm:{},
       className: '',
@@ -179,8 +185,9 @@ export default {
           students: []
         }
         this.SET_NEW_CLASS(this.classForm)
+        location.reload()
       } else {
-        alert("Este nome já pertence a uma das suas turmas!")
+        this.warning="Este nome já pertence a uma das suas turmas!"
       }
       
     },
@@ -193,7 +200,7 @@ export default {
 
     getStudentInfo(){
       if (!this.getStudent(this.studentUsername)) {
-        alert("O utilizador não pode ser encontrado!")
+        this.warning="O utilizador não pode ser encontrado!"
         this.studentName=""
         this.studentTutor=null
       }else{
@@ -203,16 +210,17 @@ export default {
         if (this.studentTutor=="null") {
           this.studentTutor=null
         }
+        this.warning=''
       }
       
     },
 
     addStudent(){
       if (this.studentTutor === null) {
-        alert("A criança não pode ser associada!")
+        this.warning="A criança não pode ser associada!"
       } else {
         if (this.CheckInTeams(this.studentUsername)) {
-          alert("Esta criança já pertence a uma das suas turmas!")
+          this.warning="Esta criança já pertence a uma das suas turmas!"
         } else {
           this.student={
             teamName: this.teamToAdd,
@@ -221,6 +229,7 @@ export default {
             name: this.studentName,
           }
           this.SET_NEW_STUDENT(this.student)
+          location.reload()
         }
       }    
     },
