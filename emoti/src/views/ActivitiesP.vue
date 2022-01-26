@@ -8,10 +8,14 @@
              <div class="col-9 mt-4">
                <b-form inline>
                   <label class="mr-sm-2" for="filterTitle">Título: </label>
-                  <b-form-select id="filterTitle" class="mb-2 mr-sm-5 mb-sm-0 col-3" :style="{'background-color':'#fdfdf3'}"></b-form-select>
+                  <b-form-input id="filterTitle" v-model="filter.title" class="mb-2 mr-sm-5 mb-sm-0 col-3" :style="{'background-color':'#fdfdf3'}"></b-form-input>
 
                   <label class="mr-sm-2" for="filterLevel">Grau de Dificuldade: </label>
-                  <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-3"  :style="{'background-color':'#fdfdf3'}"></b-form-select>
+                  <b-form-select id="filterLevel" v-model="filter.level" class="mb-2 mr-sm-0 mb-sm-0 col-3"  :style="{'background-color':'#fdfdf3'}">
+                     <b-form-select-option value="Fácil">Fácil</b-form-select-option>
+                     <b-form-select-option value="Médio">Médio</b-form-select-option>
+                     <b-form-select-option value="Dificil">Dificil</b-form-select-option>
+                  </b-form-select>
                </b-form>
              </div>
 
@@ -27,7 +31,7 @@
                       <th>Imagem (Capa)</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(activity,index) in getActivitiesPers" :key="index">
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(activity,index) in filterActivitiesPers" :key="index">
                       <td class="p-4">{{activity.title}}</td>
                       <td>{{activity.level}}</td>
                       <td>{{activity.caseIMG}}</td>
@@ -195,12 +199,24 @@ export default {
          data:{
             student1:"",
             activity:""
-         }
+         },
+         filter:{
+            title:'',
+            level:''
+         },
+         listActivitiesPers:''
       }
    },
    
    computed: {
       ...mapGetters(["getLoggedUser","getEmotions","getActivitiesPers","checkInActivities","getTeacherClasses","getTeamStudents"]),
+
+      filterActivitiesPers(){
+      return this.listActivitiesPers.filter((activity)=>(activity.title==this.filter.title || this.filter.title=='') && (activity.level==this.filter.level || this.filter.level==''))
+    }
+   },
+   created () {
+      this.listActivitiesPers=this.getActivitiesPers;
    },
 
    methods: {

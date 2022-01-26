@@ -6,11 +6,11 @@
          <div class="col-12 mt-4">
               <b-form inline >
                   <label class="mr-sm-2" for="filterTitle">Descrição: </label>
-                  <b-form-input id="filterTitle" class="mb-2 mr-sm-5 mb-sm-0 col-3" :style="{'background-color':'#fdfdf3'}"></b-form-input>
+                  <b-form-input id="filterTitle" class="mb-2 mr-sm-5 mb-sm-0 col-3" :style="{'background-color':'#fdfdf3'}" v-model="formFilter.title"></b-form-input>
 
                   <label class="mr-sm-2" for="filterLevel">Emoção: </label>
-                  <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}">
-                    <b-form-select-option value="">Qualquer</b-form-select-option>
+                  <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}" v-model="formFilter.emotion">
+                    <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
                   </b-form-select>
              </b-form>
          </div>
@@ -27,7 +27,7 @@
                       <th>Pontos Necessários</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(badge,index) in getBagdes" :key="index">
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(badge,index) in filterBadges" :key="index">
                       <td class="p-4">{{badge.badgeName}}</td>
                       <td>{{badge.badgeEmotion}}</td>
                       <td>{{badge.pointsNedded}}</td>
@@ -85,12 +85,20 @@ export default {
               badgeIMG: "",
               pointsNedded:0,
               badgeEmotion: "",
-            },          
+            },
+            formFilter:{
+                title:'',
+                emotion:''
+            },
+            listBadges:''       
         }
     },
 
     computed: {
         ...mapGetters(["getLoggedUser","getEmotions","getBagdes","checkBadges"]),
+        filterBadges(){
+      return this.listBadges.filter((badge)=>(badge.badgeName==this.formFilter.title || this.formFilter.title=='') && (badge.badgeEmotion==this.formFilter.emotion || this.formFilter.emotion==''))
+    }
     },
 
     methods: {
@@ -104,6 +112,9 @@ export default {
                 this.warning="Já existe um badge com esse nome!"
             }
         }
+    },
+    created () {
+        this.listBadges=this.getBagdes;
     },
 
 }

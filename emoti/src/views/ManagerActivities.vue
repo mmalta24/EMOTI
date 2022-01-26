@@ -1,18 +1,25 @@
 <template>
    <div id="backgroundManagerUser">
      <b-container class="col-11 pt-4">
-         <div class="col-12" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}"><h2>Gerir</h2></div>
+         <div class="col-12" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}"><h2>Gerir Atividades</h2></div>
 
          <div class="col-12 mt-4">
               <b-form inline>
                   <label class="mr-sm-2" for="filterTitle">Título: </label>
-                  <b-form-input id="filterTitle" class="mb-2 mr-sm-5 mb-sm-0 col-3" :style="{'background-color':'#fdfdf3'}"></b-form-input>
+                  <b-form-input id="filterTitle" class="mb-2 mr-sm-5 mb-sm-0 col-3" :style="{'background-color':'#fdfdf3'}" v-model="formFilter.title"></b-form-input>
 
-                  <label class="mr-sm-2" for="filterLevel">Tipo: </label>
-                  <b-form-select id="filterLevel" class="mb-2 mr-sm-5 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}"></b-form-select>
+                  <label class="mr-sm-2" for="filterLevel">Categoria: </label>
+                  <b-form-select id="filterLevel" class="mb-2 mr-sm-5 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}" v-model="formFilter.category">
+                      <b-form-select-option value="Quiz">Quiz</b-form-select-option>
+                      <b-form-select-option value="Reconhecimento" disabled>Reconhecimento</b-form-select-option>
+                  </b-form-select>
 
                    <label class="mr-sm-2" for="filterLevel">Dificuldade: </label>
-                  <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}"></b-form-select>
+                  <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}" v-model="formFilter.level">
+                     <b-form-select-option value="Fácil">Fácil</b-form-select-option>
+                     <b-form-select-option value="Médio">Médio</b-form-select-option>
+                     <b-form-select-option value="Dificil">Dificil</b-form-select-option>
+                  </b-form-select>
              </b-form>
          </div>
 
@@ -30,7 +37,7 @@
                       <th>Categoria</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(activity,index) in getActivitiesAdmin" :key="index">
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(activity,index) in filterActivities" :key="index">
                       <td class="p-4">{{activity.title}}</td>
                       <td>{{activity.level}}</td>
                       <td>{{activity.caseIMG}}</td>
@@ -203,12 +210,21 @@ export default {
             author:"admin"
 
          },
+         activitiesAdmin:'',
+         formFilter:{
+             title:'',
+             category:'',
+             level:'',
+         }
          
       };
    },
 
    computed: {
       ...mapGetters(["getLoggedUser","getEmotions","checkInEmotions","getActivitiesAdmin","checkInActivities"]),
+      filterActivities(){
+      return this.activitiesAdmin.filter((activity)=>(activity.title==this.formFilter.title || this.formFilter.title=='') && (activity.category==this.formFilter.category || this.formFilter.category=='')&& (activity.level==this.formFilter.level || this.formFilter.level==''))
+    }
    },
 
    methods: {
@@ -282,6 +298,9 @@ export default {
          }
       },
 
+   },
+   created () {
+      this.activitiesAdmin=this.getActivitiesAdmin;
    },
   
 }
