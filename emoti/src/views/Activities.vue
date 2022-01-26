@@ -40,8 +40,8 @@
     </b-sidebar>
 
       <b-card-group class="row col-12" columns>
-        <b-card tag="article" :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-top':cardAffect==index?'0px':'10px'}" class="mb-2 mr-2"  v-for="(activity, index) in filterActivities" :key="index" @mouseover="cardAffect=index" @mouseleave="cardAffect=null">
-        <b-link><img v-bind:src="activity.caseIMG" alt="" style="width:17rem" @click="$router.push({ name: 'Activity', params: { name: activity.title } })"></b-link>
+        <b-card tag="article" :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-left':cardAffect==index?'0px':'10px'}" class="mb-2 mr-2"  v-for="(activity, index) in filterActivities" :key="index" @mouseover="cardAffect=index" @mouseleave="cardAffect=null">
+        <b-link><img v-bind:src="activity.caseIMG" alt="" style="width:17rem;height:10rem;border-radius:5px" @click="$router.push({ name: 'Activity', params: { name: activity.title } })"></b-link>
         <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
           <b-card-sub-title class="mb-2"><span style="color:#e87461">{{activity.category}}</span></b-card-sub-title>
           <div>
@@ -66,13 +66,13 @@
                     <b-form-input type="text" id="input-sm" disabled required v-model="activityTitle">{{activityTitle}}</b-form-input>
                  </b-form-group>
 
-                 <b-form-group label-cols="4" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Atribuir a:" label-for="input-sm" class="mt-4 mb-4">
-                    <div class="row" v-for="(teamView,index) in classesView" :key="index">
-                       <b-form-select id="input-sm" class="col-4 ml-3" v-model="classesView[index]">
+                 <b-form-group label-cols="9" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atribuir a:" label-for="input-sm" class="mt-4 mb-4">
+                    <div class="row mt-2" v-for="(teamView,index) in classesView" :key="index">
+                       <b-form-select id="input-sm" class="col-8 ml-3" v-model="classesView[index]">
                           <b-form-select-option disabled value="">---Turmas---</b-form-select-option>
                           <b-form-select-option v-for="(team,index) in getTeacherClasses" :key="index" :value="team.name">{{team.name}}</b-form-select-option>
                        </b-form-select>
-                       <b-button class="col-1 ml-2" @click="newClassView()" :disabled="index+1 != classesView.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
+                       <b-button class="col-2 ml-2" @click="newClassView()" :disabled="index+1 != classesView.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
                     </div>
                  </b-form-group>
 

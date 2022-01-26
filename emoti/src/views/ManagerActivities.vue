@@ -66,7 +66,7 @@
                  </b-form-group>
 
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4" v-for="(question,index) in newActivity.questions" :key="index">
-                    <div class="row">
+                    <div class="row mt-2">
                        <b-form-select id="input-sm" class="col-3 ml-3" v-model="question.correctAnswer" :disabled="index+1 != newActivity.questions.length">
                           <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
                        </b-form-select>

@@ -14,7 +14,7 @@
             </div>
 
             <div class="col-8">
-               <img width="465px" height="auto" :src="activity.questions[positionArray].img" alt="">
+               <img width="465px" height="265px" style="border-radius:5px" :src="activity.questions[positionArray].img" alt="">
             </div>
             <div class="col-8">
                <p>Seleciona a opção correta!</p>
