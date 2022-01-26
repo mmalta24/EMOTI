@@ -52,8 +52,8 @@
               <td>{{result.done}}</td>
               <td>{{result.right}}</td>
               <td>{{result.wrong}}</td>
-              <td v-if="result.right>=result.wrong">Positivo</td>
-              <td v-else>Negativo</td>
+              <td v-if="result.right>=result.wrong" style="color:green">Positivo</td>
+              <td v-else style="color:red">Negativo</td>
             </tr>
           </table>
         </div>
