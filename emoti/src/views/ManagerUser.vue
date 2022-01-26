@@ -37,7 +37,7 @@
                       <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerUser @click="giveInfo(user)"><b-icon icon="info-circle-fill"></b-icon></b-button>
                       <b-button style="border:none" variant="primary" class=" ml-2 mr-1" v-if="user.blocked==false" @click="CHANGE_STATE_USER({username:user.username,logic:true})"><b-icon icon="lock-fill"></b-icon></b-button>
                       <b-button style="border:none" variant="primary" class=" ml-2 mr-1" v-if="user.blocked==true" @click="CHANGE_STATE_USER({username:user.username,logic:false})"><b-icon icon="unlock-fill"></b-icon></b-button>
-                      <b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeUser(user)"><b-icon icon="trash-fill"></b-icon></b-button>
+                      <b-button style="border:none" variant="danger" class=" ml-2 mr-1" v-if="user.typeUser!='Administrador'" @click="removeUser(user)"><b-icon icon="trash-fill"></b-icon></b-button>
                       
                       </td>
                   </tr>

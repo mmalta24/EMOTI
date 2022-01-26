@@ -145,26 +145,29 @@ export default {
       
 
       for (let emotion of this.getEmotions) {
-        for (let i = 0; i < this.childInfo.history.length; i++) {
-          for (let a = 0; a < this.childInfo.history[i].results.length; a++) {
-            if (this.childInfo.history[i].results[a].emotion==emotion) {
-              if (!resultsData.find((result)=>result.emotion == emotion)) {
-                if (this.childInfo.history[i].results[a].points==0) {
-                  resultsData.push({emotion:emotion,right:0,wrong:1,done:1})
+        if (this.getLoggedUser.child!=null) {
+          for (let i = 0; i < this.childInfo.history.length; i++) {
+            for (let a = 0; a < this.childInfo.history[i].results.length; a++) {
+              if (this.childInfo.history[i].results[a].emotion==emotion) {
+                if (!resultsData.find((result)=>result.emotion == emotion)) {
+                  if (this.childInfo.history[i].results[a].points==0) {
+                    resultsData.push({emotion:emotion,right:0,wrong:1,done:1})
+                  }else{
+                    resultsData.push({emotion:emotion,right:1,wrong:0,done:1})
+                  }
                 }else{
-                  resultsData.push({emotion:emotion,right:1,wrong:0,done:1})
+                  if (this.childInfo.history[i].results[a].points==0) {
+                    resultsData.find((result)=>result.emotion == emotion).wrong++
+                  }else{
+                    resultsData.find((result)=>result.emotion == emotion).right++
+                  }
+                  resultsData.find((result)=>result.emotion == emotion).done++
                 }
-              }else{
-                if (this.childInfo.history[i].results[a].points==0) {
-                  resultsData.find((result)=>result.emotion == emotion).wrong++
-                }else{
-                  resultsData.find((result)=>result.emotion == emotion).right++
-                }
-                resultsData.find((result)=>result.emotion == emotion).done++
               }
             }
           }
         }
+        
       }
       this.childResults=resultsData
 
