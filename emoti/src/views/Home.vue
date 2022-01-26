@@ -130,7 +130,7 @@ export default {
     }
     this.students.sort(this.compareStudents)
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
       let quizInfo = this.getActivitiesAdmin[this.getActivitiesAdmin.length-i]
       if (quizInfo) {
         this.lastQuizesInfo.push(quizInfo)

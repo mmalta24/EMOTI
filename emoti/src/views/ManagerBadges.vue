@@ -31,7 +31,7 @@
                       <td class="p-4">{{badge.badgeName}}</td>
                       <td>{{badge.badgeEmotion}}</td>
                       <td>{{badge.pointsNedded}}</td>
-                      <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                      <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removebadge(badge.badgeName)"><b-icon icon="trash-fill"></b-icon></b-button></td>
                   </tr>
              </table>
          </div>
@@ -102,7 +102,7 @@ export default {
     },
 
     methods: {
-        ...mapMutations(["SET_NEW_BADGE"]),
+        ...mapMutations(["SET_NEW_BADGE","SET_REMOVE_BADGE"]),
 
         addNewBadge() {
             if (!this.checkBadges(this.newBadgeForm.badgeName)) {
@@ -111,6 +111,13 @@ export default {
             } else {
                 this.warning="Já existe um badge com esse nome!"
             }
+        },
+        removebadge(variable){
+            if(confirm('Deseja remover?')){
+                this.SET_REMOVE_BADGE(variable)
+                location.reload()
+            }
+            
         }
     },
     created () {

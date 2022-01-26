@@ -11,11 +11,21 @@ export default new Vuex.Store({
       ? JSON.parse(localStorage.users)
       : [ //Admin
           {
-            username: "admin",
-            password: "admin",
+            username: "Admin",
+            password: "Esmad_2122",
             email:'administrador@gmail.com',
             typeUser: "Administrador",
-            name:'Administrador'
+            name:'Administrador',
+            imgProfile:''
+          },
+          {
+            username: "User",
+            password: "Esmad_2122",
+            email:'administrador@gmail.com',
+            typeUser: "Professor",
+            name:'User',
+            imageProfile:'',
+            blocked: false,
           },
         ],
     activities: localStorage.activities
@@ -52,8 +62,8 @@ export default new Vuex.Store({
         ? JSON.parse(localStorage.badges)
         : [
             {
-              badgeName: "teste",
-              badgeIMG: "img teste",
+              badgeName: "Eu sou Feliz!",
+              badgeIMG: "https://github.com/mmalta24/images/blob/main/Grupo%20399.png?raw=true",
               pointsNedded:20,
               badgeEmotion: "Feliz",
             },          
@@ -377,6 +387,11 @@ export default new Vuex.Store({
       state.activities.find((activity)=>activity.title == variable.title).questions = variable.questions
       state.activities.find((activity)=>activity.title == variable.title).caseIMG = variable.caseIMG
       localStorage.activities = JSON.stringify(state.activities)
+    },
+
+    SET_REMOVE_BADGE(state,variable){
+      state.badges=state.badges.filter((badge)=>badge.badgeName!=variable)
+      localStorage.badges = JSON.stringify(state.badges)
     }
     
 

@@ -1,7 +1,7 @@
 <template>
    <div id="backgroundManagerUser">
      <b-container class="col-11 pt-4">
-         <div class="col-12" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}"><h2>Gerir</h2></div>
+         <div class="col-12" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}"><h2>Gerir Utilizadores</h2></div>
 
          <div class="col-12 mt-4">
               <b-form inline >
