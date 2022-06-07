@@ -16,7 +16,7 @@
           </b-card>
         </b-card-group>
         <!--Conteudo para a criança-->
-        <div class="mt-4" v-if="getLoggedUser.typeUser == 'Criança'">
+        <div class="mt-4" v-if="getLoggedUser.type == 'Criança'">
           <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Os meus badges</h2>
 
           <div class="row mb-4 mt-2">
@@ -28,7 +28,7 @@
         </div>
 
         <!--Conteudo para o tutor-->
-        <div class="mt-4" v-if="getLoggedUser.typeUser == 'Tutor'" >
+        <div class="mt-4" v-if="getLoggedUser.type == 'Tutor'" >
            <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Evolução do meu filho</h2>
 
            <b-form inline class="mt-4">
@@ -59,7 +59,7 @@
         </div>
         
         <!--Conteudo para o professor-->
-        <div class="mt-4" v-if="getLoggedUser.typeUser == 'Professor'">
+        <div class="mt-4" v-if="getLoggedUser.type == 'Professor'">
           <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Evolução dos meus alunos</h2>
           
           <table class="col-11 ml-2 mr-2 mt-5 mb-5 text-center">
@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations,mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -101,7 +101,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getBagdes","getTeacherClasses","getTeamStudents","getStudentData","getActivitiesAdmin","getStudent","getEmotions","checkUserBadges"]),
+    ...mapGetters(["getLoggedUser","getBagdes","getTeacherClasses","getTeamStudents","getStudentData","getActivitiesAdmin","getStudent","getEmotions","checkUserBadges","getUserDetails","getUser"]),
 
     /*orderStudents() {
       return this.students.sort(this.compareStudents);
@@ -111,6 +111,7 @@ export default {
 
   methods: {
     ...mapMutations([]),
+    ...mapActions(["find_ap"]),
 
     compareStudents(studA, studB) {
       if (studA.pointsStudents > studB.pointsStudents) return 1;
@@ -121,14 +122,15 @@ export default {
   
 
   created () {
-    for (let i = 0; i < this.getTeacherClasses.length; i++) {
+  this.find_ap(this.getLoggedUser.username)
+    /*for (let i = 0; i < this.getTeacherClasses.length; i++) {
       let team = this.getTeacherClasses[i].name
       for (let a = 0; a < this.getTeamStudents(team).length; a++) {
         let student = this.getTeamStudents(team)[a]
         this.students.push({student:student.usernameStudent,name:student.nameStudent,teamStudent:team,pointsStudent:this.getStudentData(student.usernameStudent)})       
       }
     }
-    this.students.sort(this.compareStudents)
+    this.students.sort(this.compareStudents)*/
 
     for (let i = 0; i < 5; i++) {
       let quizInfo = this.getActivitiesAdmin[this.getActivitiesAdmin.length-i]
@@ -136,16 +138,16 @@ export default {
         this.lastQuizesInfo.push(quizInfo)
       }    
     }
-
-    if (this.getLoggedUser.typeUser == "Tutor" && this.getLoggedUser.child!="") {
-      this.childInfo = this.getStudent(this.getLoggedUser.child)
+  /*
+   if (this.getUser.type == "Tutor" && this.getUser.child!="") {
+      this.childInfo = this.getStudent(this.getUser.child)
       console.log(this.childInfo);
       let resultsData = []
 
-      
+    
 
       for (let emotion of this.getEmotions) {
-        if (this.getLoggedUser.child!=null) {
+        if (this.getUser.child!=null) {
           for (let i = 0; i < this.childInfo.history.length; i++) {
             for (let a = 0; a < this.childInfo.history[i].results.length; a++) {
               if (this.childInfo.history[i].results[a].emotion==emotion) {
@@ -173,10 +175,10 @@ export default {
 
 
     }
-  
+    
 
 
-
+  */
 
   },
   

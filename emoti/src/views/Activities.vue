@@ -45,7 +45,7 @@
         <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
           <b-card-sub-title class="mb-2"><span style="color:#e87461">{{activity.category}}</span></b-card-sub-title>
           <div>
-            <b-card-sub-title class="mb-2"><b-link @click="activityTitle=activity.title" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" v-b-modal.modalCatalog  v-if="activity.author=='admin' && getLoggedUser.typeUser!='Criança' && getLoggedUser.typeUser!='Administrador'"><span class="material-icons-round" :style="{color:'#87461'}">edit</span></b-link ><span class="material-icons-round" v-if="getLoggedUser.typeUser=='Criança' && getLoggedUser.history.find((quiz)=>quiz.activityTitle == activity.title)">done</span><span class="material-icons-round" v-if="getLoggedUser.typeUser=='Criança' && getLoggedUser.activitiesSugest[1].activities.find((quiz)=>quiz==activity.title)">school</span><span class="material-icons-round" style="margin-left:5px" v-if="getLoggedUser.typeUser=='Criança' && getLoggedUser.activitiesSugest[0].activities.find((quiz)=>quiz==activity.title)">family_restroom</span></b-card-sub-title>
+            <b-card-sub-title class="mb-2"><b-link @click="activityTitle=activity.title" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" v-b-modal.modalCatalog  v-if="activity.author=='admin' && getLoggedUser.type!='Criança' && getLoggedUser.type!='Administrador'"><span class="material-icons-round" :style="{color:'#87461'}">edit</span></b-link ><span class="material-icons-round" v-if="getLoggedUser.type=='Criança' && getUser.history.find((quiz)=>quiz.activityTitle == activity.title)">done</span><span class="material-icons-round" v-if="getLoggedUser.type=='Criança'  && getUser.activitiesSugest[1].activities.find((quiz)=>quiz==activity.title)">school</span><span class="material-icons-round" style="margin-left:5px" v-if="getLoggedUser.type=='Criança' && getUser.activitiesSugest[0].activities.find((quiz)=>quiz==activity.title)">family_restroom</span></b-card-sub-title>
           </div>
         </div>
            <b-card-title><b-link :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" @click="$router.push({ name: 'Activity', params: { name: activity.title } })">{{activity.title}}</b-link></b-card-title>
@@ -58,7 +58,7 @@
      </b-container>
 
      <b-modal id="modalCatalog" centered hide-footer header-border-variant="0" header-class="color" body-class="color">
-        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="getLoggedUser.typeUser=='Professor'"> <!--Falta v-if -->
+        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="getLoggedUser.type=='Professor'"> <!--Falta v-if -->
                <h4 :style="{color:'#e87461'}">Sugerir Atividade</h4>
 
                <b-form @submit="sugestToClasses()">
@@ -82,7 +82,7 @@
                </b-form>
         </div>
 
-        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="getLoggedUser.typeUser=='Tutor'"> <!--Falta v-if -->
+        <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="getLoggedUser.type=='Tutor'"> <!--Falta v-if -->
                <h4 :style="{color:'#e87461'}">Sugerir Atividade</h4>
 
                <b-form @submit.prevent="sugestToKid()">
@@ -91,7 +91,7 @@
                  </b-form-group>
 
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atribuir a:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="text" id="input-sm" disabled required v-model="getLoggedUser.child">{{getLoggedUser.child}}</b-form-input>
+                    <b-form-input type="text" id="input-sm" disabled required v-model="getUser.child">{{getUser.child}}</b-form-input>
                  </b-form-group>
 
 
@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations} from "vuex";
+import { mapGetters, mapMutations,mapActions} from "vuex";
 
 export default {
   data() {
@@ -136,20 +136,21 @@ export default {
 methods: {
 
   ...mapMutations(["SET_SUGESTION_TO_KID","SET_SUGESTION_TO_STUDENTS","SET_REMOVE_SUGESTION_FROM_STUDENTS"]),
+  ...mapActions(["find_ap"]),
 
   resetForm() {
     this.formFilter.level=this.formFilter.category=this.formFilter.sugestFrom=this.formFilter.nQuestions=''
   },
 
   activitiesForUser(){
-    if (this.getLoggedUser.typeUser=="Professor") {
+    if (this.getLoggedUser.type=="Professor") {
       this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin" || activity.author==this.getLoggedUser.username)
-    }else if (this.getLoggedUser.typeUser=="Tutor") {
+    }else if (this.getLoggedUser.type=="Tutor") {
       this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin" || activity.author==this.getLoggedUser.username)
-    }else if (this.getLoggedUser.typeUser=="Administrador") {
+    }else if (this.getLoggedUser.type=="Administrador") {
       this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin")
     }else{
-      this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin" || activity.author==this.getLoggedUser.tutor || activity.title==this.checkActivityPersName(activity.title))
+      this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin" || activity.author==this.get.tutor || activity.title==this.checkActivityPersName(activity.title))
 
     }
     console.log(this.activitiesCatalog);
@@ -157,7 +158,7 @@ methods: {
 
   checkActivityPersName(variable){
     let result=""
-    for (const activity of this.getLoggedUser.activitiesPers[1].activities) {
+    for (const activity of this.getUser.activitiesPers[1].activities) {
       if (activity == variable) {
         result=variable
       }
@@ -210,7 +211,7 @@ methods: {
 },
 
 computed: {
-    ...mapGetters(["getFilteredActivities","getLoggedUser","checkSugestions","getTeacherClasses","getTeamStudents"]),
+    ...mapGetters(["getFilteredActivities","getLoggedUser","checkSugestions","getTeacherClasses","getTeamStudents","getUser"]),
     
     filterActivities(){
       return this.activitiesCatalog.filter((activity)=>(activity.level==this.formFilter.level || this.formFilter.level=='') && (activity.category==this.formFilter.category || this.formFilter.category==''))
@@ -224,6 +225,7 @@ watch: {
 created () {
   this.activitiesCatalog=this.getFilteredActivities(this.formFilter)
   this.activitiesForUser()
+  this.find_ap(this.getLoggedUser.username)
 },
 
 };

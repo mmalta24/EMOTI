@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions} from "vuex";
 export default {
   data() {
     return {
@@ -144,29 +144,14 @@ export default {
     };
   },
 
-  computed: {
-    ...mapGetters(["isUser","isUsernameAvailable","isUserBlocked"]),
-  },
-
   methods: {
     login() {
-      if (this.isUser(this.formLogin.username, this.formLogin.password)) {
-        if (this.isUserBlocked(this.formLogin.username)) {
-          this.warning="A conta que pretende aceder foi bloqueada!";
-          
-        } else {
-          this.SET_LOGGED_USER(this.formLogin.username);
-          this.$router.push({ name: "Home" });
-          location.reload()
-        } 
-      } else {
-        this.warning="Username ou password incorretos! por favor tente novamente.";
-      }
+      this.login_ap(this.formLogin)
+        .then(()=>this.$router.push({ name: "Home" }))
+        .catch((err)=>this.warning=`${err}`)
     },
 
     register() {
-      if (this.isUsernameAvailable(this.formRegister.username)) {
-        if (this.formRegister.password === this.c_password) {
           if (this.formRegister.typeUser == "Tutor") {
             this.form = {
               username: this.formRegister.username,
@@ -180,10 +165,8 @@ export default {
               blocked: false,
 
             }
-            this.SET_NEW_USER(this.form);
-            this.SET_LOGGED_USER(this.formRegister.username);
-            this.$router.push({ name: "Home" });
-          } else if(this.formRegister.typeUser == "Professor"){
+          }
+           else if(this.formRegister.typeUser == "Professor"){
             this.form = {
               username: this.formRegister.username,
               password: this.formRegister.password,
@@ -193,10 +176,8 @@ export default {
               typeUser: this.formRegister.typeUser,
               blocked: false,
             }
-            this.SET_NEW_USER(this.form);
-            this.SET_LOGGED_USER(this.formRegister.username);
-            this.$router.push({ name: "Home" });
-          }else{   //Criança
+          }
+          else{   //Criança
             this.form = {
               username: this.formRegister.username,
               password: this.formRegister.password,
@@ -227,19 +208,12 @@ export default {
               questionsDone:[],
               blocked:false,
             }
-            this.SET_NEW_USER(this.form);
-            this.SET_LOGGED_USER(this.formRegister.username);
-            this.$router.push({ name: "Home" });
           }
-        } else {
-          this.warning="A palavra-passe é diferente da confirmação! Por favor tenta outra vez.";
-        }  
-      } else {
-        this.warning="Este nome já existe! Por favor escolha outro.";
-      }
+           this.register_ap(this.form)
+          .then(()=>{this.formLogin.username=this.form.username,this.formLogin.password=this.form.password,this.login()})
+          .catch((err)=>this.warning=`${err}`)
     },
-
-    ...mapMutations(["SET_LOGGED_USER","SET_NEW_USER"]),
+    ...mapActions(["login_ap","register_ap"])
   },
 
 };

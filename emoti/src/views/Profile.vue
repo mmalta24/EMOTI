@@ -5,26 +5,26 @@
         
         <div class="row col-12">
           <div class="col-2 d-flex flex-row justify-content-center align-items-center">
-            <b-avatar v-if="getLoggedUser.imageProfile==''" :style="{color:'#FDFDED','background-color':'#BFBFBF',width:'230px',height:'190px'}"></b-avatar>
-            <img v-else :src="getLoggedUser.imageProfile" :style="{width:'220px',height:'220px','border-radius':'100%'}" alt="">
+            <b-avatar v-if="getUser.imgProfile==''" :style="{color:'#FDFDED','background-color':'#BFBFBF',width:'230px',height:'190px'}"></b-avatar>
+            <img v-else :src="getUser.imgProfile" :style="{width:'220px',height:'220px','border-radius':'100%'}" alt="">
             <b-button style="position:absolute;z-index:1;right:5px;bottom:50px;background-color:#e87461;border:none" pill size="sm" v-b-modal.modal-profile @click="whatModalDo='changePicture'"><span class="material-icons-round" style="display:flex;justify-content:center" >mode_edit</span></b-button>
           </div>
           <div class="col-5">
             <b-form>
               <b-form-group label="Nome:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" v-model="getLoggedUser.name" disabled></b-form-input>
+                <b-form-input id="nested-street" v-model="getUser.name" disabled></b-form-input>
               </b-form-group>
               <b-form-group label="Username:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getLoggedUser.username"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getUser.username"></b-form-input>
               </b-form-group>
               <b-form-group label="Password:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getLoggedUser.password"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getUser.password"></b-form-input>
               </b-form-group>
                <b-form-group label="Email:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getLoggedUser.email"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getUser.email"></b-form-input>
               </b-form-group>
               <b-form-group label="Tipo de Utilizador:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getLoggedUser.typeUser"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getUser.typeUser"></b-form-input>
               </b-form-group>
             </b-form>
           </div>
@@ -96,7 +96,7 @@
                             <th>Professor</th>
                             <th>Ações</th>
                         </tr>
-                        <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(request,index) in getLoggedUser.classRequests" :key="index">
+                        <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(request,index) in getUser.classRequests" :key="index">
                             <td class="p-4">{{request.className}}</td>
                             <td>{{request.teacherName}}</td>
                             <td><b-button size="sm" style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1" @click="acceptRequest(request)"><span class="material-icons-round">done</span></b-button>
@@ -127,12 +127,12 @@
            </b-modal>
 
            <!--Parte vivível para os pais-->
-          <div class="row col-12 mt-5" v-if="getLoggedUser.typeUser == 'Tutor'">
+          <div class="row col-12 mt-5" v-if="getUser.typeUser == 'Tutor'">
              <div class="col-6"><h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Dados da Criança</h2></div>
-             <div class="col-6 d-flex flex-row justify-content-end" v-if="getLoggedUser.child == null"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Associar criança</b-button></div>
-             <div class="col-6 d-flex flex-row justify-content-end" v-if="getLoggedUser.child != null"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="removeRelation()">Desassociar criança</b-button></div>
+             <div class="col-6 d-flex flex-row justify-content-end" v-if="getUsernameChild==''"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Associar criança</b-button></div>
+             <div class="col-6 d-flex flex-row justify-content-end" v-else><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="removeRelation()">Desassociar criança</b-button></div>
 
-             <div v-if="getLoggedUser.child != null" class="col-12 row"> <!-- Div if-->
+             <div v-if="getUser.child != null" class="col-12 row"> <!-- Div if-->
              <div class="col-2 d-flex flex-row justify-content-center align-items-start mt-5">
                  <b-avatar v-if="getAssociatedChild.imageProfile==''" :style="{color:'#FDFDED','background-color':'#BFBFBF',width:'230px',height:'190px'}"></b-avatar>
                 <img v-else :src="getAssociatedChild.imageProfile" :style="{width:'220px',height:'220px','border-radius':'100%'}" alt="">
@@ -184,7 +184,7 @@
             </div>
             </div>
 
-            <div class="mt-5 col-12 d-flex flex-row justify-content-center" v-if="getLoggedUser.child == null"> <!--Não associou a criança-->
+            <div class="mt-5 col-12 d-flex flex-row justify-content-center" v-if="getUser.child == null"> <!--Não associou a criança-->
               <p>Não existe criança associada, a este perfil</p>
             </div>
 
@@ -194,7 +194,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations,mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -215,43 +215,35 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getAssociatedChild","isUserChild","isChildFree","getChildTeams"]),
+    ...mapGetters(["getLoggedUser","getAssociatedChild","isUserChild","isChildFree","getChildTeams","getUser","getUsernameChild"]),
   },
 
   methods: {
-    ...mapMutations(["SET_NEW_PASSWORD","SET_RELATION_TUTOR","SET_RELATION_CHILD","SET_REMOVE_RELATION_TUTOR","SET_REMOVE_RELATION_CHILD","SET_REMOVE_REQUEST","SET_ACCEPT_REQUEST","SET_REMOVE_KID_FROM_CLASS","SET_ALTER_IMG"]),
+    ...mapActions(["find_ap","updateUser_ap","createRelation_ap","findRelations_ap","removeRelation_ap"]),
+    ...mapMutations(["SET_REMOVE_REQUEST","SET_ACCEPT_REQUEST","SET_REMOVE_KID_FROM_CLASS"]),
 
     changePassword(){
-      if (this.passForm.oldPass != this.getLoggedUser.password) {
-        this.warning="A password atual não correponde á inserida! Tente novamente."
-      } else {
         if (this.passForm.newPass != this.passForm.confPass) {
           this.warning="A password que pretende colocar não corresponde a confirmação! Tente novamente."
         } else {
-          this.SET_NEW_PASSWORD(this.passForm.newPass);
-          location.reload()
+          this.updateUser_ap([this.getLoggedUser.username,{password:this.passForm.newPass}])
+          .then(()=>{location.reload()})
+          .catch((err)=>this.warning=`${err}`)
+          
         }
-      }
-    },
+      },
 
     addChild() {
-      if (this.isUserChild(this.formAdd.childName, this.formAdd.childPass)) {
-        if (this.isChildFree(this.formAdd.childName)) {
-          this.SET_RELATION_TUTOR(this.formAdd.childName);
-          this.SET_RELATION_CHILD(this.formAdd.childName);
-          location.reload()
-        } else {
-          this.warning="A criança já tem um tutor associado!" 
-        }  
-      } else {
-        this.warning="Os dados inseridos estão incorretos ou a criança não está registada!";
-      }
+        this.createRelation_ap({usernameChild:this.formAdd.childName,password:this.formAdd.childPass})
+          .then(()=>{location.reload()})
+          .catch((err)=>this.warning=`${err}`)
     },
 
     removeRelation(){
       if (confirm("Deseja mesmo desassociar esta criança?")) {
-        this.SET_REMOVE_RELATION_CHILD()
-        this.SET_REMOVE_RELATION_TUTOR()
+         this.removeRelation_ap({usernameChild:this.getUsernameChild})
+          .then(()=>{location.reload()})
+          .catch((err)=>alert(err))
       }
     },
 
@@ -275,11 +267,16 @@ export default {
     },
 
     alterImg(){
-      this.SET_ALTER_IMG(this.newImg)
+          this.updateUser_ap({imgProfile:this.newImg})
+          .then(()=>{location.reload()})
+          .catch((err)=>this.warning=`${err}`)
     }
-    
 
+  },
 
+  created () {
+    this.find_ap(this.getLoggedUser.username)
+    this.findRelations_ap();
   },
   
 }

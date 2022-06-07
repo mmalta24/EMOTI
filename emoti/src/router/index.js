@@ -111,18 +111,18 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !store.getters.getLoggedUser) {
+  if (to.meta.requiresAuth && !store.getters.getLoggedUser.token) {
     next({ name: "LandingPage" });}
-  else if (to.meta.notRequiresAuth && store.getters.getLoggedUser) {
+  else if (to.meta.notRequiresAuth && store.getters.getLoggedUser.token) {
       next({ name: "Home" });
     }
-  else if (to.meta.requiresBeAdmin && store.getters.getLoggedUser.typeUser!='Administrador') {
+  else if (to.meta.requiresBeAdmin && store.getters.getLoggedUser.type!='Administrador') {
       next({ name: "Home" });
     }
-  else if(to.meta.requiresBeTeacher && store.getters.getLoggedUser.typeUser!='Professor'){
+  else if(to.meta.requiresBeTeacher && store.getters.getLoggedUser.type!='Professor'){
     next({name :"Home"})
   }
-  else if(to.meta.requiresBeTutorOrTeacher && store.getters.getLoggedUser.typeUser!='Professor' && store.getters.getLoggedUser.typeUser!='Tutor'){
+  else if(to.meta.requiresBeTutorOrTeacher && store.getters.getLoggedUser.type!='Professor' && store.getters.getLoggedUser.type!='Tutor'){
     next({name :"Home"})
   }
   else {

@@ -4,7 +4,7 @@
          <div class="col-12" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}"><h2>Gerir Utilizadores</h2></div>
 
          <div class="col-12 mt-4">
-              <b-form inline >
+              <b-form inline>
                   <label class="mr-sm-2" for="filterTitle">Nome: </label>
                   <b-form-input id="filterTitle" class="mb-2 mr-sm-5 mb-sm-0 col-3" :style="{'background-color':'#fdfdf3'}" v-model="formFilter.name"></b-form-input>
 
@@ -29,16 +29,15 @@
                       <th>Tipo de Utilizador</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(user, index) in filterUsers" :key="index">
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(user, index) in getUsers" :key="index">
                       <td class="p-4">{{user.username}}</td>
                       <td>{{user.name}}</td>
                       <td>{{user.password}}</td>
                       <td>{{user.typeUser}}</td>
                       <td><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modalManagerUser @click="giveInfo(user)"><b-icon icon="info-circle-fill"></b-icon></b-button>
-                      <b-button style="border:none" variant="primary" class=" ml-2 mr-1" v-if="user.blocked==false" @click="CHANGE_STATE_USER({username:user.username,logic:true})"><b-icon icon="lock-fill"></b-icon></b-button>
-                      <b-button style="border:none" variant="primary" class=" ml-2 mr-1" v-if="user.blocked==true" @click="CHANGE_STATE_USER({username:user.username,logic:false})"><b-icon icon="unlock-fill"></b-icon></b-button>
-                      <b-button style="border:none" variant="danger" class=" ml-2 mr-1" v-if="user.typeUser!='Administrador'" @click="removeUser(user)"><b-icon icon="trash-fill"></b-icon></b-button>
-                      
+                      <b-button style="border:none" variant="primary" class=" ml-2 mr-1" v-if="user.blocked==false && user.typeUser!='Administrador'" @click="changeUnlockLock([user.username,{blocked:true}])"><b-icon icon="lock-fill"></b-icon></b-button>
+                      <b-button style="border:none" variant="primary" class=" ml-2 mr-1" v-if="user.blocked==true && user.typeUser!='Administrador'" @click="changeUnlockLock([user.username,{blocked:false}])"><b-icon icon="unlock-fill"></b-icon></b-button>
+                      <b-button style="border:none" variant="danger" class=" ml-2 mr-1" v-if="user.typeUser!='Administrador'" @click="removeUser({username:user.username})"><b-icon icon="trash-fill"></b-icon></b-button>
                       </td>
                   </tr>
              </table>
@@ -154,7 +153,7 @@
 
 <script>
 
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -175,41 +174,36 @@ export default {
        name:'',
        typeUser:''
      },
-     typeUsers:["Criança", "Tutor", "Professor","Administrador"],
-     usersData:''
+     typeUsers:["Criança","Tutor","Administrador"]
       
     };
   },
 
   computed: {
-    ...mapGetters(["getUsers","isUsernameAvailable"]),
-
-    filterUsers(){
-      return this.usersData.filter((user)=>(user.name==this.formFilter.name || this.formFilter.name=='') && (user.typeUser==this.formFilter.typeUser || this.formFilter.typeUser==''))
-    }
+    ...mapGetters(["getUsers"]),
   },
 
   methods: {
-    ...mapMutations(["SET_NEW_USER","SET_REMOVE_USER","CHANGE_STATE_USER","REMOVE_TEAMS_TEACHER","SET_REMOVE_RELATION_TUTOR_ADMIN","SET_REMOVE_RELATION_CHILD_ADMIN"]),
+    ...mapActions(["findAllUsers_ap","updateUser_ap","createAdmin_ap","removeUser_ap"]),
 
     addAdmin(){
-      if(this.isUsernameAvailable(this.formRegister.username)){
-        if(this.formRegister.password==this.conf_password){
-          this.SET_NEW_USER(this.formRegister)
-          this.warning=''
-          location.reload()
-        }
-        else{
-          this.warning='Aviso! Passwords não coincidem!'
-        }
+      if(this.formRegister.password==this.conf_password){
+        this.createAdmin_ap(this.formRegister)
+        .then(()=>{location.reload()})
+        .catch((err)=>this.warning=`${err}`)
+        
       }
       else{
-        this.warning='Aviso! Username já existe!'
+        this.warning='Aviso! Passwords não coincidem!'
       }
     },
 
     removeUser(user){
        if(confirm('Deseja remover o utilizador?')){
+         this.removeUser_ap(user)
+         .then(()=>{location.reload()})
+         .catch((err)=>alert(err))
+         /*
          if(user.typeUser=='Professor'){
             this.REMOVE_TEAMS_TEACHER(user.username)
          }
@@ -222,11 +216,13 @@ export default {
             if(user.tutor!=null){
               this. SET_REMOVE_RELATION_CHILD_ADMIN(user.tutor)
             }
-         }
-         this.SET_REMOVE_USER(user.username)
-         location.reload()
+         }*/
        }
      
+    },
+
+    changeUnlockLock(data){
+      this.updateUser_ap(data).then(()=>{location.reload()})
     },
 
     giveInfo(user){
@@ -235,7 +231,27 @@ export default {
     }
   },
   created () {
-    this.usersData=this.getUsers;
+    this.findAllUsers_ap("")
+  },
+
+  watch: {
+    'formFilter.typeUser'(newValue) {
+      if(this.formFilter.name==''){
+        this.findAllUsers_ap(`?typeUser=${newValue}`)
+      }
+      else{
+        this.findAllUsers_ap(`?typeUser=${newValue}&username=${this.formFilter.name}`)
+      }
+    },
+
+    'formFilter.name'(newValue) {
+      if(this.formFilter.typeUser==''){
+        this.findAllUsers_ap(`?username=${newValue}`)
+      }
+      else{
+        this.findAllUsers_ap(`?typeUser=${this.formFilter.typeUser}&username=${newValue}`)
+      }
+    }
   },
   
 }

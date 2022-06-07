@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <Nav/>
+    <Nav v-if="$store.getters.getLoggedUser.token"/>
   
     <router-view />
 
-    <Footer/>
+    <Footer v-if="$store.getters.getLoggedUser.token"/>
   </div>
 </template>
 

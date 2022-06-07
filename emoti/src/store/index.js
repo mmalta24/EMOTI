@@ -7,27 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    users: localStorage.users
-      ? JSON.parse(localStorage.users)
-      : [ //Admin
-          {
-            username: "Admin",
-            password: "Esmad_2122",
-            email:'administrador@gmail.com',
-            typeUser: "Administrador",
-            name:'Administrador',
-            imgProfile:''
-          },
-          {
-            username: "User",
-            password: "Esmad_2122",
-            email:'administrador@gmail.com',
-            typeUser: "Professor",
-            name:'User',
-            imageProfile:'',
-            blocked: false,
-          },
-        ],
+    users: [],
     activities: localStorage.activities
         ? JSON.parse(localStorage.activities)
         : [
@@ -69,12 +49,27 @@ export default new Vuex.Store({
             },          
           ],
      
-      loggedUser: sessionStorage.loggedUser ? JSON.parse(sessionStorage.loggedUser) : null,
       emotions: localStorage.emotions ? JSON.parse(localStorage.emotions) : ['Feliz','Triste','Envergonhado','Preocupado'],
-      
+      //new
+      loggedUser:localStorage.loggedUser ? JSON.parse(localStorage.loggedUser):{},
+
+      user:{},
+
+      usernameChild:""
   },
   
   getters: {
+    //new
+    getLoggedUser:(state)=> state.loggedUser,
+
+    getUser:(state)=>state.user,
+
+    getUsernameChild:(state)=>state.usernameChild,
+
+    getUsers: (state)=>state.users,
+
+
+    //old
     isUser: (state) => (username, password) =>
       state.users.some(
         (user) => user.username === username && user.password === password
@@ -82,8 +77,6 @@ export default new Vuex.Store({
 
     isUsernameAvailable: (state) => (username) =>
       state.users.every((user) => user.username !== username),
-
-    getLoggedUser: (state) => state.loggedUser,
 
     isUserBlocked: (state) => (username) => state.users.some(
       (user) => user.username === username && user.blocked === true
@@ -111,8 +104,6 @@ export default new Vuex.Store({
     isClassOccupied:(state) => (name) => state.classes.some(
       (team) => team.teacher === state.loggedUser.username && team.name === name
     ),
-
-    getUsers: (state)=>state.users,
 
     getStudent: (state) => (username) => state.users.find((user)=>user.username===username && user.typeUser == "Criança"),
 
@@ -145,58 +136,212 @@ export default new Vuex.Store({
     checkUserBadges: (state)=>(variable) =>  state.loggedUser.badgesId.find((badge)=> badge == variable),
 
     checkSugestions: (state) => (variable) => state.users.find((user)=> user.username == state.loggedUser.child).activitiesSugest[0].activities.find((sugestion)=> sugestion == variable),
+    //new
+   
+    
+
+  },
+  actions: {
+    async login_ap(context,data){
+      const response = await fetch("http://127.0.0.1:3000/api/users/login", {
+        method: 'POST',
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data)
+      })
+      if(response.ok){
+        context.commit("SET_TOKEN", await response.json());
+      }
+      else{
+        const err=await response.json()
+        throw new Error(err.error)
+      }
+    },
+
+    async register_ap(context,data){
+      const response = await fetch("http://127.0.0.1:3000/api/users", {
+        method: 'POST',
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data)
+      })
+      if(!response.status==201){
+        const err=await response.json()
+        throw new Error(err.error)
+      }
+    },
+
+    async find_ap(context,data){
+      const response = await fetch(`http://127.0.0.1:3000/api/users/${data}`, {
+        method: 'GET',
+        headers: {'Authorization': 'Bearer '+this.state.loggedUser.token,}})
+      if(response.ok){
+        context.commit("SET_USER_INFO", await response.json());
+      }
+    },
+
+    async updateUser_ap(context,data){
+      const response = await fetch(`http://127.0.0.1:3000/api/users/${data[0]}`, {
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin',
+        method: 'PATCH',
+        headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data[1])
+      })
+      if(!response.ok){
+        const err=await response.json()
+        throw new Error(err.error)
+      }
+    },
+
+    async createRelation_ap(context,data){
+      const response = await fetch(`http://127.0.0.1:3000/api/users/${this.state.loggedUser.username}/children`, {
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin',
+        method: 'PUT',
+        headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data)
+      })
+      if(!response.ok){
+        const err=await response.json()
+        throw new Error(err.error)
+      }
+    },
+
+    async findRelations_ap(context){
+      const response = await fetch(`http://127.0.0.1:3000/api/users/${this.state.loggedUser.username}/children`, {
+        method: 'GET',
+        headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
+      })
+      if(response.ok){
+        context.commit("SET_USERNAME_CHILD", await response.json());
+      }
+    },
+
+    async removeRelation_ap(context,data){
+      const response=await fetch(`http://127.0.0.1:3000/api/users/${this.state.loggedUser.username}/children`,{
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin',
+        method: 'DELETE',
+        headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data)
+      })
+
+      if (!response.ok) {
+        const err = await response.json()
+        throw new Error(err.error)
+      }
+    },
+
+    async findAllUsers_ap(context,data){
+      const response = await fetch(`http://127.0.0.1:3000/api/users`+data, {
+        method: 'GET',
+        headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
+      })
+      if(response.ok){
+        context.commit("SET_USERS", await response.json());
+      }
+    },
+
+    async createAdmin_ap(context,data){
+      const response = await fetch("http://127.0.0.1:3000/api/users/addAdmin", {
+        method: 'POST',
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+this.state.loggedUser.token
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data)
+      })
+      if(!response.status==201){
+        const err=await response.json()
+        throw new Error(err.error)
+      }
+    },
+
+    async removeUser_ap(context,data){
+      const response=await fetch(`http://127.0.0.1:3000/api/users/${data.username}`,{
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin',
+        method: 'DELETE',
+        headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data)
+      })
+      if (!response.ok) {
+        const err = await response.json()
+        throw new Error(err.error)
+      }
+
+      }
+    
+
   },
 
   mutations: {
-    SET_LOGGED_USER(state, variable) {
-      state.loggedUser = state.users.find((user) => user.username === variable);
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser);
+    //new
+    SET_TOKEN(state,variable){
+      state.user={}
+      state.loggedUser.token=variable.authKey
+      state.loggedUser.type=variable.typeUser
+      state.loggedUser.username=variable.username
+      localStorage.loggedUser=JSON.stringify(state.loggedUser)
     },
-
-    SET_NEW_USER(state, variable) {
-      state.users.push(variable);
-      localStorage.users = JSON.stringify(state.users);
+    
+    SET_USER_INFO(state,variable){
+      state.user=variable.user
     },
 
     SET_LOGOUT(state) {
-      state.loggedUser = null;
-      sessionStorage.removeItem("loggedUser");
+      state.loggedUser = {}
+      state.user={}
+      localStorage.loggedUser=JSON.stringify(state.loggedUser);
       router.push({ name: 'LandingPage' });
     },
 
-    SET_NEW_PASSWORD(state, variable){
-      state.loggedUser.password = variable
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser);
-      state.users.find((user) => user.username === state.loggedUser.username).password = variable;
-      localStorage.users = JSON.stringify(state.users)
+    SET_USERNAME_CHILD(state,variable){
+      if(variable.children.length!=0){
+        state.usernameChild=variable.children[0]
+      }
     },
 
+    SET_USERS(state,variable){
+      state.users=variable.users
+    },
+
+    //old
     SET_REMOVE_USER(state, variable){
       state.users=state.users.filter((user) => user.username != variable);
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_RELATION_TUTOR(state,variable){
-      state.loggedUser.child = variable
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser);
-      state.users.find((user) => user.username === state.loggedUser.username).child = variable;
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_RELATION_CHILD(state,variable){
-      state.users.find((user) => user.username === variable).tutor = state.loggedUser.username;
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_REMOVE_RELATION_TUTOR(state){
-      state.loggedUser.child = null
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser);
-      state.users.find((user) => user.username === state.loggedUser.username).child = null;
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_REMOVE_RELATION_CHILD(state){
-      state.users.find((user) => user.username === state.loggedUser.child).tutor = null;
       localStorage.users = JSON.stringify(state.users)
     },
 
@@ -276,14 +421,6 @@ export default new Vuex.Store({
       let teamStudents = state.classes.find((team) => team.teacher === variable.teacher && team.students.find((student)=> student.usernameStudent === state.loggedUser.child)).students
       state.classes.find((team) => team.teacher === variable.teacher && team.students.find((student)=> student.usernameStudent === state.loggedUser.child)).students = teamStudents.filter((student)=> student.usernameStudent != state.loggedUser.child)
       localStorage.classes = JSON.stringify(state.classes)
-    },
-
-    SET_ALTER_IMG(state,variable){
-      state.loggedUser.imageProfile = variable
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
-
-      state.users.find((user)=> user.username == state.loggedUser.username).imageProfile = variable
-      localStorage.users = JSON.stringify(state.users)
     },
 
     SET_REMOVE_EMOTION(state,variable){

@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
      <!--Footer-->
-  <div :style="{width:'100%','min-height':'35vh','background-color':'#FDFDED'}" class="d-flex flex-column align-items-center" v-if="$store.getters.getLoggedUser">
+  <div :style="{width:'100%','min-height':'35vh','background-color':'#FDFDED'}" class="d-flex flex-column align-items-center">
     <img src="../assets/Logo_Emoti.png" width="200" alt="" class="mt-4 mb-3">
     <p :style="{fontFamily:'EAmbit SemiBold',color:'#bfbfbf'}">Every day, a new adventure!</p>
     <div class="d-flex flex-row justify-content-around col-2 mt-2">
