@@ -10,7 +10,7 @@
 
                   <label class="mr-sm-2" for="filterLevel">Emoção: </label>
                   <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}" v-model="formFilter.emotion">
-                    <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
+                    <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion.name">{{emotion.name}}</b-form-select-option>
                   </b-form-select>
              </b-form>
          </div>
@@ -27,10 +27,10 @@
                       <th>Pontos Necessários</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(badge,index) in filterBadges" :key="index">
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(badge,index) in getBagdes" :key="index">
                       <td class="p-4">{{badge.badgeName}}</td>
                       <td>{{badge.badgeEmotion}}</td>
-                      <td>{{badge.pointsNedded}}</td>
+                      <td>{{badge.pointsNeeded}}</td>
                       <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removebadge(badge.badgeName)"><b-icon icon="trash-fill"></b-icon></b-button></td>
                   </tr>
              </table>
@@ -47,7 +47,7 @@
               </b-form-group>
 
                <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Pontos:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input id="input-sm" type="number" min="0" v-model.number="newBadgeForm.pointsNedded" required></b-form-input>
+                    <b-form-input id="input-sm" type="number" min="0" v-model.number="newBadgeForm.pointsNeeded" required></b-form-input>
                </b-form-group>
 
                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Imagem (URL):" label-for="input-sm" class="mt-4 mb-4">
@@ -57,7 +57,7 @@
                 <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Emoção:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-select id="input-sm" v-model="newBadgeForm.badgeEmotion">
                        <b-form-select-option value="Total" >Total</b-form-select-option>
-                       <b-form-select-option v-for="(emotion, index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
+                       <b-form-select-option v-for="(emotion, index) in getEmotions" :key="index" :value="emotion.name">{{emotion.name}}</b-form-select-option>
                     </b-form-select>
                 </b-form-group>
 
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
     data() {
         return {
@@ -83,46 +83,64 @@ export default {
             newBadgeForm:{
               badgeName: "",
               badgeIMG: "",
-              pointsNedded:0,
+              pointsNeeded:0,
               badgeEmotion: "",
             },
             formFilter:{
                 title:'',
                 emotion:''
-            },
-            listBadges:''       
+            }       
         }
     },
 
     computed: {
         ...mapGetters(["getLoggedUser","getEmotions","getBagdes","checkBadges"]),
-        filterBadges(){
-      return this.listBadges.filter((badge)=>(badge.badgeName==this.formFilter.title || this.formFilter.title=='') && (badge.badgeEmotion==this.formFilter.emotion || this.formFilter.emotion==''))
-    }
     },
 
     methods: {
         ...mapMutations(["SET_NEW_BADGE","SET_REMOVE_BADGE"]),
+        ...mapActions(["findBadges_ap","find_ap","createBadge_ap","findAllEmotions_ap","deleteBadge_ap"]),
 
         addNewBadge() {
-            if (!this.checkBadges(this.newBadgeForm.badgeName)) {
-                this.SET_NEW_BADGE(this.newBadgeForm)
-                location.reload()
-            } else {
-                this.warning="Já existe um badge com esse nome!"
-            }
+            this.createBadge_ap(this.newBadgeForm)
+                .then(()=>location.reload())
+                .catch((err)=>alert(err));
         },
         removebadge(variable){
             if(confirm('Deseja remover?')){
-                this.SET_REMOVE_BADGE(variable)
-                location.reload()
+              this.deleteBadge_ap(variable)
+                .then(()=>location.reload())
+                .catch((err)=>alert(err));
             }
             
         }
     },
     created () {
-        this.listBadges=this.getBagdes;
+        this.find_ap(this.getLoggedUser.username);
+        this.findBadges_ap("");
+        this.findAllEmotions_ap();
     },
+
+    /*watch: {
+        'formFilter.emotion'(newValue) {
+            if(this.formFilter.title==''){
+                this.findBadges_ap(`?emotion=${newValue}`)
+            }
+            else{
+                this.findBadges_ap(`?emotion=${newValue}&title=${this.formFilter.title}`)
+            }
+        },
+
+        'formFilter.title'(newValue) {
+            if(this.formFilter.emotion==''){
+                this.findBadges_ap(`?title=${newValue}`)
+            }
+            else{
+                this.findBadges_ap(`?emotion=${this.formFilter.emotion}&title=${newValue}`)
+            }
+        }
+    },*/
+  
 
 }
 </script>

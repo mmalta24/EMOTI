@@ -24,7 +24,7 @@
          </div>
 
          <div class="col-12 d-flex flex-row justify-content-end mt-5">
-             <b-button :style="{color:'#fdfdf3','background-color':'#BFBFBF',border:'none'}" class="mr-3" v-b-modal.modalManagerActivity @click="modalActivityDo='manageremotion'">Gerir Emoções</b-button>
+             <b-button :style="{color:'#fdfdf3','background-color':'#BFBFBF',border:'none'}" class="mr-3" v-b-modal.modalManagerActivity @click="openEditorEmotion()">Gerir Emoções</b-button>
              <b-button :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" v-b-modal.modalManagerActivity @click="modalActivityDo='addactivity'">Adicionar</b-button>
          </div>
 
@@ -147,7 +147,7 @@
               <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='manageremotion'">
                   <h4 :style="{color:'#e87461'}">Emoções</h4>
 
-                  <b-form @submit="addNewEmotion()">
+                  <b-form @submit.prevent="addNewEmotion()">
                     <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Nome:" label-for="input-sm" class="mt-4 mb-4">
                         <b-form-input id="input-sm" v-model="newEmotion" required></b-form-input>
                     </b-form-group>
@@ -163,20 +163,23 @@
                       <th>Ação</th>
                     </tr>
                     <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(emotion,index) in getEmotions" :key="index">
-                      <td class="p-4">{{emotion}}</td>
-                      <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeEmotion(emotion)"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                      <td class="p-4">{{emotion.name}}</td>
+                      <td><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeEmotion(emotion.name)"><b-icon icon="trash-fill"></b-icon></b-button></td>
                     </tr>
                   </table>
 
 
 
               </div>
+               <div v-if="warning!=''" :style="{'background-color':'#C82333',color:'#fdfdf3','border-radius':'4px'}">
+              <p>{{warning}}</p>
+            </div>
     </b-modal> 
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
    name:"ManagerActivities",
    data() {
@@ -215,7 +218,7 @@ export default {
              title:'',
              category:'',
              level:'',
-         }
+         },
          
       };
    },
@@ -228,11 +231,18 @@ export default {
    },
 
    methods: {
+      ...mapActions(["findAllEmotions_ap","createEmotion_ap","find_ap","deleteEmotion_ap"]),
+
       ...mapMutations(["SET_REMOVE_EMOTION","SET_NEW_EMOTION","SET_REMOVE_ACTIVITY","SET_NEW_ACTIVITY","SET_REMOVE_EMOTION","SET_EDIT_ACTIVITY"]),
 
       modalEditOpen(variable){
          this.modalActivityDo='editactivity'
          this.editActivity=variable
+      },
+
+      openEditorEmotion(){
+         this.modalActivityDo='manageremotion'
+         this.findAllEmotions_ap()
       },
 
       applyChangesActivity(){
@@ -241,16 +251,17 @@ export default {
       },
 
       removeEmotion(emotion){
-         this.SET_REMOVE_EMOTION(emotion)
+         if(confirm("Deseja remover a emoção?")){
+            this.deleteEmotion_ap(emotion)
+               .then(()=>{ this.findAllEmotions_ap();})
+               .catch((err)=>alert(err));
+         }
       },
 
       addNewEmotion(){
-         if (!this.checkInEmotions(this.newEmotion)) {
-            this.SET_NEW_EMOTION(this.newEmotion)
-            this.newEmotion=""
-         }else{
-            alert("A emoção já está registada!")
-         }
+         this.createEmotion_ap({name:this.newEmotion})
+           .then(()=>{ this.findAllEmotions_ap().then(()=>this.newEmotion="");})
+           .catch((err)=>this.warning=`${err}`);
       },
 
       addNewQuestion(index){
@@ -301,6 +312,7 @@ export default {
    },
    created () {
       this.activitiesAdmin=this.getActivitiesAdmin;
+      this.find_ap(this.getLoggedUser.username);
    },
   
 }

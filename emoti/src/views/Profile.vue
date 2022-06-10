@@ -96,11 +96,11 @@
                             <th>Professor</th>
                             <th>Ações</th>
                         </tr>
-                        <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(request,index) in getUser.classRequests" :key="index">
-                            <td class="p-4">{{request.className}}</td>
-                            <td>{{request.teacherName}}</td>
-                            <td><b-button size="sm" style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1" @click="acceptRequest(request)"><span class="material-icons-round">done</span></b-button>
-                            <b-button variant="danger" size="sm" style="border:none;" class=" ml-1 mr-2" @click="removeRequest(request)"><span class="material-icons-round">close</span></b-button></td>
+                        <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(request,index) in getRequests" :key="index">
+                            <td class="p-4">{{request.name}}</td>
+                            <td>{{request.teacher}}</td>
+                            <td><b-button size="sm" style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1" @click="acceptRequest(getChildInfo.username,request.teacher,request.name)"><span class="material-icons-round">done</span></b-button>
+                            <b-button variant="danger" size="sm" style="border:none;" class=" ml-1 mr-2" @click="removeRequest(getChildInfo.username,request.teacher,request.name)"><span class="material-icons-round">close</span></b-button></td>
                         </tr>
                      </table>
                 </div>
@@ -129,30 +129,30 @@
            <!--Parte vivível para os pais-->
           <div class="row col-12 mt-5" v-if="getUser.typeUser == 'Tutor'">
              <div class="col-6"><h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Dados da Criança</h2></div>
-             <div class="col-6 d-flex flex-row justify-content-end" v-if="getUsernameChild==''"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Associar criança</b-button></div>
+             <div class="col-6 d-flex flex-row justify-content-end" v-if="getChildInfo==''"><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="whatModalDo='addkid'" v-b-modal.modal-profile>Associar criança</b-button></div>
              <div class="col-6 d-flex flex-row justify-content-end" v-else><b-button class="h-75" :style="{'background-color':'#e87461',border:'none',color:'#fdfdf3'}" @click="removeRelation()">Desassociar criança</b-button></div>
 
-             <div v-if="getUser.child != null" class="col-12 row"> <!-- Div if-->
+             <div v-if="getChildInfo != ''" class="col-12 row"> <!-- Div if-->
              <div class="col-2 d-flex flex-row justify-content-center align-items-start mt-5">
-                 <b-avatar v-if="getAssociatedChild.imageProfile==''" :style="{color:'#FDFDED','background-color':'#BFBFBF',width:'230px',height:'190px'}"></b-avatar>
-                <img v-else :src="getAssociatedChild.imageProfile" :style="{width:'220px',height:'220px','border-radius':'100%'}" alt="">
+                 <b-avatar v-if="getChildInfo.imgProfile==''" :style="{color:'#FDFDED','background-color':'#BFBFBF',width:'230px',height:'190px'}"></b-avatar>
+                <img v-else :src="getChildInfo.imgProfile" :style="{width:'220px',height:'220px','border-radius':'100%'}" alt="">
              </div>
              <div class="col-5 mt-5">
               <b-form>
               <b-form-group label="Nome:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" v-model="getAssociatedChild.name" disabled></b-form-input>
+                <b-form-input id="nested-street" v-model="getChildInfo.name" disabled></b-form-input>
               </b-form-group>
               <b-form-group label="Username:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getAssociatedChild.username"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getChildInfo.username"></b-form-input>
               </b-form-group>
               <b-form-group label="Password:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getAssociatedChild.password"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getChildInfo.password"></b-form-input>
               </b-form-group>
                <b-form-group label="Email:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getAssociatedChild.email"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getChildInfo.email"></b-form-input>
               </b-form-group>
               <b-form-group label="Tipo de Utilizador:" label-for="nested-street" label-cols-sm="4" label-align-sm="left">
-                <b-form-input id="nested-street" disabled v-model="getAssociatedChild.typeUser"></b-form-input>
+                <b-form-input id="nested-street" disabled v-model="getChildInfo.typeUser"></b-form-input>
               </b-form-group>       
               </b-form>
             </div>
@@ -170,7 +170,7 @@
                       <th>Professor</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(team,index) in getChildTeams" :key="index">
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(team,index) in getClassesKid" :key="index">
                       <td class="p-4">{{team.name}}</td>
                       <td>{{team.teacher}}</td>
                       <td><b-button variant="danger" @click="removeKidFromClass(team)"><b-icon icon="trash-fill"></b-icon> Anular</b-button></td>
@@ -180,11 +180,11 @@
             </div>
 
             <div class="col-12 mt-4 pb-5 d-flex flex-row justify-content-end" >
-              <b-button :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" v-b-modal.modal-profile @click="whatModalDo='intoclass'" >Pedidos para Associar</b-button>
+              <b-button :style="{color:'#fdfdf3','background-color':'#e87461',border:'none'}" v-b-modal.modal-profile @click="giveRequest(getChildInfo.username)" >Pedidos para Associar</b-button>
             </div>
             </div>
 
-            <div class="mt-5 col-12 d-flex flex-row justify-content-center" v-if="getUser.child == null"> <!--Não associou a criança-->
+            <div class="mt-5 col-12 d-flex flex-row justify-content-center" v-if="getChildInfo== ''"> <!--Não associou a criança-->
               <p>Não existe criança associada, a este perfil</p>
             </div>
 
@@ -194,7 +194,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations,mapActions } from "vuex";
+import { mapGetters,mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -215,12 +215,11 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getAssociatedChild","isUserChild","isChildFree","getChildTeams","getUser","getUsernameChild"]),
+    ...mapGetters(["getLoggedUser","getUser","getChildInfo","getRequests","getClassesKid"]),
   },
 
   methods: {
-    ...mapActions(["find_ap","updateUser_ap","createRelation_ap","findRelations_ap","removeRelation_ap"]),
-    ...mapMutations(["SET_REMOVE_REQUEST","SET_ACCEPT_REQUEST","SET_REMOVE_KID_FROM_CLASS"]),
+    ...mapActions(["find_ap","updateUser_ap","createRelation_ap","findRelations_ap","removeRelation_ap","findRequests_ap","acceptRequest_ap","findClasses_ap","deleteRequest_ap","removeStudent_ap"]),
 
     changePassword(){
         if (this.passForm.newPass != this.passForm.confPass) {
@@ -241,28 +240,29 @@ export default {
 
     removeRelation(){
       if (confirm("Deseja mesmo desassociar esta criança?")) {
-         this.removeRelation_ap({usernameChild:this.getUsernameChild})
+         this.removeRelation_ap({usernameChild:this.getChildInfo.username})
           .then(()=>{location.reload()})
           .catch((err)=>alert(err))
       }
     },
 
-    removeRequest(request){
+    removeRequest(username,teacher,team){
       if (confirm("Quer eliminar este pedido?")) {
-        this.SET_REMOVE_REQUEST(request)
+        this.deleteRequest_ap([username,{teacher:teacher,className:team}])
+        .then(()=>this.findRequests_ap(username))
+        .catch((err)=>alert(err));
       }
     },
 
-    acceptRequest(request){
-      if (confirm("Quer aceitar este pedido?")) {
-        this.SET_ACCEPT_REQUEST(request)
-        this.SET_REMOVE_REQUEST(request)
-      }
+    acceptRequest(username,teacher,team){
+      this.acceptRequest_ap([username,{teacher:teacher,className:team}])
+      .then(()=>this.findRequests_ap(username))
+      .catch((err)=>alert(err));
     },
 
     removeKidFromClass(team){
       if (confirm("Quer remover a criança desta turma?")) {
-        this.SET_REMOVE_KID_FROM_CLASS(team)
+        this.removeStudent_ap([team.name,this.getChildInfo.username,{teacher:team.teacher}]).then(()=>location.reload());
       }
     },
 
@@ -270,13 +270,18 @@ export default {
           this.updateUser_ap({imgProfile:this.newImg})
           .then(()=>{location.reload()})
           .catch((err)=>this.warning=`${err}`)
+    },
+
+    giveRequest(username){
+      this.whatModalDo='intoclass';
+      this.findRequests_ap(username);
     }
 
   },
 
   created () {
     this.find_ap(this.getLoggedUser.username)
-    this.findRelations_ap();
+    this.findRelations_ap().then(()=>{this.findClasses_ap(this.getChildInfo.username);});
   },
   
 }

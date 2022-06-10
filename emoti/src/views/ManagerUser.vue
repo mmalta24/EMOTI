@@ -203,20 +203,6 @@ export default {
          this.removeUser_ap(user)
          .then(()=>{location.reload()})
          .catch((err)=>alert(err))
-         /*
-         if(user.typeUser=='Professor'){
-            this.REMOVE_TEAMS_TEACHER(user.username)
-         }
-         else if(user.typeUser=='Tutor'){
-            if(user.child!=null){
-              this. SET_REMOVE_RELATION_TUTOR_ADMIN(user.child)
-            }
-         }
-         else if(user.typeUser=='Criança'){
-            if(user.tutor!=null){
-              this. SET_REMOVE_RELATION_CHILD_ADMIN(user.tutor)
-            }
-         }*/
        }
      
     },

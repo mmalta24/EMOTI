@@ -27,12 +27,12 @@
                       <th>Turma</th>
                       <th>Ações</th>
                   </tr>
-                  <tbody v-for="(team,index) in getTeacherClasses" :key="index">
+                  <tbody v-for="(team,index) in getStudents" :key="index">
                     <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(student,index) in team.students" :key="index">
-                      <td class="p-4">{{student.usernameStudent}}</td>
-                      <td>{{student.nameStudent}}</td>
+                      <td class="p-4">{{student.username}}</td>
+                      <td>{{student.name}}</td>
                       <td>{{team.name}}</td>
-                      <td><b-button style="border:none" class=" ml-2 mr-1" v-b-modal.modal-class @click="openEditor(student,team.name)"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeStudent(student.usernameStudent)"><b-icon icon="trash-fill"></b-icon></b-button></td>
+                      <td><b-button style="border:none" class=" ml-2 mr-1" v-b-modal.modal-class @click="openEditor(student,team.name)"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1" @click="removeStudent(team.name,student.name)"><b-icon icon="trash-fill"></b-icon></b-button></td>
                     </tr>
                   </tbody>
                 </table>
@@ -101,7 +101,7 @@
         <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalClassDo=='editstudent'">
           <h4 :style="{color:'#e87461'}">Editar Aluno</h4>
 
-          <b-form @submit="makeChanges()">
+          <b-form @submit.prevent="makeChanges()">
              <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Username:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" required disabled v-model="studentInfo.usernameStudent"></b-form-input>
              </b-form-group>
@@ -150,7 +150,7 @@
 
 
 
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters,mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -164,103 +164,84 @@ export default {
       teamToAdd:'',
       student: {},
       studentInfo: {},
+      oldTeam:""
       
     };
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getClassInfo","isClassOccupied","getTeacherClasses","getStudent","CheckInTeams","getAprovedStudents"]),
+    ...mapGetters(["getLoggedUser","getTeacherClasses","getSearchkid","getStudents"]),
 
   },
 
   methods: {
-    ...mapMutations(["SET_NEW_CLASS","SET_REMOVE_CLASS","SET_NEW_STUDENT","ALTER_STUDENT_INFO","REMOVE_STUDENT_CLASS","ALTER_STUDENT_CLASS"]),
+
+    ...mapActions(["findAllClasses_ap","createClass_ap","findChildClasses_ap","createRequest_ap","removeClass_ap","find_ap","alterStudent_ap","removeStudent_ap","findAllStudents_ap"]),
 
     addClass(){
-      if (!this.isClassOccupied(this.className)) {
-        this.classForm={
-          name: this.className,
-          teacher: this.getLoggedUser.username,
-          requests:[],
-          students: []
-        }
-        this.SET_NEW_CLASS(this.classForm)
-        location.reload()
-      } else {
-        this.warning="Este nome já pertence a uma das suas turmas!"
-      }
-      
+      this.createClass_ap({className:this.className})
+      .then(location.reload())
+      .catch((err)=>this.warning=`${err}`) 
     },
 
     removeClass(teamName){
-      if (confirm("Pretende mesmo eliminar esta turma? Esta ação não pode ser desfeita!")) {
-        this.SET_REMOVE_CLASS(teamName)
-      }
-    },
-
-    getStudentInfo(){
-      if (!this.getStudent(this.studentUsername)) {
-        this.warning="O utilizador não pode ser encontrado!"
-        this.studentName=""
-        this.studentTutor=null
-      }else{
-        let result = this.getStudent(this.studentUsername)
-        this.studentName=result.name
-        this.studentTutor=result.tutor
-        if (this.studentTutor=="null") {
-          this.studentTutor=null
-        }
-        this.warning=''
+      if(confirm("Deseja remover a turma?")){
+        this.removeClass_ap(teamName)
+          .then(()=>{location.reload()})
+          .catch((err)=>alert(err))
       }
       
     },
 
+    getStudentInfo(){
+      this.findChildClasses_ap(this.studentUsername)
+      .then(()=>{
+        this.studentName=this.getSearchkid.name
+        this.studentTutor=this.getSearchkid.tutor
+      })
+      .catch((err)=>this.warning=`${err}`)  
+    },
+
     addStudent(){
-      if (this.studentTutor === null) {
-        this.warning="A criança não pode ser associada!"
-      } else {
-        if (this.CheckInTeams(this.studentUsername)) {
-          this.warning="Esta criança já pertence a uma das suas turmas!"
-        } else {
-          this.student={
-            teamName: this.teamToAdd,
-            username: this.studentUsername,
-            tutorStudent: this.studentTutor,
-            name: this.studentName,
-          }
-          this.SET_NEW_STUDENT(this.student)
-          location.reload()
-        }
-      }    
+      this.createRequest_ap({usernameChild:this.studentUsername,className:this.teamToAdd})
+      .then(location.reload())
+      .catch((err)=>this.warning=`${err}`)
     },
 
     openEditor(student,teamName){
       this.modalClassDo='editstudent'
+      this.oldTeam=teamName
       this.studentInfo={
-        usernameStudent: student.usernameStudent,
-        nameStudent: student.nameStudent,
-        tutorStudent: student.tutorStudent,
+        usernameStudent: student.username,
+        nameStudent: student.name,
+        tutorStudent: student.tutor,
         team: teamName
       }
     },
 
     makeChanges(){
-      this.ALTER_STUDENT_CLASS(this.studentInfo);
+      this.alterStudent_ap([this.oldTeam,this.studentInfo.usernameStudent,{newClass:this.studentInfo.team}])
+      .then(()=>location.reload())
+      .catch((err)=>this.warning=`${err}`);
     },
 
-    removeStudent(username){
+    removeStudent(team,username){
       if (confirm("Deseja mesmo eliminar este aluno?")) {
-        this.REMOVE_STUDENT_CLASS(username)
+        this.removeStudent_ap([team,username,{}])
+          .then(()=>location.reload())
+          .catch((err)=>alert(err));
       }
       
-    },
-
-
-
-
-
+    }
 
   },
+
+created () {
+  this.findAllClasses_ap();
+  this.find_ap(this.getLoggedUser.username);
+  this.findAllStudents_ap();
+  
+},
 
   
 }

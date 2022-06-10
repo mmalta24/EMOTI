@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    users: [],
+    
     activities: localStorage.activities
         ? JSON.parse(localStorage.activities)
         : [
@@ -26,36 +26,31 @@ export default new Vuex.Store({
               author:"admin",
             },         
           ],
-      classes: localStorage.classes
-        ? JSON.parse(localStorage.classes)
-        : [
-            {
-              name: "teste",
-              teacher: "prof",
-              requests:[],
-              students: [],
-            },
-              
-          ],
-
-      badges: localStorage.badges
-        ? JSON.parse(localStorage.badges)
-        : [
-            {
-              badgeName: "Eu sou Feliz!",
-              badgeIMG: "https://github.com/mmalta24/images/blob/main/Grupo%20399.png?raw=true",
-              pointsNedded:20,
-              badgeEmotion: "Feliz",
-            },          
-          ],
      
-      emotions: localStorage.emotions ? JSON.parse(localStorage.emotions) : ['Feliz','Triste','Envergonhado','Preocupado'],
+      
       //new
       loggedUser:localStorage.loggedUser ? JSON.parse(localStorage.loggedUser):{},
 
       user:{},
 
-      usernameChild:""
+      childInfo:"",
+
+      users: [],
+
+      classes: [],
+
+      searchKid:{},
+
+      requests:[],
+
+      classesKid:[],
+
+      students:[],
+
+      emotions:[],
+
+      badges:[],
+
   },
   
   getters: {
@@ -64,10 +59,23 @@ export default new Vuex.Store({
 
     getUser:(state)=>state.user,
 
-    getUsernameChild:(state)=>state.usernameChild,
+    getChildInfo:(state)=>state.childInfo,
 
     getUsers: (state)=>state.users,
 
+    getTeacherClasses:(state)=>state.classes,
+
+    getSearchkid:(state)=>state.searchKid,
+
+    getRequests:(state)=>state.requests,
+
+    getClassesKid:(state)=>state.classesKid,
+
+    getStudents:(state)=>state.students,
+
+    getEmotions: (state) => state.emotions,
+
+    getBagdes: (state)=> state.badges,
 
     //old
     isUser: (state) => (username, password) =>
@@ -82,42 +90,16 @@ export default new Vuex.Store({
       (user) => user.username === username && user.blocked === true
     ),
 
-    getAssociatedChild:(state) => state.users.find((user) => user.username === state.loggedUser.child),
-
     getFilteredActivities: (state)=>(formFilter)=> state.activities.filter(activity=>(activity.level==formFilter.level || formFilter.level=='') &&
     (activity.category==formFilter.category || formFilter.category=='')),
 
     getActivity:(state)=>(title)=>state.activities.find((activitiy)=>activitiy.title==title),
 
-    getTeacherClasses:(state)=>state.classes.filter(team=>team.teacher === state.loggedUser.username),
-
-    isUserChild:(state) => (username, password) =>
-      state.users.some(
-        (user) => user.username === username && user.password === password && user.typeUser === "Criança"
-      ),
-    
-    isChildFree:(state) => (username) =>
-      state.users.some(
-        (user) => user.username === username && user.tutor === null
-      ),
-
-    isClassOccupied:(state) => (name) => state.classes.some(
-      (team) => team.teacher === state.loggedUser.username && team.name === name
-    ),
-
-    getStudent: (state) => (username) => state.users.find((user)=>user.username===username && user.typeUser == "Criança"),
-
     getTeamStudents: (state) => (teamName) => state.classes.find((team)=>team.name == teamName && team.teacher== state.loggedUser.username).students ,
-    
-    CheckInTeams: (state) => (variable) => state.classes.find((team) => team.teacher === state.loggedUser.username && (team.students.find((student)=> student.usernameStudent === variable) || team.requests.find((request) => request.usernameStudent === variable))),
-
-    getAprovedStudents: (state) => state.classes.filter((team)=>team.teacher === state.loggedUser.username).filter((t)=>t.students),
 
     getStudentData: (state) => (variable) => state.users.find((user)=>user.username==variable).points,
 
-    getChildTeams: (state) => state.classes.filter((team)=>team.students.find((student)=>student.usernameStudent==state.loggedUser.child)),
-
-    getEmotions: (state) => state.emotions,
+    
 
     checkInEmotions: (state) => (variable) => state.emotions.some((emotion)=>emotion.toLowerCase()==variable.toLowerCase()),
 
@@ -129,7 +111,7 @@ export default new Vuex.Store({
 
     checkInActivities: (state) => (variable) => state.activities.find((activity)=>activity.title.toLowerCase()==variable.toLowerCase()), 
   
-    getBagdes: (state)=> state.badges,
+    
 
     checkBadges: (state)=>(variable) => state.badges.find((badge)=>badge.badgeName.toLowerCase()==variable.toLowerCase()),
 
@@ -303,7 +285,284 @@ export default new Vuex.Store({
         throw new Error(err.error)
       }
 
-      }
+      },
+
+      async findAllClasses_ap(context){
+        const response = await fetch(`http://127.0.0.1:3000/api/classes`, {
+          method: 'GET',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
+        })
+        if(response.ok){
+          context.commit("SET_CLASSES", await response.json());
+        }
+      },
+
+      async createClass_ap(context,data){
+        const response = await fetch("http://127.0.0.1:3000/api/classes", {
+          method: 'POST',
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+this.state.loggedUser.token
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(data)
+        })
+        if(!response.status==201){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async findChildClasses_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/classes/requests?usernameChild=${data}`, {
+          method: 'GET',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+        })
+        if(response.ok){
+          context.commit("SET_SEARCH_KID", await response.json());
+        }
+        else{
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async createRequest_ap(context,data){
+        const response = await fetch("http://127.0.0.1:3000/api/classes/requests", {
+          method: 'POST',
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+this.state.loggedUser.token
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(data)
+        })
+        if(!response.status==201){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async removeClass_ap(context,data){
+        const response=await fetch(`http://127.0.0.1:3000/api/classes/${data}`,{
+          method: 'DELETE',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token}
+        })
+        console.log(response);
+        if (!response.ok) {
+          const err = await response.json()
+          throw new Error(err.error)
+        }
+  
+      },
+
+      async alterStudent_ap(context,data){
+          const response = await fetch(`http://127.0.0.1:3000/api/classes/${data[0]}/children/${data[1]}`, {
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'PUT',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify(data[2])
+        })
+        if(!response.ok){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async removeStudent_ap(context,data){
+        const response=await fetch(`http://127.0.0.1:3000/api/classes/${data[0]}/children/${data[1]}`,{
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'DELETE',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify(data[2])
+        })
+        if (!response.ok) {
+          const err = await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async findRequests_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/classes/requests/${data}`, {
+          method: 'GET',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
+        })
+        if(response.ok){
+          context.commit("SET_REQUESTS", await response.json());
+        }
+        else{
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async acceptRequest_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/classes/requests/${data[0]}`, {
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'PUT',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify(data[1])
+        })
+        if(!response.ok){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async deleteRequest_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/classes/requests/${data[0]}`, {
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'DELETE',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify(data[1])
+        })
+        if(!response.ok){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async findClasses_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/classes/children/${data}`, {
+          method: 'GET',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token,}})
+        if(response.ok){
+          context.commit("SET_CLASSES_KID", await response.json());
+        }
+      },
+
+      async findAllStudents_ap(context){
+        const response = await fetch(`http://127.0.0.1:3000/api/classes/children`, {
+          method: 'GET',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+        })
+        if(response.ok){
+          context.commit("SET_STUDENTS", await response.json());
+        }
+      },
+
+      async findAllEmotions_ap(context){
+        const response = await fetch(`http://127.0.0.1:3000/api/emotions`, {
+          method: 'GET',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+        })
+        if(response.ok){
+          context.commit("SET_EMOTIONS", await response.json());
+        }
+      },
+
+      async createEmotion_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/emotions`, {
+          method: 'POST',
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+this.state.loggedUser.token
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(data)
+        })
+        if(!response.status==201){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async deleteEmotion_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/emotions/${data}`, {
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'DELETE',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer',
+        })
+        if(!response.ok){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async findBadges_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/badges${data}`, {
+          method: 'GET',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
+        })
+        if(response.ok){
+          context.commit("SET_BADGES", await response.json());
+        }
+        else{
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async createBadge_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/badges`, {
+          method: 'POST',
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+this.state.loggedUser.token
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(data)
+        })
+        if(!response.status==201){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+      async deleteBadge_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/badges/${data}`, {
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'DELETE',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer'
+        })
+        if(!response.ok){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
     
 
   },
@@ -331,7 +590,7 @@ export default new Vuex.Store({
 
     SET_USERNAME_CHILD(state,variable){
       if(variable.children.length!=0){
-        state.usernameChild=variable.children[0]
+        state.childInfo=variable.children[0]
       }
     },
 
@@ -339,24 +598,35 @@ export default new Vuex.Store({
       state.users=variable.users
     },
 
+    SET_CLASSES(state,variable){
+      state.classes=variable.classes
+    },
+
+    SET_SEARCH_KID(state,variable){
+      state.searchKid=variable.child
+    },
+
+    SET_REQUESTS(state,variable){
+      state.requests=variable.requests
+    },
+
+    SET_CLASSES_KID(state,variable){
+      state.classesKid=variable.class
+    },
+
+    SET_STUDENTS(state,variable){
+      state.students=variable.list;
+    },
+
+    SET_EMOTIONS(state,variable){
+      state.emotions=variable.emotions
+    },
+
+    SET_BADGES(state,variable){
+      state.badges=variable.data
+    },
+
     //old
-    SET_REMOVE_USER(state, variable){
-      state.users=state.users.filter((user) => user.username != variable);
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_NEW_CLASS(state,variable){
-      state.classes.push(variable);
-      localStorage.classes = JSON.stringify(state.classes);
-    },
-
-    SET_REMOVE_CLASS(state,variable){
-      let rest = state.classes.filter((team) => team.teacher != state.loggedUser.username)
-      let edit = state.classes.filter((team) => team.teacher === state.loggedUser.username && team.name != variable)
-      state.classes = rest.concat(edit)
-      localStorage.classes = JSON.stringify(state.classes)
-    },
-
     CHANGE_STATE_USER(state,variable){
       state.users.find((user) => user.username === variable.username).blocked = variable.logic;
       localStorage.users = JSON.stringify(state.users)
@@ -375,52 +645,6 @@ export default new Vuex.Store({
     SET_REMOVE_RELATION_CHILD_ADMIN(state,variable){
       state.users.find((user) => user.username === variable).child = null;
       localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_NEW_STUDENT(state,variable){
-      state.classes.find((team)=>team.teacher === state.loggedUser.username && team.name===variable.teamName).requests.push({usernameStudent: variable.username, nameStudent: variable.name, tutorStudent: variable.tutorStudent})
-      localStorage.classes = JSON.stringify(state.classes)
-      state.users.find((user)=>user.username==variable.tutorStudent).classRequests.push({teacherName: state.loggedUser.username, className:variable.teamName})
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    REMOVE_STUDENT_CLASS(state,variable){
-      let teamStudents = state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable)).students
-      state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable)).students = teamStudents.filter((student)=> student.usernameStudent != variable)
-      localStorage.classes = JSON.stringify(state.classes)
-    },
-
-    ALTER_STUDENT_CLASS(state,variable){
-      let teamStudents = state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable.usernameStudent)).students
-      state.classes.find((team) => team.teacher === state.loggedUser.username && team.students.find((student)=> student.usernameStudent === variable.usernameStudent)).students = teamStudents.filter((student)=> student.usernameStudent != variable.usernameStudent)
-      state.classes.find((team)=>team.teacher === state.loggedUser.username && team.name===variable.team).students.push({usernameStudent: variable.usernameStudent, nameStudent: variable.nameStudent, tutorStudent: variable.tutorStudent,aproved:true})
-      localStorage.classes = JSON.stringify(state.classes)
-    },
-
-    SET_REMOVE_REQUEST(state,variable){
-      let ativeRequests = state.classes.find((team)=>team.teacher==variable.teacherName && team.name==variable.className).requests
-      state.classes.find((team)=>team.teacher==variable.teacherName && team.name==variable.className).requests = ativeRequests.filter((request)=> request.usernameStudent != state.loggedUser.child)
-      localStorage.classes = JSON.stringify(state.classes)
-
-      let tutorRequests = state.users.find((user)=>user.username==state.loggedUser.username).classRequests
-      state.users.find((user)=>user.username==state.loggedUser.username).classRequests = tutorRequests.filter((request)=> request.teacherName!=variable.teacherName && request.className!=variable.className)
-      localStorage.users = JSON.stringify(state.users)
-
-      state.loggedUser.classRequests=tutorRequests.filter((request)=> request.teacherName!=variable.teacherName && request.className!=variable.className)
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
-    },
-
-    SET_ACCEPT_REQUEST(state,variable){
-      let studentsList = state.classes.find((team)=>team.teacher==variable.teacherName && team.name==variable.className).requests
-      let newStudent = studentsList.find((student)=> student.usernameStudent == state.loggedUser.child)
-      state.classes.find((team)=>team.teacher==variable.teacherName && team.name==variable.className).students.push(newStudent)
-      localStorage.classes = JSON.stringify(state.classes)
-    },
-
-    SET_REMOVE_KID_FROM_CLASS(state,variable){
-      let teamStudents = state.classes.find((team) => team.teacher === variable.teacher && team.students.find((student)=> student.usernameStudent === state.loggedUser.child)).students
-      state.classes.find((team) => team.teacher === variable.teacher && team.students.find((student)=> student.usernameStudent === state.loggedUser.child)).students = teamStudents.filter((student)=> student.usernameStudent != state.loggedUser.child)
-      localStorage.classes = JSON.stringify(state.classes)
     },
 
     SET_REMOVE_EMOTION(state,variable){
