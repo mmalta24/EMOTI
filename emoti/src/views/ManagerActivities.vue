@@ -10,12 +10,14 @@
 
                   <label class="mr-sm-2" for="filterLevel">Categoria: </label>
                   <b-form-select id="filterLevel" class="mb-2 mr-sm-5 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}" v-model="formFilter.category">
+                       <b-form-select-option value="">Qualquer</b-form-select-option>
                       <b-form-select-option value="Quiz">Quiz</b-form-select-option>
                       <b-form-select-option value="Reconhecimento" disabled>Reconhecimento</b-form-select-option>
                   </b-form-select>
 
                    <label class="mr-sm-2" for="filterLevel">Dificuldade: </label>
                   <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}" v-model="formFilter.level">
+                      <b-form-select-option value="">Qualquer</b-form-select-option>
                      <b-form-select-option value="Fácil">Fácil</b-form-select-option>
                      <b-form-select-option value="Médio">Médio</b-form-select-option>
                      <b-form-select-option value="Dificil">Dificil</b-form-select-option>
@@ -37,7 +39,7 @@
                       <th>Categoria</th>
                       <th>Ações</th>
                   </tr>
-                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(activity,index) in filterActivities" :key="index">
+                  <tr :style="{'border-bottom':'2px solid #707070'}" v-for="(activity,index) in getActivities" :key="index">
                       <td class="p-4">{{activity.title}}</td>
                       <td>{{activity.level}}</td>
                       <td>{{activity.caseIMG}}</td>
@@ -52,7 +54,7 @@
           <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='addactivity'">
               <h4 :style="{color:'#e87461'}">Adicionar Atividade</h4>
 
-              <b-form @submit="addActivity()">
+              <b-form @submit.prevent="addActivity()">
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" v-model="newActivity.title" required></b-form-input>
                  </b-form-group>
@@ -75,7 +77,7 @@
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4" v-for="(question,index) in newActivity.questions" :key="index">
                     <div class="row mt-2">
                        <b-form-select id="input-sm" class="col-3 ml-3" v-model="question.correctAnswer" :disabled="index+1 != newActivity.questions.length">
-                          <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
+                          <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion.name">{{emotion.name}}</b-form-select-option>
                        </b-form-select>
                        <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Imagem" v-model="question.img" :disabled="index+1 != newActivity.questions.length"></b-form-input>
                        <b-form-input id="input-sm" type="number" class="col-2 ml-2" placeholder="Pontos" min="0"  v-model.number="question.points" :disabled="index+1 != newActivity.questions.length"></b-form-input>
@@ -101,7 +103,7 @@
           <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='editactivity'">
               <h4 :style="{color:'#e87461'}">Editar Atividade</h4>
 
-              <b-form @submit="applyChangesActivity()">
+              <b-form @submit.prevent="applyChangesActivity()">
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" v-model="editActivity.title" disabled required></b-form-input>
                  </b-form-group>
@@ -123,7 +125,7 @@
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4" v-for="(question,index) in editActivity.questions" :key="index">
                     <div class="row">
                        <b-form-select id="input-sm" class="col-3 ml-3" v-model="question.correctAnswer" disabled>
-                          <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
+                          <b-form-select-option :value="question.correctAnswer">{{question.correctAnswer}}</b-form-select-option>
                        </b-form-select>
                        <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Imagem" v-model="question.img"></b-form-input>
                        <b-form-input id="input-sm" type="number" class="col-2 ml-2" placeholder="Pontos" min="0"  v-model.number="question.points"></b-form-input>
@@ -199,8 +201,7 @@ export default {
             }],
             caseIMG:'',
             description:'',
-            category:'' ,
-            author:'admin'
+            category:'' 
          },
 
          editActivity:{
@@ -224,14 +225,14 @@ export default {
    },
 
    computed: {
-      ...mapGetters(["getLoggedUser","getEmotions","checkInEmotions","getActivitiesAdmin","checkInActivities"]),
+      ...mapGetters(["getLoggedUser","getEmotions","checkInEmotions","getActivities","checkInActivities"]),
       filterActivities(){
       return this.activitiesAdmin.filter((activity)=>(activity.title==this.formFilter.title || this.formFilter.title=='') && (activity.category==this.formFilter.category || this.formFilter.category=='')&& (activity.level==this.formFilter.level || this.formFilter.level==''))
     }
    },
 
    methods: {
-      ...mapActions(["findAllEmotions_ap","createEmotion_ap","find_ap","deleteEmotion_ap"]),
+      ...mapActions(["findAllEmotions_ap","createEmotion_ap","find_ap","deleteEmotion_ap","findAtivities_ap","createActivity_ap","deleteActivity_ap","editActivity_ap"]),
 
       ...mapMutations(["SET_REMOVE_EMOTION","SET_NEW_EMOTION","SET_REMOVE_ACTIVITY","SET_NEW_ACTIVITY","SET_REMOVE_EMOTION","SET_EDIT_ACTIVITY"]),
 
@@ -246,8 +247,9 @@ export default {
       },
 
       applyChangesActivity(){
-         
-         this.SET_EDIT_ACTIVITY(this.editActivity)
+         this.editActivity_ap([this.editActivity.title,{level:this.editActivity.level,description:this.editActivity.description,questions:this.editActivity.questions,caseIMG:this.editActivity.caseIMG}])
+         .then(()=>location.reload())
+         .catch((err)=>{alert(`${err}`)})
       },
 
       removeEmotion(emotion){
@@ -261,7 +263,7 @@ export default {
       addNewEmotion(){
          this.createEmotion_ap({name:this.newEmotion})
            .then(()=>{ this.findAllEmotions_ap().then(()=>this.newEmotion="");})
-           .catch((err)=>this.warning=`${err}`);
+           .catch((err)=>alert(`${err}`));
       },
 
       addNewQuestion(index){
@@ -295,17 +297,14 @@ export default {
       },
 
       addActivity(){
-         if (!this.checkInActivities(this.newActivity.title)) {
-            this.newActivity.questions.pop()
-            this.SET_NEW_ACTIVITY(this.newActivity)
-         } else {
-            alert("Já existe uma atividade com esse nome!")
-         }
+         this.createActivity_ap(this.newActivity).then(()=>location.reload()).catch((err)=>{alert(`${err}`)})
       },
 
       removeActivity(variable){
          if (confirm("Tem a certeza que pretende remover esta atividade?")) {
-            this.SET_REMOVE_ACTIVITY(variable)
+            this.deleteActivity_ap(variable)
+            .then(()=>location.reload())
+            .catch((err)=>{alert(`${err}`)})
          }
       },
 
@@ -313,6 +312,58 @@ export default {
    created () {
       this.activitiesAdmin=this.getActivitiesAdmin;
       this.find_ap(this.getLoggedUser.username);
+      this.findAtivities_ap("");
+      this.findAllEmotions_ap();
+   },
+
+   watch: {
+      'formFilter.title'() {
+         if(this.formFilter.level!='' && this.formFilter.category!=''){
+            this.findAtivities_ap(`?title=${this.formFilter.title}&level=${this.formFilter.level}&category=${this.formFilter.category}`);
+         }
+         else if(this.formFilter.level!=''){
+            this.findAtivities_ap(`?title=${this.formFilter.title}&level=${this.formFilter.level}`);
+         }
+         else if(this.formFilter.category!=''){
+            this.findAtivities_ap(`?title=${this.formFilter.title}&category=${this.formFilter.category}`);
+         }
+         else{
+             this.findAtivities_ap(`?title=${this.formFilter.title}`);
+         }
+         
+      },
+
+       'formFilter.level'() {
+         if(this.formFilter.title!='' && this.formFilter.category!=''){
+            this.findAtivities_ap(`?title=${this.formFilter.title}&level=${this.formFilter.level}&category=${this.formFilter.category}`);
+         }
+         else if(this.formFilter.title!=''){
+            this.findAtivities_ap(`?title=${this.formFilter.title}&level=${this.formFilter.level}`);
+         }
+         else if(this.formFilter.category!=''){
+            this.findAtivities_ap(`?level=${this.formFilter.level}&category=${this.formFilter.category}`);
+         }
+         else{
+            this.findAtivities_ap(`?level=${this.formFilter.level}`);
+         }
+         
+      },
+
+       'formFilter.category'() {
+         if(this.formFilter.level!='' && this.formFilter.title!=''){
+            this.findAtivities_ap(`?title=${this.formFilter.title}&level=${this.formFilter.level}&category=${this.formFilter.category}`);
+         }
+         else if(this.formFilter.level!=''){
+            this.findAtivities_ap(`?category=${this.formFilter.category}&level=${this.formFilter.level}`);
+         }
+         else if(this.formFilter.title!=''){
+            this.findAtivities_ap(`?title=${this.formFilter.title}&category=${this.formFilter.level}`);
+         }
+         else{
+            this.findAtivities_ap(`?category=${this.formFilter.category}`);
+         }
+         
+      }
    },
   
 }

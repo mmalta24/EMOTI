@@ -10,6 +10,7 @@
 
                   <label class="mr-sm-2" for="filterLevel">Emoção: </label>
                   <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-2"  :style="{'background-color':'#fdfdf3'}" v-model="formFilter.emotion">
+                     <b-form-select-option value="">Qualquer</b-form-select-option>
                     <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion.name">{{emotion.name}}</b-form-select-option>
                   </b-form-select>
              </b-form>
@@ -104,7 +105,7 @@ export default {
         addNewBadge() {
             this.createBadge_ap(this.newBadgeForm)
                 .then(()=>location.reload())
-                .catch((err)=>alert(err));
+                .catch((err)=>alert(`${err}`));
         },
         removebadge(variable){
             if(confirm('Deseja remover?')){
@@ -121,7 +122,7 @@ export default {
         this.findAllEmotions_ap();
     },
 
-    /*watch: {
+    watch: {
         'formFilter.emotion'(newValue) {
             if(this.formFilter.title==''){
                 this.findBadges_ap(`?emotion=${newValue}`)
@@ -139,7 +140,7 @@ export default {
                 this.findBadges_ap(`?emotion=${this.formFilter.emotion}&title=${newValue}`)
             }
         }
-    },*/
+    },
   
 
 }

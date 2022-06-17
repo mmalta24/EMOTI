@@ -7,28 +7,6 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    
-    activities: localStorage.activities
-        ? JSON.parse(localStorage.activities)
-        : [
-            {
-              title: "Qual é o meu nome?",
-              level: "Fácil",
-              questions: [{
-                img:'1234',
-                correctAnswer:'',
-                answers:[],
-                points:0
-              }],
-              caseIMG:'https://github.com/mmalta24/images/blob/main/Imagem%202.png?raw=true',
-              description:'',
-              category:'Quiz',
-              author:"admin",
-            },         
-          ],
-     
-      
-      //new
       loggedUser:localStorage.loggedUser ? JSON.parse(localStorage.loggedUser):{},
 
       user:{},
@@ -51,6 +29,9 @@ export default new Vuex.Store({
 
       badges:[],
 
+      activities:[],
+
+      history:[]
   },
   
   getters: {
@@ -77,6 +58,12 @@ export default new Vuex.Store({
 
     getBagdes: (state)=> state.badges,
 
+    getActivities:(state)=>state.activities,
+
+    getActivitiesP:(state)=>(variable)=>state.activities.filter(activity=>(activity.author==variable)),
+
+    getHistory:(state)=>state.history,
+
     //old
     isUser: (state) => (username, password) =>
       state.users.some(
@@ -102,8 +89,6 @@ export default new Vuex.Store({
     
 
     checkInEmotions: (state) => (variable) => state.emotions.some((emotion)=>emotion.toLowerCase()==variable.toLowerCase()),
-
-    getActivities: (state) => state.activities,
 
     getActivitiesAdmin: (state) => state.activities.filter((activity)=>activity.category=="Quiz"||activity.category=="Reconhecimento"),
 
@@ -492,7 +477,7 @@ export default new Vuex.Store({
           referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
           body: JSON.stringify(data)
         })
-        if(!response.status==201){
+        if(response.status!=201){
           const err=await response.json()
           throw new Error(err.error)
         }
@@ -543,7 +528,7 @@ export default new Vuex.Store({
           referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
           body: JSON.stringify(data)
         })
-        if(!response.status==201){
+        if(response.status!=201){
           const err=await response.json()
           throw new Error(err.error)
         }
@@ -563,6 +548,161 @@ export default new Vuex.Store({
           throw new Error(err.error)
         }
       },
+      async findAtivities_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/activities${data}`, {
+          method: 'GET',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
+        })
+        if(response.ok){
+          context.commit("SET_ACTIVITIES", await response.json());
+        }
+        else{
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async createActivity_ap(context,data){
+        const response = await fetch('http://127.0.0.1:3000/api/activities', {
+          method: 'POST',
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+this.state.loggedUser.token
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(data)
+        })
+        if(response.status!=201){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async deleteActivity_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/activities/${data}`, {
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'DELETE',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer'
+        })
+        if(!response.ok){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async editActivity_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/activities/${data[0]}`, {
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'PATCH',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify(data[1])
+        })
+        if(!response.ok){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+      async getHistory_ap(context){
+        const response = await fetch(`http://127.0.0.1:3000/api/users/history`, {
+          method: 'GET',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
+        })
+        if(response.ok){
+          context.commit("SET_HISTORY", await response.json());
+        }
+        else{
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async addHistory_ap(context,data){
+        const response = await fetch('http://127.0.0.1:3000/api/users/history', {
+          method: 'POST',
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+this.state.loggedUser.token
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(data)
+        })
+        if(response.status!=200){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async setSuggest_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/activities/${data[0]}/children`, {
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'PATCH',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify(data[1])
+        })
+        if(!response.ok){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async giveToKidPersonalActi_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/activities/${data[0]}/children`, {
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'POST',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify(data[1])
+        })
+        if(!response.ok){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+      async setBadgeToKid_ap(context,data){
+        const response = await fetch(`http://127.0.0.1:3000/api/users/badges`, {
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin',
+          method: 'PATCH',
+          headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer',
+          body: JSON.stringify(data)
+        })
+        if(!response.ok){
+          const err=await response.json()
+          throw new Error(err.error)
+        }
+      },
+
+
+
     
 
   },
@@ -623,7 +763,15 @@ export default new Vuex.Store({
     },
 
     SET_BADGES(state,variable){
-      state.badges=variable.data
+      state.badges=variable.badges
+    },
+
+    SET_ACTIVITIES(state,variable){
+      state.activities=variable.activities
+    },
+
+    SET_HISTORY(state,variable){
+      state.history=variable.history
     },
 
     //old

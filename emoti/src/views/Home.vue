@@ -21,7 +21,7 @@
 
           <div class="row mb-4 mt-2">
             <div class="text-center mt-3 ml-5 mr-5" v-for="(badge,index) in getBagdes" :key="index">
-              <img :src="badge.badgeIMG" alt="" class="mb-1" :style="{width:'150px',filter: checkUserBadges(badge.badgeName) ? 'grayscale(0%)' : 'grayscale(100%)'}">
+              <img :src="badge.badgeIMG" alt="" class="mb-1" :style="{width:'150px',filter: checkBadge(badge.badgeName)==true  ? 'grayscale(0%)' : 'grayscale(100%)'}">
               <h5 :style="{fontFamily:'EAmbit SemiBold'}">{{badge.badgeName}}</h5>
             </div>
           </div>
@@ -101,7 +101,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getBagdes","getTeacherClasses","getTeamStudents","getStudentData","getActivitiesAdmin","getStudent","getEmotions","checkUserBadges","getUserDetails","getUser"]),
+    ...mapGetters(["getLoggedUser","getBagdes","getTeacherClasses","getTeamStudents","getStudentData","getActivities","getStudent","getEmotions","checkUserBadges","getUserDetails","getUser","getChildInfo","getStudents","getHistory"]),
 
     /*orderStudents() {
       return this.students.sort(this.compareStudents);
@@ -111,74 +111,110 @@ export default {
 
   methods: {
     ...mapMutations([]),
-    ...mapActions(["find_ap"]),
+    ...mapActions(["find_ap","findBadges_ap","findRelations_ap","findAllStudents_ap","findAtivities_ap","getHistory_ap",'findAllEmotions_ap']),
 
     compareStudents(studA, studB) {
       if (studA.pointsStudents > studB.pointsStudents) return 1;
       else if (studA.pointsStudents < studB.pointsStudents) return -1;
       else return 0;
     },
+
+    checkBadge(badge){
+      let collection=this.getUser.badgesId
+      if(collection==undefined){
+        return false
+      }
+      else{
+        if(collection.find(b=>b==badge)){
+          return true
+        }
+        else{
+          return false
+        }
+      }
+      
+    },
+
+    setHistoryKid(){
+      if (this.getUser.typeUser == "Tutor" && this.getUser.children.length!=0) {
+        let resultsData = []
+        console.log('ok');
+      for (const emotion of this.getEmotions) {
+          for (let i = 0; i < this.getHistory.length; i++) {
+            for (let a = 0; a < this.getHistory[i].results.length; a++) {
+              if (this.getHistory[i].results[a].emotion==emotion.name) {
+                if (!resultsData.find((result)=>result.emotion == emotion.name)) {
+                  if (this.getHistory[i].results[a].points==0) {
+                    resultsData.push({emotion:emotion.name,right:0,wrong:1,done:1})
+                  }else{
+                    resultsData.push({emotion:emotion.name,right:1,wrong:0,done:1})
+                  }
+                }else{
+                  if (this.getHistory[i].results[a].points==0) {
+                    resultsData.find((result)=>result.emotion == emotion.name).wrong++
+                  }else{
+                    resultsData.find((result)=>result.emotion == emotion.name).right++
+                  }
+                  resultsData.find((result)=>result.emotion == emotion.name).done++
+                }
+              }
+            }
+          } 
+        
+      }
+      this.childResults=resultsData
+      console.log(resultsData);
+
+
+    }
+    },
+
+    setRanking(){
+       for (let i = 0; i < this.getStudents.length; i++) {
+          let team = this.getStudents[i].name
+          for (let a = 0; a < this.getStudents[i].students.length; a++) {
+            let student = this.getStudents[i].students[a]
+            console.log(student);
+            this.students.push({student:student.username,name:student.name,teamStudent:team,pointsStudent:student.points})       
+          }
+        }
+        this.students.sort(this.compareStudents)
+    },
+
+    setQuizNews(){
+       let arrayQuizzes = this.getActivities.filter(activity=>activity.category=="Quiz");
+       for (let i = 0; i < 5; i++) {
+          let quizInfo = arrayQuizzes[arrayQuizzes.length-i]
+        if (quizInfo) {
+           this.lastQuizesInfo.push(quizInfo)
+         }    
+        }
+    }
   },
   
 
   created () {
-  this.find_ap(this.getLoggedUser.username)
-    /*for (let i = 0; i < this.getTeacherClasses.length; i++) {
-      let team = this.getTeacherClasses[i].name
-      for (let a = 0; a < this.getTeamStudents(team).length; a++) {
-        let student = this.getTeamStudents(team)[a]
-        this.students.push({student:student.usernameStudent,name:student.nameStudent,teamStudent:team,pointsStudent:this.getStudentData(student.usernameStudent)})       
+  this.find_ap(this.getLoggedUser.username).then(
+    ()=>{ if(this.getLoggedUser.type=="Professor"){
+        this.findAllStudents_ap().then(()=>{
+          this.setRanking();
+        });
       }
     }
-    this.students.sort(this.compareStudents)*/
-
-    for (let i = 0; i < 5; i++) {
-      let quizInfo = this.getActivitiesAdmin[this.getActivitiesAdmin.length-i]
-      if (quizInfo) {
-        this.lastQuizesInfo.push(quizInfo)
-      }    
-    }
-  /*
-   if (this.getUser.type == "Tutor" && this.getUser.child!="") {
-      this.childInfo = this.getStudent(this.getUser.child)
-      console.log(this.childInfo);
-      let resultsData = []
-
-    
-
-      for (let emotion of this.getEmotions) {
-        if (this.getUser.child!=null) {
-          for (let i = 0; i < this.childInfo.history.length; i++) {
-            for (let a = 0; a < this.childInfo.history[i].results.length; a++) {
-              if (this.childInfo.history[i].results[a].emotion==emotion) {
-                if (!resultsData.find((result)=>result.emotion == emotion)) {
-                  if (this.childInfo.history[i].results[a].points==0) {
-                    resultsData.push({emotion:emotion,right:0,wrong:1,done:1})
-                  }else{
-                    resultsData.push({emotion:emotion,right:1,wrong:0,done:1})
-                  }
-                }else{
-                  if (this.childInfo.history[i].results[a].points==0) {
-                    resultsData.find((result)=>result.emotion == emotion).wrong++
-                  }else{
-                    resultsData.find((result)=>result.emotion == emotion).right++
-                  }
-                  resultsData.find((result)=>result.emotion == emotion).done++
-                }
-              }
-            }
-          }
-        }
+  );
+  this.findAtivities_ap("").then(()=>{this.setQuizNews()})
+  if(this.getLoggedUser.type=="Criança"){
+    this.findBadges_ap(""); 
+  }
+  else if(this.getLoggedUser.type=="Tutor"){
+    this.findAllEmotions_ap().then(
+        ()=>this.getHistory_ap().then(this.setHistoryKid)
+    )
         
-      }
-      this.childResults=resultsData
-
-
-    }
-    
-
-
-  */
+  }
+  
+  
+        
 
   },
   

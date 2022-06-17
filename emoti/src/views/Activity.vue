@@ -1,6 +1,6 @@
 <template>
    <div id="backgroundActivity">
-     <b-container class="col-11 pt-4">
+     <b-container class="col-11 pt-4" v-if="activity!=null">
         <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">{{activity.title}}</h2>
 
         <div class="col-12 d-flex flex-row justify-content-center">
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { mapGetters} from "vuex";
+import { mapActions, mapGetters} from "vuex";
 import { mapMutations} from "vuex";
 
 export default {
@@ -76,20 +76,29 @@ export default {
       countResponsesRightList:[],
       countRightAnswers:0,
       countPointsEarned:0,
+      activity:null
     }
 
   },
   computed: {
-    ...mapGetters(["getLoggedUser","getActivity","getBagdes"]),
+    ...mapGetters(["getLoggedUser","getActivities","getBagdes","getUser"]),
   },
 
   created() {
-		this.activity=this.getActivity(this.$route.params.name)
-    this.tQuestion=this.activity.questions.length
+    this.find_ap(this.getLoggedUser.username);
+    this.findAtivities_ap(`?title=${this.$route.params.name}`)
+    .then(()=>{
+      	this.activity=this.getActivities[0]
+        this.tQuestion=this.activity.questions.length
+    });
+
+     this.findBadges_ap("");
 	},
 
   methods: {
     ...mapMutations(["SET_ADD_TO_HISTORY","SET_NEW_BADGE_TO_USER","SET_ADD_TO_QUESTIONSDONE","SET_TOTAL_POINTS"]),
+    ...mapActions(["find_ap","findAtivities_ap","addHistory_ap","findBadges_ap","setBadgeToKid_ap"]),
+
 
     nextQuestion() {
       this.positionArray++
@@ -113,22 +122,14 @@ export default {
       }
 
       //regist results in local
-      if (this.getLoggedUser.typeUser=="Criança") {
-        let newDate = new Date();
-        let day = String(newDate. getDate());
-        let month = String(newDate. getMonth()+1);
-        let year = newDate. getFullYear();
-        let actualDate = day + '/' + month + '/' + year;
+      if (this.getLoggedUser.type=="Criança") {
         let info = {
-          date: actualDate,
-          activityTitle:this.activity.title,
+          title:this.activity.title,
           results:this.countResponsesRightList,
           pointsEarned:this.countPointsEarned
         }
         console.log(info);
-        this.SET_ADD_TO_HISTORY(info)
-        this.SET_ADD_TO_QUESTIONSDONE(info)
-        this.SET_TOTAL_POINTS(this.countPointsEarned)
+        this.addHistory_ap(info).catch((err)=>alert(`${err}`));
         
         //check if won any badges
         this.CheckBadgesWon()
@@ -142,24 +143,24 @@ export default {
       
       for (let i = 0; i < this.getBagdes.length; i++) {
         if (this.getBagdes[i].badgeEmotion=="Total") {
-          if (this.getLoggedUser.points>=this.getBagdes[i].pointsNedded) {
-            if (!this.getLoggedUser.badgesId.some((badgeId)=>badgeId==this.getBagdes[i].badgeName)) {
-              this.SET_NEW_BADGE_TO_USER(this.getBagdes[i].badgeName)
+          if (this.getUser.points>=this.getBagdes[i].pointsNeeded) {
+            if (!this.getUser.badgesId.some((badgeId)=>badgeId==this.getBagdes[i].badgeName)) {
+              this.setBadgeToKid_ap({badgeName:this.getBagdes[i].badgeName})
             }
           }
         }else{
           var checkerPoints = 0
-          for (let a = 0; a < this.getLoggedUser.questionsDone.length; a++) {
-            if (this.getLoggedUser.questionsDone[a].emotion == this.getBagdes[i].badgeEmotion) {
-              checkerPoints += +this.getLoggedUser.questionsDone[a].points
+    
+          for (let a = 0; a < this.getUser.questionsDone.length; a++) {
+            if (this.getUser.questionsDone[a].emotion == this.getBagdes[i].badgeEmotion) {
+              checkerPoints += +this.getUser.questionsDone[a].points
             }          
           }
-          if (checkerPoints >= this.getBagdes[i].pointsNedded) {
-            if (!this.getLoggedUser.badgesId.some((badgeId)=>badgeId==this.getBagdes[i].badgeName)) {
-              this.SET_NEW_BADGE_TO_USER(this.getBagdes[i].badgeName)
+          if (checkerPoints >= this.getBagdes[i].pointsNeeded) {
+            if (!this.getUser.badgesId.some((badgeId)=>badgeId==this.getBagdes[i].badgeName)) {
+              this.setBadgeToKid_ap({badgeName:this.getBagdes[i].badgeName})
             }
           }
-          
         }
         
       }

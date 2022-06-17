@@ -12,6 +12,7 @@
 
                   <label class="mr-sm-2" for="filterLevel">Grau de Dificuldade: </label>
                   <b-form-select id="filterLevel" v-model="filter.level" class="mb-2 mr-sm-0 mb-sm-0 col-3"  :style="{'background-color':'#fdfdf3'}">
+                      <b-form-select-option value="">Qualquer</b-form-select-option>
                      <b-form-select-option value="Fácil">Fácil</b-form-select-option>
                      <b-form-select-option value="Médio">Médio</b-form-select-option>
                      <b-form-select-option value="Dificil">Dificil</b-form-select-option>
@@ -35,7 +36,7 @@
                       <td class="p-4">{{activity.title}}</td>
                       <td>{{activity.level}}</td>
                       <td>{{activity.caseIMG}}</td>
-                      <td><b-button v-if="getLoggedUser.typeUser == 'Professor'" style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1" @click="openModal(activity.title)"  v-b-modal.modal-myactivities><b-icon icon="eye-fill" ></b-icon></b-button><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modal-myactivities @click="modalEditOpen(activity)"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill" @click="removeActivity(activity.title)"></b-icon></b-button></td>
+                      <td><b-button v-if="getLoggedUser.type == 'Professor'" style="background-color:#4DA1A9;border:none" class=" ml-2 mr-1" @click="openModal(activity.title)"  v-b-modal.modal-myactivities><b-icon icon="eye-fill" ></b-icon></b-button><b-button style="border:none" variant="secondary" class=" ml-2 mr-1" v-b-modal.modal-myactivities @click="modalEditOpen(activity)"><b-icon icon="pencil-fill"></b-icon></b-button><b-button style="border:none" variant="danger" class=" ml-2 mr-1"><b-icon icon="trash-fill" @click="removeActivity(activity.title)"></b-icon></b-button></td>
                   </tr>
                 </table>
              </div>
@@ -62,11 +63,11 @@
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4" v-for="(question,index) in newActivity.questions" :key="index">
                     <div class="row">
                        <b-form-select id="input-sm" class="col-3 ml-3" v-model="question.correctAnswer" :disabled="index+1 != newActivity.questions.length">
-                          <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
+                          <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion.name">{{emotion.name}}</b-form-select-option>
                        </b-form-select>
                        <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Imagem" v-model="question.img" :disabled="index+1 != newActivity.questions.length"></b-form-input>
                        <b-form-input id="input-sm" type="number" class="col-2 ml-2" placeholder="Pontos" min="0"  v-model.number="question.points" :disabled="index+1 != newActivity.questions.length"></b-form-input>
-                       <b-button class="col-1 ml-2" @click="addNewQuestion(index)" :disabled="index+1 != newActivity.questions.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
+                       <b-button class="col-1 ml-2" @click="addNewQuestion()" :disabled="index+1 != newActivity.questions.length"><b-icon icon="plus-circle-fill"></b-icon></b-button>
                     </div>
                  </b-form-group>
 
@@ -86,10 +87,10 @@
 
             <!--Editar Atividade-->
 
-          <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalActivityDo=='editactivity'">
+          <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalDo=='editactivity'">
               <h4 :style="{color:'#e87461'}">Editar Atividade Personalizada</h4>
 
-              <b-form @submit="applyChangesActivity()">
+              <b-form @submit.prevent="applyChangesActivity()">
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" v-model="editActivity.title" disabled required></b-form-input>
                  </b-form-group>
@@ -111,7 +112,7 @@
                  <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Questão:" label-for="input-sm" class="mt-4 mb-4" v-for="(question,index) in editActivity.questions" :key="index">
                     <div class="row">
                        <b-form-select id="input-sm" class="col-3 ml-3" v-model="question.correctAnswer" disabled>
-                          <b-form-select-option v-for="(emotion,index) in getEmotions" :key="index" :value="emotion">{{emotion}}</b-form-select-option>
+                        <b-form-select-option :value="question.correctAnswer">{{question.correctAnswer}}</b-form-select-option>
                        </b-form-select>
                        <b-form-input id="input-sm" class="col-4 ml-2" placeholder="Imagem" v-model="question.img"></b-form-input>
                        <b-form-input id="input-sm" type="number" class="col-2 ml-2" placeholder="Pontos" min="0"  v-model.number="question.points"></b-form-input>
@@ -135,7 +136,7 @@
             <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="modalDo=='viewgame'">
                <h4 :style="{color:'#e87461'}">Visibilidade</h4>
 
-               <b-form @submit="defineVisibility()">
+               <b-form @submit.prevent="defineVisibility()">
                   <b-form-group label-cols="3" label-cols-lg="3" label-size="sm" label-align-sm="left" label="Título:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input id="input-sm" v-model="activityName" required disabled></b-form-input>
                  </b-form-group>
@@ -163,7 +164,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
    data() {
       return {
@@ -183,7 +184,7 @@ export default {
             }],
             caseIMG:'',
             description:'',
-            category:'' ,
+            category:'Quiz' ,
             author:''
          },
          editActivity:{
@@ -204,46 +205,33 @@ export default {
             title:'',
             level:''
          },
-         listActivitiesPers:''
+         listActivitiesPers:[]
       }
    },
    
    computed: {
-      ...mapGetters(["getLoggedUser","getEmotions","getActivitiesPers","checkInActivities","getTeacherClasses","getTeamStudents"]),
+      ...mapGetters(["getLoggedUser","getEmotions","getActivitiesP","checkInActivities","getTeacherClasses","getTeamStudents","getUser"]),
 
       filterActivitiesPers(){
       return this.listActivitiesPers.filter((activity)=>(activity.title==this.filter.title || this.filter.title=='') && (activity.level==this.filter.level || this.filter.level==''))
     }
    },
    created () {
-      this.listActivitiesPers=this.getActivitiesPers;
+       this.find_ap(this.getLoggedUser.username);
+       this.findAtivities_ap("").then(()=>{
+         this.listActivitiesPers=this.getActivitiesP(this.getLoggedUser.username)
+       });
+       this.findAllEmotions_ap();
+       if(this.getLoggedUser.type=="Professor"){
+         this.findAllClasses_ap();
+       }
    },
 
    methods: {
       ...mapMutations(["SET_REMOVE_ACTIVITY","SET_NEW_ACTIVITY","SET_ADD_ACTIVITY_TO_KID","SET_REMOVE_ACTIVITY_FROM_KID","SET_REMOVE_ACTIVITY_FROM_CLASS","SET_ADD_ACTIVITY_TO_CLASS","SET_EDIT_ACTIVITY"]),
+      ...mapActions(["findAtivities_ap","find_ap","createActivity_ap","findAllEmotions_ap","deleteActivity_ap","editActivity_ap","giveToKidPersonalActi_ap","findAllClasses_ap"]),
 
-      addNewQuestion(index){
-         let wrongEmotions=[]
-         let emotionId = ''
-         let validation=false
-         let validation1=false
-
-         for (let i = 0; i <3; i++) {
-            while(validation==false){
-               emotionId=Math.floor(Math.random()*this.getEmotions.length)
-               validation1=wrongEmotions.some((wrong)=>wrong==this.getEmotions[emotionId])
-               if(this.getEmotions[emotionId] != this.newActivity.questions[index].correctAnswer && validation1==false){
-                  wrongEmotions.push(this.getEmotions[emotionId])
-                  validation=true
-               }
-            }
-            validation=false
-         }
-         
-         wrongEmotions.push(this.newActivity.questions[index].correctAnswer)
-         this.newActivity.questions[index].answers=wrongEmotions
-         wrongEmotions.sort(()=> Math.random() - 0.5)
-
+      addNewQuestion(){
          this.newActivity.questions.push({
             img:'',
             correctAnswer:'',
@@ -254,45 +242,38 @@ export default {
 
 
       addActivity(){
-         if (!this.checkInActivities(this.newActivity.title)) {
-            this.newActivity.questions.pop()
-            if (this.getLoggedUser.typeUser=="Tutor") {
-               this.newActivity.category="Atividades Personalizadas (Tutor)"
-               this.newActivity.author=this.getLoggedUser.username
-               this.SET_NEW_ACTIVITY(this.newActivity)
-               this.SET_ADD_ACTIVITY_TO_KID(this.newActivity)
-               location.reload()
-            }else{
-               this.newActivity.category="Atividades Personalizadas (Professor)"
-               this.newActivity.author=this.getLoggedUser.username
-               this.SET_NEW_ACTIVITY(this.newActivity)
-               location.reload()
-            }
-         } else {
-            this.warning="Já existe uma atividade com esse nome!"
+         this.newActivity.title=this.newActivity.title.replace("?","")
+         if(this.getLoggedUser.type=='Tutor'){
+            this.newActivity.category='Atividades Personalizadas (Tutor)'
          }
+         else{
+            this.newActivity.category='Atividades Personalizadas (Professor)'
+
+         }
+         this.createActivity_ap(this.newActivity)
+            .then(()=>{if(this.getLoggedUser.type=="Tutor"){
+               this.giveToKidPersonalActi_ap([this.newActivity.title,{list:this.getUser.children}]).then(()=>location.reload())
+            }})
+            .catch((err)=>this.warning=`${err}`);
       },
 
       removeActivity(variable){
          if (confirm("Tem a certeza que pretende remover esta atividade?")) {
-            if (this.getLoggedUser.typeUser=="Tutor") {
-               this.SET_REMOVE_ACTIVITY(variable)
-               this.SET_REMOVE_ACTIVITY_FROM_KID(variable)
-            } else {
-               this.SET_REMOVE_ACTIVITY(variable)
-               this.resetActivitiesInStudents(variable)
-            }
+            this.deleteActivity_ap(variable)
+            .then(()=>location.reload())
+            .catch((err)=>alert(`${err}`));
          }
       },
 
       modalEditOpen(variable){
-         this.modalActivityDo='editactivity'
+         this.modalDo='editactivity'
          this.editActivity=variable
       },
 
       applyChangesActivity(){
-         this.editActivity.author=this.getLoggedUser.username
-         this.SET_EDIT_ACTIVITY(this.editActivity)
+            this.editActivity_ap([this.editActivity.title,{level:this.editActivity.level,description:this.editActivity.description,questions:this.editActivity.questions,caseIMG:this.editActivity.caseIMG}])
+            .then(()=>location.reload())
+            .catch((err)=>this.warning=`${err}`)
       },
       
       openModal(variable){
@@ -305,36 +286,12 @@ export default {
       },
 
       defineVisibility(){
-         if (this.classesView.lenght>1) {
-            this.classesView.pop()
-         }
-         
-         this.resetActivitiesInStudents(this.activityName)
-         for (let i = 0; i < this.classesView.length; i++) {
-            let team = this.classesView[i];
-            for (let a = 0; a < this.getTeamStudents(team).length; a++) {
-               let student1 = this.getTeamStudents(team)[a].usernameStudent
-               this.data= {studentName:student1,activity:this.activityName}
-               this.SET_ADD_ACTIVITY_TO_CLASS(this.data)
-            }
-         }   
-         
-         
-      },
+          this.giveToKidPersonalActi_ap([this.activityName,{list:this.classesView}])
+          .then(()=>location.reload())
+          .catch((err)=>{alert(`${err}`)})
+      }
 
-      resetActivitiesInStudents(variable){
-         for (let i = 0; i < this.getTeacherClasses.length; i++) {
-            let team = this.getTeacherClasses[i].name
-            for (let a = 0; a < this.getTeamStudents(team).length; a++) {
-               let student1 = this.getTeamStudents(team)[a].usernameStudent
-               let data2= {studentName:student1,activity:variable}
-               this.SET_REMOVE_ACTIVITY_FROM_CLASS(data2)
-               
-            }
-         }
-      },
-
-   },
+   }
 };
 </script>
 

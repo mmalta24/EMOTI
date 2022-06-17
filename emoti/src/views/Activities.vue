@@ -40,12 +40,12 @@
     </b-sidebar>
 
       <b-card-group class="row col-12" columns>
-        <b-card tag="article" :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-left':cardAffect==index?'0px':'10px'}" class="mb-2 mr-2"  v-for="(activity, index) in filterActivities" :key="index" @mouseover="cardAffect=index" @mouseleave="cardAffect=null">
+        <b-card tag="article" :style="{'max-width': '20vw','background-color':'#fbfbf3',border:'none','padding-left':cardAffect==index?'0px':'10px'}" class="mb-2 mr-2"  v-for="(activity, index) in getActivities" :key="index" @mouseover="cardAffect=index" @mouseleave="cardAffect=null">
         <b-link><img v-bind:src="activity.caseIMG" alt="" style="width:17rem;height:10rem;border-radius:5px" @click="$router.push({ name: 'Activity', params: { name: activity.title } })"></b-link>
         <div class="d-flex flex-row justify-content-between mt-3" style="width:16.5rem">
           <b-card-sub-title class="mb-2"><span style="color:#e87461">{{activity.category}}</span></b-card-sub-title>
           <div>
-            <b-card-sub-title class="mb-2"><b-link @click="activityTitle=activity.title" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" v-b-modal.modalCatalog  v-if="activity.author=='admin' && getLoggedUser.type!='Criança' && getLoggedUser.type!='Administrador'"><span class="material-icons-round" :style="{color:'#87461'}">edit</span></b-link ><span class="material-icons-round" v-if="getLoggedUser.type=='Criança' && getUser.history.find((quiz)=>quiz.activityTitle == activity.title)">done</span><span class="material-icons-round" v-if="getLoggedUser.type=='Criança'  && getUser.activitiesSugest[1].activities.find((quiz)=>quiz==activity.title)">school</span><span class="material-icons-round" style="margin-left:5px" v-if="getLoggedUser.type=='Criança' && getUser.activitiesSugest[0].activities.find((quiz)=>quiz==activity.title)">family_restroom</span></b-card-sub-title>
+            <b-card-sub-title class="mb-2"><b-link @click="activityTitle=activity.title" :style="{color:'#e87461',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" v-b-modal.modalCatalog  v-if="getLoggedUser.type!='Criança' && getLoggedUser.type!='Administrador' && activity.author!=getLoggedUser.username"><span class="material-icons-round" :style="{color:'#87461'}">edit</span></b-link ><span class="material-icons-round" v-if="getLoggedUser.type=='Criança' && getHistory.find((quiz)=>quiz.title == activity.title)">done</span><span class="material-icons-round" v-if="getLoggedUser.type=='Criança'  && getUser.activitiesSuggested.find((quiz)=>quiz.title==activity.title && quiz.who=='Professor')">school</span><span class="material-icons-round" style="margin-left:5px" v-if="getLoggedUser.type=='Criança' && getUser.activitiesSuggested.find((quiz)=>quiz.title==activity.title && quiz.who=='Tutor')">family_restroom</span></b-card-sub-title>
           </div>
         </div>
            <b-card-title><b-link :style="{color:'#2B4141',fontFamily:'EAmbit SemiBold',fontSize:'20px','text-decoration':'none'}" @click="$router.push({ name: 'Activity', params: { name: activity.title } })">{{activity.title}}</b-link></b-card-title>
@@ -61,7 +61,7 @@
         <div :style="{fontFamily:'EAmbit SemiBold'}" class="text-center" v-if="getLoggedUser.type=='Professor'"> <!--Falta v-if -->
                <h4 :style="{color:'#e87461'}">Sugerir Atividade</h4>
 
-               <b-form @submit="sugestToClasses()">
+               <b-form @submit.prevent="sugestToClasses()">
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atividade:" label-for="input-sm" class="mt-4 mb-4">
                     <b-form-input type="text" id="input-sm" disabled required v-model="activityTitle">{{activityTitle}}</b-form-input>
                  </b-form-group>
@@ -91,7 +91,7 @@
                  </b-form-group>
 
                  <b-form-group label-cols="4" label-cols-lg="4" label-size="sm" label-align-sm="left" label="Atribuir a:" label-for="input-sm" class="mt-4 mb-4">
-                    <b-form-input type="text" id="input-sm" disabled required v-model="getUser.child">{{getUser.child}}</b-form-input>
+                    <b-form-input type="text" id="input-sm" disabled required v-model="getUser.children[0]">{{getUser.children[0]}}</b-form-input>
                  </b-form-group>
 
 
@@ -130,49 +130,19 @@ export default {
       activitiesCatalog:"",
       activityTitle:"",
       classesView:[""],
+      user:[]
     }
 
   },
 methods: {
 
   ...mapMutations(["SET_SUGESTION_TO_KID","SET_SUGESTION_TO_STUDENTS","SET_REMOVE_SUGESTION_FROM_STUDENTS"]),
-  ...mapActions(["find_ap"]),
-
-  resetForm() {
-    this.formFilter.level=this.formFilter.category=this.formFilter.sugestFrom=this.formFilter.nQuestions=''
-  },
-
-  activitiesForUser(){
-    if (this.getLoggedUser.type=="Professor") {
-      this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin" || activity.author==this.getLoggedUser.username)
-    }else if (this.getLoggedUser.type=="Tutor") {
-      this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin" || activity.author==this.getLoggedUser.username)
-    }else if (this.getLoggedUser.type=="Administrador") {
-      this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin")
-    }else{
-      this.activitiesCatalog=this.activitiesCatalog.filter((activity)=>activity.author=="admin" || activity.author==this.get.tutor || activity.title==this.checkActivityPersName(activity.title))
-
-    }
-    console.log(this.activitiesCatalog);
-  },
-
-  checkActivityPersName(variable){
-    let result=""
-    for (const activity of this.getUser.activitiesPers[1].activities) {
-      if (activity == variable) {
-        result=variable
-      }
-    }
-    return result
-  },
+  ...mapActions(["find_ap","findAtivities_ap","getHistory_ap","findAllClasses_ap","setSuggest_ap"]),
 
   sugestToKid(){
-    if (!this.checkSugestions(this.activityTitle)) {
-      this.SET_SUGESTION_TO_KID(this.activityTitle)
-      location.reload()
-    }else{
-      this.warning="Já sugeriu esta atividade!"
-    }
+    this.setSuggest_ap([this.activityTitle,{list:this.getUser.children}])
+    .then(()=>location.reload())
+    .catch((err)=>{alert(`${err}`)});
     
   },
 
@@ -180,52 +150,58 @@ methods: {
     if (this.classesView.lenght>1) {
       this.classesView.pop()
     }
-         
-    this.resetActivitiesInStudents(this.activityTitle)
-    for (let i = 0; i < this.classesView.length; i++) {
-      let team = this.classesView[i];
-      for (let a = 0; a < this.getTeamStudents(team).length; a++) {
-        let student1 = this.getTeamStudents(team)[a].usernameStudent
-        this.data= {studentName:student1,activity:this.activityTitle}
-        this.SET_SUGESTION_TO_STUDENTS(this.data)
-      }
-    }    
-  },
-
-  resetActivitiesInStudents(variable){
-    for (let i = 0; i < this.getTeacherClasses.length; i++) {
-      let team = this.getTeacherClasses[i].name
-      for (let a = 0; a < this.getTeamStudents(team).length; a++) {
-        let student1 = this.getTeamStudents(team)[a].usernameStudent
-        let data2= {studentName:student1,activity:variable}
-        this.SET_REMOVE_SUGESTION_FROM_STUDENTS(data2)       
-      }
-    }
+    this.setSuggest_ap([this.activityTitle,{list:this.classesView}])
+    .then(()=>location.reload())
+    .catch((err)=>{alert(`${err}`)});
   },
 
   newClassView(){
     this.classesView.push("")
   },
 
+  resetForm(){
+    this.formFilter.level=""
+    this.formFilter.category=""
+  }
+
 
 },
 
 computed: {
-    ...mapGetters(["getFilteredActivities","getLoggedUser","checkSugestions","getTeacherClasses","getTeamStudents","getUser"]),
-    
-    filterActivities(){
-      return this.activitiesCatalog.filter((activity)=>(activity.level==this.formFilter.level || this.formFilter.level=='') && (activity.category==this.formFilter.category || this.formFilter.category==''))
-    }
+    ...mapGetters(["getActivities","getLoggedUser","checkSugestions","getTeacherClasses","getTeamStudents","getUser","getHistory"]),
 
   },
 watch: {
-  formFilter() {
-  }
+ 'formFilter.level'() {
+         if(this.formFilter.category!=''){
+            this.findAtivities_ap(`?level=${this.formFilter.level}&category=${this.formFilter.category}`);
+         }
+         else{
+            this.findAtivities_ap(`?level=${this.formFilter.level}`);
+         }
+         
+      },
+
+       'formFilter.category'() {
+         if(this.formFilter.level!=''){
+            this.findAtivities_ap(`?category=${this.formFilter.category}&level=${this.formFilter.level}`);
+         }
+         else{
+            this.findAtivities_ap(`?category=${this.formFilter.category}`);
+         }
+         
+      }
 },
 created () {
-  this.activitiesCatalog=this.getFilteredActivities(this.formFilter)
-  this.activitiesForUser()
-  this.find_ap(this.getLoggedUser.username)
+  this.find_ap(this.getLoggedUser.username);
+  this.findAtivities_ap("");
+  if(this.getLoggedUser.type=="Criança"){
+    this.getHistory_ap();
+  }
+  else if(this.getLoggedUser.type=="Professor"){
+    this.findAllClasses_ap();
+  }
+  
 },
 
 };

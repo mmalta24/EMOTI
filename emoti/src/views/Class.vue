@@ -12,10 +12,10 @@
            <div class="col-12 mt-5">
              <b-form inline>
                   <label class="mr-sm-2" for="filterTitle">Nome: </label>
-                  <b-form-input id="filterTitle" class="mb-2 mr-sm-5 mb-sm-0 col-5" :style="{'background-color':'#fdfdf3'}"></b-form-input>
+                  <b-form-input id="filterTitle" class="mb-2 mr-sm-5 mb-sm-0 col-5" :style="{'background-color':'#fdfdf3'}" disabled></b-form-input>
 
                   <label class="mr-sm-2" for="filterLevel">Turma: </label>
-                  <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-3"  :style="{'background-color':'#fdfdf3'}"></b-form-select>
+                  <b-form-select id="filterLevel" class="mb-2 mr-sm-0 mb-sm-0 col-3"  :style="{'background-color':'#fdfdf3'}" disabled></b-form-select>
              </b-form>
            </div>
 
