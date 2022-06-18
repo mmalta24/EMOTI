@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters} from "vuex";
 export default {
    data() {
       return {
@@ -210,7 +210,7 @@ export default {
    },
    
    computed: {
-      ...mapGetters(["getLoggedUser","getEmotions","getActivitiesP","checkInActivities","getTeacherClasses","getTeamStudents","getUser"]),
+      ...mapGetters(["getLoggedUser","getEmotions","getActivitiesP","getTeacherClasses","getUser"]),
 
       filterActivitiesPers(){
       return this.listActivitiesPers.filter((activity)=>(activity.title==this.filter.title || this.filter.title=='') && (activity.level==this.filter.level || this.filter.level==''))
@@ -228,7 +228,6 @@ export default {
    },
 
    methods: {
-      ...mapMutations(["SET_REMOVE_ACTIVITY","SET_NEW_ACTIVITY","SET_ADD_ACTIVITY_TO_KID","SET_REMOVE_ACTIVITY_FROM_KID","SET_REMOVE_ACTIVITY_FROM_CLASS","SET_ADD_ACTIVITY_TO_CLASS","SET_EDIT_ACTIVITY"]),
       ...mapActions(["findAtivities_ap","find_ap","createActivity_ap","findAllEmotions_ap","deleteActivity_ap","editActivity_ap","giveToKidPersonalActi_ap","findAllClasses_ap"]),
 
       addNewQuestion(){

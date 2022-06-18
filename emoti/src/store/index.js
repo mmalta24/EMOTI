@@ -64,53 +64,10 @@ export default new Vuex.Store({
 
     getHistory:(state)=>state.history,
 
-    //old
-    isUser: (state) => (username, password) =>
-      state.users.some(
-        (user) => user.username === username && user.password === password
-      ),
-
-    isUsernameAvailable: (state) => (username) =>
-      state.users.every((user) => user.username !== username),
-
-    isUserBlocked: (state) => (username) => state.users.some(
-      (user) => user.username === username && user.blocked === true
-    ),
-
-    getFilteredActivities: (state)=>(formFilter)=> state.activities.filter(activity=>(activity.level==formFilter.level || formFilter.level=='') &&
-    (activity.category==formFilter.category || formFilter.category=='')),
-
-    getActivity:(state)=>(title)=>state.activities.find((activitiy)=>activitiy.title==title),
-
-    getTeamStudents: (state) => (teamName) => state.classes.find((team)=>team.name == teamName && team.teacher== state.loggedUser.username).students ,
-
-    getStudentData: (state) => (variable) => state.users.find((user)=>user.username==variable).points,
-
-    
-
-    checkInEmotions: (state) => (variable) => state.emotions.some((emotion)=>emotion.toLowerCase()==variable.toLowerCase()),
-
-    getActivitiesAdmin: (state) => state.activities.filter((activity)=>activity.category=="Quiz"||activity.category=="Reconhecimento"),
-
-    getActivitiesPers: (state) => state.activities.filter((activity)=>activity.author==state.loggedUser.username),
-
-    checkInActivities: (state) => (variable) => state.activities.find((activity)=>activity.title.toLowerCase()==variable.toLowerCase()), 
-  
-    
-
-    checkBadges: (state)=>(variable) => state.badges.find((badge)=>badge.badgeName.toLowerCase()==variable.toLowerCase()),
-
-    checkUserBadges: (state)=>(variable) =>  state.loggedUser.badgesId.find((badge)=> badge == variable),
-
-    checkSugestions: (state) => (variable) => state.users.find((user)=> user.username == state.loggedUser.child).activitiesSugest[0].activities.find((sugestion)=> sugestion == variable),
-    //new
-   
-    
-
   },
   actions: {
     async login_ap(context,data){
-      const response = await fetch("http://127.0.0.1:3000/api/users/login", {
+      const response = await fetch("http://emotiapi.herokuapp.com/api/users/login", {
         method: 'POST',
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -133,7 +90,7 @@ export default new Vuex.Store({
     },
 
     async register_ap(context,data){
-      const response = await fetch("http://127.0.0.1:3000/api/users", {
+      const response = await fetch("http://emotiapi.herokuapp.com/api/users", {
         method: 'POST',
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -153,7 +110,7 @@ export default new Vuex.Store({
     },
 
     async find_ap(context,data){
-      const response = await fetch(`http://127.0.0.1:3000/api/users/${data}`, {
+      const response = await fetch(`http://emotiapi.herokuapp.com/api/users/${data}`, {
         method: 'GET',
         headers: {'Authorization': 'Bearer '+this.state.loggedUser.token,}})
       if(response.ok){
@@ -162,7 +119,7 @@ export default new Vuex.Store({
     },
 
     async updateUser_ap(context,data){
-      const response = await fetch(`http://127.0.0.1:3000/api/users/${data[0]}`, {
+      const response = await fetch(`http://emotiapi.herokuapp.com/api/users/${data[0]}`, {
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin',
@@ -179,7 +136,7 @@ export default new Vuex.Store({
     },
 
     async createRelation_ap(context,data){
-      const response = await fetch(`http://127.0.0.1:3000/api/users/${this.state.loggedUser.username}/children`, {
+      const response = await fetch(`http://emotiapi.herokuapp.com/api/users/${this.state.loggedUser.username}/children`, {
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin',
@@ -196,7 +153,7 @@ export default new Vuex.Store({
     },
 
     async findRelations_ap(context){
-      const response = await fetch(`http://127.0.0.1:3000/api/users/${this.state.loggedUser.username}/children`, {
+      const response = await fetch(`http://emotiapi.herokuapp.com/api/users/${this.state.loggedUser.username}/children`, {
         method: 'GET',
         headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
       })
@@ -206,7 +163,7 @@ export default new Vuex.Store({
     },
 
     async removeRelation_ap(context,data){
-      const response=await fetch(`http://127.0.0.1:3000/api/users/${this.state.loggedUser.username}/children`,{
+      const response=await fetch(`http://emotiapi.herokuapp.com/api/users/${this.state.loggedUser.username}/children`,{
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin',
@@ -224,7 +181,7 @@ export default new Vuex.Store({
     },
 
     async findAllUsers_ap(context,data){
-      const response = await fetch(`http://127.0.0.1:3000/api/users`+data, {
+      const response = await fetch(`http://emotiapi.herokuapp.com/api/users`+data, {
         method: 'GET',
         headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
       })
@@ -234,7 +191,7 @@ export default new Vuex.Store({
     },
 
     async createAdmin_ap(context,data){
-      const response = await fetch("http://127.0.0.1:3000/api/users/addAdmin", {
+      const response = await fetch("http://emotiapi.herokuapp.com/api/users/addAdmin", {
         method: 'POST',
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -255,7 +212,7 @@ export default new Vuex.Store({
     },
 
     async removeUser_ap(context,data){
-      const response=await fetch(`http://127.0.0.1:3000/api/users/${data.username}`,{
+      const response=await fetch(`http://emotiapi.herokuapp.com/api/users/${data.username}`,{
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin',
@@ -273,7 +230,7 @@ export default new Vuex.Store({
       },
 
       async findAllClasses_ap(context){
-        const response = await fetch(`http://127.0.0.1:3000/api/classes`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/classes`, {
           method: 'GET',
           headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
         })
@@ -283,7 +240,7 @@ export default new Vuex.Store({
       },
 
       async createClass_ap(context,data){
-        const response = await fetch("http://127.0.0.1:3000/api/classes", {
+        const response = await fetch("http://emotiapi.herokuapp.com/api/classes", {
           method: 'POST',
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -304,7 +261,7 @@ export default new Vuex.Store({
       },
 
       async findChildClasses_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/classes/requests?usernameChild=${data}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/classes/requests?usernameChild=${data}`, {
           method: 'GET',
           headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
         })
@@ -318,7 +275,7 @@ export default new Vuex.Store({
       },
 
       async createRequest_ap(context,data){
-        const response = await fetch("http://127.0.0.1:3000/api/classes/requests", {
+        const response = await fetch("http://emotiapi.herokuapp.com/api/classes/requests", {
           method: 'POST',
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -339,11 +296,10 @@ export default new Vuex.Store({
       },
 
       async removeClass_ap(context,data){
-        const response=await fetch(`http://127.0.0.1:3000/api/classes/${data}`,{
+        const response=await fetch(`http://emotiapi.herokuapp.com/api/classes/${data}`,{
           method: 'DELETE',
           headers: {'Authorization': 'Bearer '+this.state.loggedUser.token}
         })
-        console.log(response);
         if (!response.ok) {
           const err = await response.json()
           throw new Error(err.error)
@@ -352,7 +308,7 @@ export default new Vuex.Store({
       },
 
       async alterStudent_ap(context,data){
-          const response = await fetch(`http://127.0.0.1:3000/api/classes/${data[0]}/children/${data[1]}`, {
+          const response = await fetch(`http://emotiapi.herokuapp.com/api/classes/${data[0]}/children/${data[1]}`, {
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -369,7 +325,7 @@ export default new Vuex.Store({
       },
 
       async removeStudent_ap(context,data){
-        const response=await fetch(`http://127.0.0.1:3000/api/classes/${data[0]}/children/${data[1]}`,{
+        const response=await fetch(`http://emotiapi.herokuapp.com/api/classes/${data[0]}/children/${data[1]}`,{
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -386,7 +342,7 @@ export default new Vuex.Store({
       },
 
       async findRequests_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/classes/requests/${data}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/classes/requests/${data}`, {
           method: 'GET',
           headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
         })
@@ -400,7 +356,7 @@ export default new Vuex.Store({
       },
 
       async acceptRequest_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/classes/requests/${data[0]}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/classes/requests/${data[0]}`, {
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -417,7 +373,7 @@ export default new Vuex.Store({
       },
 
       async deleteRequest_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/classes/requests/${data[0]}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/classes/requests/${data[0]}`, {
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -434,7 +390,7 @@ export default new Vuex.Store({
       },
 
       async findClasses_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/classes/children/${data}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/classes/children/${data}`, {
           method: 'GET',
           headers: {'Authorization': 'Bearer '+this.state.loggedUser.token,}})
         if(response.ok){
@@ -443,7 +399,7 @@ export default new Vuex.Store({
       },
 
       async findAllStudents_ap(context){
-        const response = await fetch(`http://127.0.0.1:3000/api/classes/children`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/classes/children`, {
           method: 'GET',
           headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
         })
@@ -453,7 +409,7 @@ export default new Vuex.Store({
       },
 
       async findAllEmotions_ap(context){
-        const response = await fetch(`http://127.0.0.1:3000/api/emotions`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/emotions`, {
           method: 'GET',
           headers: {'Authorization': 'Bearer '+this.state.loggedUser.token, 'Content-Type': 'application/json'},
         })
@@ -463,7 +419,7 @@ export default new Vuex.Store({
       },
 
       async createEmotion_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/emotions`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/emotions`, {
           method: 'POST',
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -484,7 +440,7 @@ export default new Vuex.Store({
       },
 
       async deleteEmotion_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/emotions/${data}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/emotions/${data}`, {
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -500,7 +456,7 @@ export default new Vuex.Store({
       },
 
       async findBadges_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/badges${data}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/badges${data}`, {
           method: 'GET',
           headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
         })
@@ -514,7 +470,7 @@ export default new Vuex.Store({
       },
 
       async createBadge_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/badges`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/badges`, {
           method: 'POST',
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -534,7 +490,7 @@ export default new Vuex.Store({
         }
       },
       async deleteBadge_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/badges/${data}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/badges/${data}`, {
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -549,7 +505,7 @@ export default new Vuex.Store({
         }
       },
       async findAtivities_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/activities${data}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/activities${data}`, {
           method: 'GET',
           headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
         })
@@ -563,7 +519,7 @@ export default new Vuex.Store({
       },
 
       async createActivity_ap(context,data){
-        const response = await fetch('http://127.0.0.1:3000/api/activities', {
+        const response = await fetch('http://emotiapi.herokuapp.com/api/activities', {
           method: 'POST',
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -584,7 +540,7 @@ export default new Vuex.Store({
       },
 
       async deleteActivity_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/activities/${data}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/activities/${data}`, {
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -600,7 +556,7 @@ export default new Vuex.Store({
       },
 
       async editActivity_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/activities/${data[0]}`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/activities/${data[0]}`, {
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -616,7 +572,7 @@ export default new Vuex.Store({
         }
       },
       async getHistory_ap(context){
-        const response = await fetch(`http://127.0.0.1:3000/api/users/history`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/users/history`, {
           method: 'GET',
           headers: {'Authorization': 'Bearer '+this.state.loggedUser.token},
         })
@@ -630,7 +586,7 @@ export default new Vuex.Store({
       },
 
       async addHistory_ap(context,data){
-        const response = await fetch('http://127.0.0.1:3000/api/users/history', {
+        const response = await fetch('http://emotiapi.herokuapp.com/api/users/history', {
           method: 'POST',
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -651,7 +607,7 @@ export default new Vuex.Store({
       },
 
       async setSuggest_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/activities/${data[0]}/children`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/activities/${data[0]}/children`, {
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -668,7 +624,7 @@ export default new Vuex.Store({
       },
 
       async giveToKidPersonalActi_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/activities/${data[0]}/children`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/activities/${data[0]}/children`, {
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -685,7 +641,7 @@ export default new Vuex.Store({
       },
 
       async setBadgeToKid_ap(context,data){
-        const response = await fetch(`http://127.0.0.1:3000/api/users/badges`, {
+        const response = await fetch(`http://emotiapi.herokuapp.com/api/users/badges`, {
           mode: 'cors', // no-cors, *cors, same-origin
           cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
           credentials: 'same-origin',
@@ -700,11 +656,6 @@ export default new Vuex.Store({
           throw new Error(err.error)
         }
       },
-
-
-
-    
-
   },
 
   mutations: {
@@ -772,138 +723,7 @@ export default new Vuex.Store({
 
     SET_HISTORY(state,variable){
       state.history=variable.history
-    },
-
-    //old
-    CHANGE_STATE_USER(state,variable){
-      state.users.find((user) => user.username === variable.username).blocked = variable.logic;
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    REMOVE_TEAMS_TEACHER(state,variable){
-      state.classes=state.classes.filter((team)=>team.teacher!=variable)
-      localStorage.classes = JSON.stringify(state.classes)
-    },
-
-    SET_REMOVE_RELATION_TUTOR_ADMIN(state,variable){
-      state.users.find((user) => user.username === variable).tutor = null;
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_REMOVE_RELATION_CHILD_ADMIN(state,variable){
-      state.users.find((user) => user.username === variable).child = null;
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_REMOVE_EMOTION(state,variable){
-      state.emotions=state.emotions.filter((emotion)=>emotion!=variable)
-      localStorage.emotions = JSON.stringify(state.emotions)
-
-    },
-
-    SET_NEW_EMOTION(state,variable){
-      state.emotions.push(variable)
-      localStorage.emotions = JSON.stringify(state.emotions)
-
-    },
-
-    SET_NEW_ACTIVITY(state,variable){
-      state.activities.push(variable)
-      localStorage.activities = JSON.stringify(state.activities)
-    },
-
-    SET_REMOVE_ACTIVITY(state,variable){
-      state.activities=state.activities.filter((activity)=>activity.title!=variable)
-      localStorage.activities = JSON.stringify(state.activities)
-
-    },
-
-    SET_ADD_TO_HISTORY(state,variable){
-      state.loggedUser.history.push(variable)
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
-
-      state.users.find((user)=> user.username == state.loggedUser.username).history = state.loggedUser.history
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_ADD_TO_QUESTIONSDONE(state,variable){
-      state.loggedUser.questionsDone=state.loggedUser.questionsDone.concat(variable.results)
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
-
-      state.users.find((user)=> user.username == state.loggedUser.username).questionsDone.concat(variable.results)
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_TOTAL_POINTS(state,variable){
-      state.loggedUser.points = state.loggedUser.points + variable
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
-
-      state.users.find((user)=> user.username == state.loggedUser.username).points = state.loggedUser.points
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_NEW_BADGE(state,variable){
-      state.badges.push(variable)
-      localStorage.badges = JSON.stringify(state.badges)
-    },
-
-    SET_NEW_BADGE_TO_USER(state,variable){
-      state.loggedUser.badgesId.push(variable)
-      sessionStorage.loggedUser = JSON.stringify(state.loggedUser)
-
-      state.users.find((user)=> user.username == state.loggedUser.username).badgesId.push(variable) 
-      localStorage.users = JSON.stringify(state.users)     
-    },
-
-    SET_ADD_ACTIVITY_TO_KID(state,variable){
-      state.users.find((user) => user.username === state.loggedUser.child).activitiesPers[0].activities.push(variable.title);
-      localStorage.users = JSON.stringify(state.users)
-    },
-    
-    SET_REMOVE_ACTIVITY_FROM_KID(state,variable){
-      state.users.find((user) => user.username === state.loggedUser.child).activitiesPers[0].activities = state.users.find((user) => user.username === state.loggedUser.child).activitiesPers[0].activities.filter((activity)=>activity!=variable);
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_ADD_ACTIVITY_TO_CLASS(state,variable){
-      state.users.find((user) => user.username === variable.studentName).activitiesPers[1].activities.push(variable.activity);
-      localStorage.users = JSON.stringify(state.users)
-    },
-    
-    SET_REMOVE_ACTIVITY_FROM_CLASS(state,variable){
-      state.users.find((user) => user.username==variable.studentName).activitiesPers[1].activities = state.users.find((user) => user.username==variable.studentName).activitiesPers[1].activities.filter((activity)=>activity!=variable.activity),
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_SUGESTION_TO_KID(state,variable){
-      state.users.find((user) => user.username === state.loggedUser.child).activitiesSugest[0].activities.push(variable);
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_SUGESTION_TO_STUDENTS(state,variable){
-      state.users.find((user) => user.username === variable.studentName).activitiesSugest[1].activities.push(variable.activity);
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_REMOVE_SUGESTION_FROM_STUDENTS(state,variable){
-      state.users.find((user) => user.username==variable.studentName).activitiesSugest[1].activities = state.users.find((user) => user.username==variable.studentName).activitiesSugest[1].activities.filter((activity)=>activity!=variable.activity),
-      localStorage.users = JSON.stringify(state.users)
-    },
-
-    SET_EDIT_ACTIVITY(state,variable){
-      state.activities.find((activity)=>activity.title == variable.title).level = variable.level
-      state.activities.find((activity)=>activity.title == variable.title).description = variable.description
-      state.activities.find((activity)=>activity.title == variable.title).questions = variable.questions
-      state.activities.find((activity)=>activity.title == variable.title).caseIMG = variable.caseIMG
-      localStorage.activities = JSON.stringify(state.activities)
-    },
-
-    SET_REMOVE_BADGE(state,variable){
-      state.badges=state.badges.filter((badge)=>badge.badgeName!=variable)
-      localStorage.badges = JSON.stringify(state.badges)
     }
-    
-
   },
 
   modules: {},

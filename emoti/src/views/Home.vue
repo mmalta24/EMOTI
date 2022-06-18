@@ -39,7 +39,7 @@
             <b-form-datepicker id="example-datepicker1" v-model="dataEnd" class="mb-2 mr-sm-4 mb-sm-0" :style="{'background-color':'#fbfbf3'}"></b-form-datepicker>
            </b-form>
            
-          <table class="col-11 ml-2 mr-2 mt-5 mb-5 text-center">
+          <table class="col-11 ml-2 mr-2 mt-5 text-center">
             <tr :style="{'background-color':'#e87461',color:'#fbfbf3'}">
               <th class="p-2">Emoção</th>
               <th>Perguntas realizadas</th>
@@ -62,7 +62,7 @@
         <div class="mt-4" v-if="getLoggedUser.type == 'Professor'">
           <h2 :style="{color:'#e87461',fontFamily:'EAmbit SemiBold'}">Evolução dos meus alunos</h2>
           
-          <table class="col-11 ml-2 mr-2 mt-5 mb-5 text-center">
+          <table class="col-11 ml-2 mr-2 mt-5 text-center">
             <tr :style="{'background-color':'#e87461',color:'#fbfbf3'}">
               <th class="p-2">Username</th>
               <th>Nome</th>
@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations,mapActions } from "vuex";
+import { mapGetters,mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -101,7 +101,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getLoggedUser","getBagdes","getTeacherClasses","getTeamStudents","getStudentData","getActivities","getStudent","getEmotions","checkUserBadges","getUserDetails","getUser","getChildInfo","getStudents","getHistory"]),
+    ...mapGetters(["getLoggedUser","getBagdes","getActivities","getEmotions","getUser","getStudents","getHistory"]),
 
     /*orderStudents() {
       return this.students.sort(this.compareStudents);
@@ -110,7 +110,6 @@ export default {
   },
 
   methods: {
-    ...mapMutations([]),
     ...mapActions(["find_ap","findBadges_ap","findRelations_ap","findAllStudents_ap","findAtivities_ap","getHistory_ap",'findAllEmotions_ap']),
 
     compareStudents(studA, studB) {
@@ -138,7 +137,7 @@ export default {
     setHistoryKid(){
       if (this.getUser.typeUser == "Tutor" && this.getUser.children.length!=0) {
         let resultsData = []
-        console.log('ok');
+        
       for (const emotion of this.getEmotions) {
           for (let i = 0; i < this.getHistory.length; i++) {
             for (let a = 0; a < this.getHistory[i].results.length; a++) {
@@ -163,9 +162,6 @@ export default {
         
       }
       this.childResults=resultsData
-      console.log(resultsData);
-
-
     }
     },
 
@@ -174,7 +170,6 @@ export default {
           let team = this.getStudents[i].name
           for (let a = 0; a < this.getStudents[i].students.length; a++) {
             let student = this.getStudents[i].students[a]
-            console.log(student);
             this.students.push({student:student.username,name:student.name,teamStudent:team,pointsStudent:student.points})       
           }
         }
@@ -230,7 +225,7 @@ export default {
   min-height: 100vh;
   background: url("../assets/Grupo 6.svg");
   background-size: 1525px auto;
-  background-repeat: repeat;
+  background-repeat: repeat-y;
 }
 
 

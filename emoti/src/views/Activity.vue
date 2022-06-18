@@ -62,7 +62,6 @@
 
 <script>
 import { mapActions, mapGetters} from "vuex";
-import { mapMutations} from "vuex";
 
 export default {
   
@@ -96,7 +95,6 @@ export default {
 	},
 
   methods: {
-    ...mapMutations(["SET_ADD_TO_HISTORY","SET_NEW_BADGE_TO_USER","SET_ADD_TO_QUESTIONSDONE","SET_TOTAL_POINTS"]),
     ...mapActions(["find_ap","findAtivities_ap","addHistory_ap","findBadges_ap","setBadgeToKid_ap"]),
 
 
@@ -128,13 +126,8 @@ export default {
           results:this.countResponsesRightList,
           pointsEarned:this.countPointsEarned
         }
-        console.log(info);
-        this.addHistory_ap(info).catch((err)=>alert(`${err}`));
-        
-        //check if won any badges
-        this.CheckBadgesWon()
-
-
+        this.addHistory_ap(info).then(()=>this.find_ap(this.getLoggedUser.username).then(()=>this.CheckBadgesWon())).catch((err)=>alert(`${err}`));
+    
       }
 
     },

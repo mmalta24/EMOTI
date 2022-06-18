@@ -181,7 +181,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
    name:"ManagerActivities",
    data() {
@@ -225,16 +225,11 @@ export default {
    },
 
    computed: {
-      ...mapGetters(["getLoggedUser","getEmotions","checkInEmotions","getActivities","checkInActivities"]),
-      filterActivities(){
-      return this.activitiesAdmin.filter((activity)=>(activity.title==this.formFilter.title || this.formFilter.title=='') && (activity.category==this.formFilter.category || this.formFilter.category=='')&& (activity.level==this.formFilter.level || this.formFilter.level==''))
-    }
+      ...mapGetters(["getLoggedUser","getEmotions","getActivities"]),
    },
 
    methods: {
       ...mapActions(["findAllEmotions_ap","createEmotion_ap","find_ap","deleteEmotion_ap","findAtivities_ap","createActivity_ap","deleteActivity_ap","editActivity_ap"]),
-
-      ...mapMutations(["SET_REMOVE_EMOTION","SET_NEW_EMOTION","SET_REMOVE_ACTIVITY","SET_NEW_ACTIVITY","SET_REMOVE_EMOTION","SET_EDIT_ACTIVITY"]),
 
       modalEditOpen(variable){
          this.modalActivityDo='editactivity'
@@ -297,6 +292,7 @@ export default {
       },
 
       addActivity(){
+         this.newActivity.title=this.newActivity.title.replace("?","")
          this.createActivity_ap(this.newActivity).then(()=>location.reload()).catch((err)=>{alert(`${err}`)})
       },
 

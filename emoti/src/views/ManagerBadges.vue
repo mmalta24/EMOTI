@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapMutations } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
     data() {
         return {
@@ -95,14 +95,14 @@ export default {
     },
 
     computed: {
-        ...mapGetters(["getLoggedUser","getEmotions","getBagdes","checkBadges"]),
+        ...mapGetters(["getLoggedUser","getEmotions","getBagdes"]),
     },
 
     methods: {
-        ...mapMutations(["SET_NEW_BADGE","SET_REMOVE_BADGE"]),
         ...mapActions(["findBadges_ap","find_ap","createBadge_ap","findAllEmotions_ap","deleteBadge_ap"]),
 
         addNewBadge() {
+            this.newBadgeForm.badgeName=this.newBadgeForm.badgeName.replace("?","")
             this.createBadge_ap(this.newBadgeForm)
                 .then(()=>location.reload())
                 .catch((err)=>alert(`${err}`));

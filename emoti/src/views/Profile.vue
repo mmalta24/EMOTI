@@ -281,7 +281,9 @@ export default {
 
   created () {
     this.find_ap(this.getLoggedUser.username)
-    this.findRelations_ap().then(()=>{this.findClasses_ap(this.getChildInfo.username);});
+    if(this.getLoggedUser.type=="Tutor"){
+      this.findRelations_ap().then(()=>{this.findClasses_ap(this.getChildInfo.username);});
+    }
   },
   
 }

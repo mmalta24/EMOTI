@@ -111,7 +111,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations,mapActions} from "vuex";
+import { mapGetters,mapActions} from "vuex";
 
 export default {
   data() {
@@ -135,8 +135,6 @@ export default {
 
   },
 methods: {
-
-  ...mapMutations(["SET_SUGESTION_TO_KID","SET_SUGESTION_TO_STUDENTS","SET_REMOVE_SUGESTION_FROM_STUDENTS"]),
   ...mapActions(["find_ap","findAtivities_ap","getHistory_ap","findAllClasses_ap","setSuggest_ap"]),
 
   sugestToKid(){
@@ -168,7 +166,7 @@ methods: {
 },
 
 computed: {
-    ...mapGetters(["getActivities","getLoggedUser","checkSugestions","getTeacherClasses","getTeamStudents","getUser","getHistory"]),
+    ...mapGetters(["getActivities","getLoggedUser","getTeacherClasses","getUser","getHistory"]),
 
   },
 watch: {
